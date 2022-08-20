@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< Updated upstream
     <list default="true" id="93c240c0-1d4e-449c-bd24-fbcb444c6130" name="Changes" comment="" />
+=======
+    <list default="true" id="5b181043-886e-4b56-bf08-58fe7c0dca35" name="Changes" comment="" />
+>>>>>>> Stashed changes
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+<<<<<<< Updated upstream
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -33,6 +38,12 @@
     "WebServerToolWindowFactoryState": "false"
   }
 }]]></component>
+=======
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+>>>>>>> Stashed changes
   <component name="RunManager">
     <configuration name="wardrobe" type="Python.DjangoServer" factoryName="Django server">
       <module name="wardrobe" />
@@ -58,6 +69,7 @@
       <method v="2" />
     </configuration>
   </component>
+<<<<<<< Updated upstream
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -95,4 +107,9 @@
       </map>
     </option>
   </component>
+=======
+  <component name="TaskManager">
+    <servers />
+  </component>
+>>>>>>> Stashed changes
 </project>
