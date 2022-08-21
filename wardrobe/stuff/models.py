@@ -26,7 +26,7 @@ def _get_statuses():
 
 class Item(models.Model):
     name = models.CharField(max_length=50)
-    description = models.TextField(max_length=200, null=True)
+    description = models.TextField(max_length=200, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     status = models.CharField(max_length=20, choices=_get_statuses(), default='Dostępny')
@@ -35,5 +35,8 @@ class Item(models.Model):
     borrower = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
 
     date_added = models.DateField(default=now)
-    date_reserved = models.DateField(null=True)
-    date_borrowed = models.DateField(null=True)
+    date_reserved = models.DateField(null=True, blank=True)
+    date_borrowed = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.name} item from {self.category} category'
