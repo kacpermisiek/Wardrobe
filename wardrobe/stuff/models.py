@@ -12,6 +12,9 @@ BADGE_STATUSES = {'Dostępny': 'success',
 class Category(models.Model):
     name = models.CharField(max_length=50)
 
+    def __str__(self):
+        return self.name
+
 
 def _get_badge_status(status):
     return BADGE_STATUSES[status]
