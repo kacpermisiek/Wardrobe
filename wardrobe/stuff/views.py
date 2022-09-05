@@ -17,9 +17,7 @@ def home(request):
         return items
 
     def _get_items():
-        items = Item.objects.all()
-
-        return _set_badge_statuses(items)
+        return _set_badge_statuses(Item.objects.all())
 
     context = {
         'stuff': _get_items(),
