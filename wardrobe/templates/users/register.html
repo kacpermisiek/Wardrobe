@@ -1,4 +1,6 @@
 {% extends "stuff/base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
 {% block content %}
 
 <h1>Strona rejestracji</h1>
@@ -7,7 +9,7 @@
             {% csrf_token %}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Dołącz do grona użytkowników</legend>
-                {{ form.as_p }}
+                {{ form|crispy }}
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Zarejestruj się</button>
