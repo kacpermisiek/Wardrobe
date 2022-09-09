@@ -37,7 +37,7 @@
               </li>
             </ul>
               <div class="navbar-nav">
-                  <a class="nav-item nav-link" href="#">Zaloguj się</a>
+                  <a class="nav-item nav-link" href="/register">Zaloguj się</a>
                   <a class="nav-item nav-link" href="#">Zarejestruj się</a>
               </div>
           </div>
@@ -47,6 +47,13 @@
   <main role="main" class="container">
   <div class="row">
     <div class="col-md-8">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
       {% block content %}{% endblock %}
     </div>
     <div class="col-md-4">

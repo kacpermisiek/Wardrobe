@@ -27,8 +27,6 @@ class Item(models.Model):
 
     status = models.CharField(max_length=20, choices=_get_statuses(), default='Dostępny')
 
-    borrower = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
-
     date_added = models.DateField(default=now)
 
     def __str__(self):
