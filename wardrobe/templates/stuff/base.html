@@ -36,10 +36,17 @@
                 <a class="nav-link" href="/about">About</a>
               </li>
             </ul>
+              {% if user.is_authenticated %}
               <div class="navbar-nav">
-                  <a class="nav-item nav-link" href="/register">Zaloguj się</a>
-                  <a class="nav-item nav-link" href="#">Zarejestruj się</a>
+                  <a class="nav-item nav-link" href="{% url 'profile' %}">Mój profil</a>
+                  <a class="nav-item nav-link" href="{% url 'logout' %}">Wyloguj się</a>
               </div>
+              {% else  %}
+              <div class="navbar-nav">
+                  <a class="nav-item nav-link" href="{% url 'login' %}">Zaloguj się</a>
+                  <a class="nav-item nav-link" href="{% url 'register' %}">Zarejestruj się</a>
+              </div>
+              {% endif %}
           </div>
     </nav>
   </header>
