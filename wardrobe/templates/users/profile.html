@@ -12,5 +12,17 @@
                 <p class="account-heading"> {{ user.last_name }} </p>
             </div>
         </div>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Informacje użytkownika</legend>
+                {{ user_update_form|crispy }}
+                {{ profile_update_form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Zapisz</button>
+            </div>
+
+        </form>
     </div>
 {% endblock content %}
