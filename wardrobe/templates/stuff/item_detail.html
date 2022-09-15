@@ -1,0 +1,37 @@
+{% extends "stuff/base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    <h1>{{ object.name }}</h1>
+    <h1>{{ object.category }}</h1>
+    <span class="badge badge-{{ object.badge_status }} rounded-pill d-inline">{{ object.status }}</span>
+    <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxsohb_183AzwYrQN125Lja5-tW2O1kDmQAw&usqp=CAU"
+              alt=""
+              style="width: 50px; height: 50px"
+              class="img-fluid rounded-circle"/>
+    {% if object.status == "Dostępny" %}
+        <div class="content-section">
+            <form method="POST">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    <legend class="border-bottom mb-4">Ten przedmiot jest dostępny. Wypełnij formularz, aby zgłosić rezerwację przedmiotu</legend>
+                    {{ form|crispy }}
+                </fieldset>
+                <div class="form-group">
+                    <button class="btn btn-outline-info" type="submit">Zarezerwuj</button>
+                </div>
+            </form>
+
+
+        </div>
+        {% endif %}
+        {% if user.is_superuser %}
+            <div class="content-section">
+                    <a class="btn btn-outline-info" href="{% url 'item-update' object.id %}">Edytuj przedmiot</a>
+                    <a class="btn btn-outline-danger" href="{% url 'item-delete' object.id %}">Usuń przedmiot</a>
+            </div>
+        {% endif %}
+{# TODO FIX BADE COLORS!!!! #}
+{% endblock content %}

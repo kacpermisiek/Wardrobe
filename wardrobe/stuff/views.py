@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, AccessMixin, PermissionRequiredMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from stuff.models import Item, BADGE_STATUSES
 
 
@@ -24,6 +26,44 @@ def home(request):
         'title': 'strona główna'
     }
     return render(request, 'stuff/home.html', context)
+
+
+class ItemListView(ListView):
+    model = Item
+    template_name = 'stuff/home.html'
+    context_object_name = 'stuff'
+    ordering = ['status', 'name']
+    # TODO: status colors are not working since ItemListView addition
+
+
+class ItemDetailView(DetailView):
+    model = Item
+
+
+class ItemCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    model = Item
+    fields = ['name', 'description', 'category', 'status']
+
+
+class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Item
+    fields = ['name', 'description', 'category', 'status']
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    # TODO handle_no_permission is not working correctly, when user have no permission it gets 403
+
+
+class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Item
+    success_url = '/'
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
 
 def about(request):

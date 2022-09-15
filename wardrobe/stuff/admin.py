@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Item, Category, RentEvent
+from .models import Item, Category, ReservationEvent
 
 admin.site.register(Item)
 admin.site.register(Category)
-admin.site.register(RentEvent)
+admin.site.register(ReservationEvent)
