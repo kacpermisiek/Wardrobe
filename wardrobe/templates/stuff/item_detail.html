@@ -23,7 +23,15 @@
                     <button class="btn btn-outline-info" type="submit">Zarezerwuj</button>
                 </div>
             </form>
+
+
         </div>
-    {% endif %}
+        {% endif %}
+        {% if user.is_superuser %}
+            <div class="content-section">
+                    <a class="btn btn-outline-info" href="{% url 'item-update' object.id %}">Edytuj przedmiot</a>
+                    <a class="btn btn-outline-danger" href="{% url 'item-delete' object.id %}">Usuń przedmiot</a>
+            </div>
+        {% endif %}
 {# TODO FIX BADE COLORS!!!! #}
 {% endblock content %}
