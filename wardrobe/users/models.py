@@ -12,7 +12,8 @@ class Profile(models.Model):
 
     def save(self, *args, **kwargs):
         super().save()
-        image = Image.open(self.image.path)
+        image = Image.open(self.image.path).convert('RGB')
+        
         if image.height > 300 or image.width > 300:
             output_size = (300, 300)
             image.thumbnail(output_size)
