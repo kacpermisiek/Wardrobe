@@ -68,6 +68,9 @@
         <h3>Sidebar</h3>
         <p class='text-muted'>Some info
           <ul class="list-group">
+            {% if user.is_superuser %}
+                <li class="list-group-item list-group-item-light"><a href="{% url 'item-create' %}">Dodaj przedmiot</a></li>
+            {% endif %}
             <li class="list-group-item list-group-item-light">Some</li>
             <li class="list-group-item list-group-item-light">Basic</li>
             <li class="list-group-item list-group-item-light">Buttons</li>

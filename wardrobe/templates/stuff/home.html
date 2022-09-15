@@ -25,7 +25,7 @@
               class="img-fluid rounded-circle"
               />
           <div class="ms-3">
-            <p class="fw-bold mb-1 ml-1 ml-m-5">{{ thing.name }}</p>
+            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="{% url 'item-detail' thing.id %}">{{ thing.name }}</a></p>
           </div>
         </div>
       </td>
@@ -36,9 +36,6 @@
         <span class="badge badge-{{ thing.badge_status }} rounded-pill d-inline">{{ thing.status }}</span>
       </td>
       <td class="align-middle">
-        <button type="button" class="btn btn-link btn-sm btn-rounded">
-          Edit
-        </button>
       </td>
     </tr>
   {% endfor %}
