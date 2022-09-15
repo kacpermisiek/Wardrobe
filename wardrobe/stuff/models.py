@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
+from django.urls import reverse
 
 
 BADGE_STATUSES = {'Dostępny': 'success',
@@ -32,8 +33,11 @@ class Item(models.Model):
     def __str__(self):
         return f'{self.name} item from {self.category} category'
 
+    def get_absolute_url(self):
+        return reverse('item-detail', kwargs={'pk': self.pk})
 
-class RentEvent(models.Model):
+
+class ReservationEvent(models.Model):
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
     taken = models.BooleanField(default=False)
