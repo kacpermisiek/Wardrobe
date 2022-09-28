@@ -34,6 +34,7 @@ class ItemListView(ListView):
     context_object_name = 'stuff'
     ordering = ['status', 'name']
     # TODO: status colors are not working since ItemListView addition
+    paginate_by = 6
 
 
 class ItemDetailView(DetailView):
