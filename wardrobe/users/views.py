@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm, UserUpdateForm, ProfileUpdateForm
+from django.contrib.auth.views import PasswordResetView
 from utils.forms_functions import proceed_redirection, request_method_is_post, all_forms_are_valid
+
 
 
 def _get_user_and_profile_update_forms(request):
