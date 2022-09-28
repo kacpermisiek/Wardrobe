@@ -1,6 +1,8 @@
 {% extends "stuff/base.html" %}
 
 {% block content %}
+    {% if user.is_authenticated %}
+
     <h3>Przedmioty dostępne dla Ciebie</h3>
 
 
@@ -60,8 +62,12 @@
         {% if page_obj.has_next %}
             <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}"> > </a>
         {% endif %}
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.count }}"> Koniec </a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}"> Koniec </a>
 
+    {% endif %}
+
+    {% else %}
+        <h1> Zaloguj się, aby otrzymać dostęp do strony!</h1>
     {% endif %}
 
 {% endblock content %}
