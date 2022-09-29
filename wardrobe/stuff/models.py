@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 from django.urls import reverse
+from django.forms.widgets import NumberInput
 
 
 BADGE_STATUSES = {'Dostępny': 'success',
@@ -27,7 +28,7 @@ class Item(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     status = models.CharField(max_length=20, choices=_get_statuses(), default='Dostępny')
-
+    # TODO: we dont have badge colours because of badge_status was deleted! :D
     date_added = models.DateField(default=now)
 
     def __str__(self):
@@ -38,8 +39,8 @@ class Item(models.Model):
 
 
 class ReservationEvent(models.Model):
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
+    start_date = models.DateField(null=True, blank=True, default=now)
+    end_date = models.DateField(null=True, blank=True, default=now)
     taken = models.BooleanField(default=False)
 
     item = models.ForeignKey(Item, on_delete=models.CASCADE)

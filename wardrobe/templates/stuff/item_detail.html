@@ -3,6 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+        {% if user.is_authenticated %}
     <h1>{{ object.name }}</h1>
     <h1>{{ object.category }}</h1>
     <span class="badge badge-{{ object.badge_status }} rounded-pill d-inline">{{ object.status }}</span>
@@ -13,18 +14,7 @@
               class="img-fluid rounded-circle"/>
     {% if object.status == "Dostępny" %}
         <div class="content-section">
-            <form method="POST">
-                {% csrf_token %}
-                <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">Ten przedmiot jest dostępny. Wypełnij formularz, aby zgłosić rezerwację przedmiotu</legend>
-                    {{ form|crispy }}
-                </fieldset>
-                <div class="form-group">
-                    <button class="btn btn-outline-info" type="submit">Zarezerwuj</button>
-                </div>
-            </form>
-
-
+            <h2>Ten przedmiot jest dostępny. <a href="{% url 'item-reservation-create' object.id %}"> Kliknij tutaj</a>, aby zgłosić rezerwację przedmiotu</h2>
         </div>
         {% endif %}
         {% if user.is_superuser %}
@@ -34,4 +24,7 @@
             </div>
         {% endif %}
 {# TODO FIX BADE COLORS!!!! #}
+        {% else %}
+            <h1> Zaloguj się, aby otrzymać dostęp do strony!</h1>
+        {% endif %}
 {% endblock content %}

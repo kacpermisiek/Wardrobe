@@ -1,7 +1,9 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin, AccessMixin, PermissionRequiredMixin
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from stuff.models import Item, BADGE_STATUSES
+from stuff.models import Item, ReservationEvent, BADGE_STATUSES
+from .forms import ItemReservationForm
 
 
 def home(request):
@@ -65,6 +67,33 @@ class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         return self.request.user.is_superuser
+
+
+class ItemCreateReservationView(LoginRequiredMixin, CreateView):
+    model = ReservationEvent
+    template_name = 'reservation/reservation_create.html'
+    success_url = '/'
+    form_class = ItemReservationForm
+
+    def get_form(self, **kwargs):
+        form = super(ItemCreateReservationView, self).get_form(self.form_class)
+        form.instance.item = Item.objects.get(pk=self.kwargs.get('pk', None))
+        return form
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(ItemCreateReservationView, self).form_valid(form)
+
+
+class UserReservationsListView(ListView):
+    model = ReservationEvent
+    template_name = 'stuff/user_reservations.html'
+    context_object_name = 'reservations'
+    paginate_by = 6
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        return ReservationEvent.objects.filter(user=user).order_by('-start_date')
 
 
 def about(request):
