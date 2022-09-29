@@ -71,7 +71,7 @@
             {% if user.is_superuser %}
                 <li class="list-group-item list-group-item-light"><a href="{% url 'item-create' %}">Dodaj przedmiot</a></li>
             {% endif %}
-            <li class="list-group-item list-group-item-light">Some</li>
+              <li class="list-group-item list-group-item-light"><a href="{% url 'user-reservations' %}">Moje wypożyczenia</a></li>
             <li class="list-group-item list-group-item-light">Basic</li>
             <li class="list-group-item list-group-item-light">Buttons</li>
             <li class="list-group-item list-group-item-light">etc</li>

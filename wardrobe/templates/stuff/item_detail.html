@@ -14,18 +14,7 @@
               class="img-fluid rounded-circle"/>
     {% if object.status == "Dostępny" %}
         <div class="content-section">
-            <form method="POST">
-                {% csrf_token %}
-                <fieldset class="form-group">
-                    <legend class="border-bottom mb-4">Ten przedmiot jest dostępny. Wypełnij formularz, aby zgłosić rezerwację przedmiotu</legend>
-                    {{ form|crispy }}
-                </fieldset>
-                <div class="form-group">
-                    <button class="btn btn-outline-info" type="submit">Zarezerwuj</button>
-                </div>
-            </form>
-
-
+            <h2>Ten przedmiot jest dostępny. <a href="{% url 'item-reservation-create' object.id %}"> Kliknij tutaj</a>, aby zgłosić rezerwację przedmiotu</h2>
         </div>
         {% endif %}
         {% if user.is_superuser %}
