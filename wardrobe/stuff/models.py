@@ -31,6 +31,13 @@ class Item(models.Model):
     # TODO: we dont have badge colours because of badge_status was deleted! :D
     date_added = models.DateField(default=now)
 
+    @property
+    def badge_status(self):
+        return {'Dostępny': 'success',
+                'Uszkodzony': 'danger',
+                'Zarezerwowany': 'info',
+                'Niedostępny': 'dark'}[self.status]
+
     def __str__(self):
         return f'{self.name} item from {self.category} category'
 

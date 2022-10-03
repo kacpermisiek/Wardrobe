@@ -16,7 +16,8 @@
     </tr>
   </thead>
   <tbody>
-  {% for thing in stuff %}
+  {% for item in stuff %}
+      <h1>{{ item.date_added }}</h1>
     <tr>
       <td>
         <div class="d-flex align-items-center">
@@ -27,15 +28,15 @@
               class="img-fluid rounded-circle"
               />
           <div class="ms-3">
-            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="{% url 'item-detail' thing.id %}">{{ thing.name }}</a></p>
+            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="{% url 'item-detail' item.id %}">{{ item.name }}</a></p>
           </div>
         </div>
       </td>
       <td class="align-middle">
-            <p class="fw-normal mb-1">{{ thing.category }}</p>
+            <p class="fw-normal mb-1">{{ item.category }}</p>
       </td>
       <td class="align-middle">
-        <span class="badge badge-{{ thing.badge_status }} rounded-pill d-inline">{{ thing.status }}</span>
+        <span class="badge badge-{{ item.badge_status }} rounded-pill d-inline">{{ item.status }}</span>
       </td>
       <td class="align-middle">
       </td>
