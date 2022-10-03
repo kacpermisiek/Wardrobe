@@ -28,8 +28,14 @@ class Item(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
     status = models.CharField(max_length=20, choices=_get_statuses(), default='Dostępny')
-    # TODO: we dont have badge colours because of badge_status was deleted! :D
     date_added = models.DateField(default=now)
+
+    @property
+    def badge_status(self):
+        return {'Dostępny': 'success',
+                'Uszkodzony': 'danger',
+                'Zarezerwowany': 'info',
+                'Niedostępny': 'dark'}[self.status]
 
     def __str__(self):
         return f'{self.name} item from {self.category} category'

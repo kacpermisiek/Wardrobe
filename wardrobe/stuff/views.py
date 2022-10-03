@@ -35,7 +35,6 @@ class ItemListView(ListView):
     template_name = 'stuff/home.html'
     context_object_name = 'stuff'
     ordering = ['status', 'name']
-    # TODO: status colors are not working since ItemListView addition
     paginate_by = 6
 
 
