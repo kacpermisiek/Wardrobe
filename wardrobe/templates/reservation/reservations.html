@@ -38,7 +38,7 @@
             <p class="fw-normal mb-1 d-none d-lg-block">{{ reservation.item.category }}</p>
       </td>
       <td class="align-middle">
-            <p class="fw-normal mb-1">{{ reservation.user.firstname }}</p>
+            <p class="fw-normal mb-1">{{ reservation.user.first_name|make_list|first|upper }}.{{ reservation.user.last_name }}</p>
       </td>
 
         <td class="align-middle">

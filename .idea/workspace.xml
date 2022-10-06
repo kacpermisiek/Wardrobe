@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="7147d9c9-c80b-415c-b726-c630ac950daa" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/wardrobe/templates/reservation/reservations.html" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/templates/reservation/reservations.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -29,7 +30,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
+    "settings.editor.selected.configurable": "database.query.execution"
   }
 }]]></component>
   <component name="RunManager">
@@ -66,7 +67,7 @@
       <option name="presentableId" value="Default" />
       <updated>1660982270216</updated>
       <workItem from="1660982272216" duration="50000" />
-      <workItem from="1665068619074" duration="458000" />
+      <workItem from="1665068619074" duration="1289000" />
     </task>
     <servers />
   </component>

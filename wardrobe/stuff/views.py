@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from stuff.models import Item, ReservationEvent, BADGE_STATUSES
+from .models import Item, ReservationEvent, BADGE_STATUSES
 from .forms import ItemReservationForm
 
 
@@ -89,6 +89,9 @@ class ReservationListView(ListView):
     template_name = 'reservation/reservations.html'
     context_object_name = 'reservations'
     paginate_by = 6
+
+    def get_queryset(self):
+        return ReservationEvent.objects.all().order_by('start_date')
 
 
 class UserReservationsListView(ReservationListView):
