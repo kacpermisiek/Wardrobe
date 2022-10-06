@@ -35,11 +35,22 @@ class Item(models.Model):
         return {'Dostępny': 'success',
                 'Uszkodzony': 'danger',
                 'Zarezerwowany': 'info',
+                'Zabrany': 'dark',
                 'Niedostępny': 'dark'}[self.final_status]
 
     @property  # TODO: bad variable name, should be better
     def final_status(self):
-        return 'Zarezerwowany' if self.status == 'Dostępny' and self._is_between_dates() else self.status
+        return 'Zabrany' if self._is_taken() else 'Zarezerwowany' if self._is_between_dates() else self.status
+
+        # if self._is_taken():
+        #     return 'Zabrany'
+        # elif self._is_between_dates():
+        #     return 'Zarezerwowany'
+        # return self.status
+
+    @property
+    def reservations(self):
+        return ReservationEvent.objects.filter(item=self)
 
     def __str__(self):
         return f'{self.name} item from {self.category} category'
@@ -48,9 +59,14 @@ class Item(models.Model):
         return reverse('item-detail', kwargs={'pk': self.pk})
 
     def _is_between_dates(self):
-        reservations = ReservationEvent.objects.filter(item=self)
-        for reservation in reservations:
+        for reservation in self.reservations:
             if reservation.start_date <= date.today() <= reservation.end_date:
+                return True
+        return False
+
+    def _is_taken(self):
+        for reservation in self.reservations:
+            if reservation.taken:
                 return True
         return False
 
