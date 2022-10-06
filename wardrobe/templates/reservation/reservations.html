@@ -1,24 +1,28 @@
 {% extends "stuff/base.html" %}
 
 {% block content %}
-    {% if user.is_authenticated %}
 
-    <h3>Przedmioty dostępne dla Ciebie</h3>
+    {% if user.is_superuser %}
+    <h1 class="mb-3"> Przedmioty rezerwowane przez użytkowników ({{ page_obj.paginator.count }})</h1>
 
 
 <table class="table align-middle mb-0 bg-white table-hover">
   <thead class="bg-light">
     <tr>
       <th>Nazwa</th>
-      <th>Kategoria</th>
-      <th>Status</th>
+      <th class="d-none d-lg-block">Kategoria</th>
+      <th>Autor</th>
+      <th>Start</th>
+      <th>Koniec</th>
     </tr>
   </thead>
   <tbody>
-  {% for item in stuff %}
+  {% for reservation in reservations %}
     <tr>
-      <td>
+      <td class="d-none d-lg-block">
         <div class="d-flex align-items-center">
+{#            TODO: Fix responsive things #}
+{#            TODO: STATIC image! items should have their own pics :) #}
           <img
               src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxsohb_183AzwYrQN125Lja5-tW2O1kDmQAw&usqp=CAU"
               alt=""
@@ -26,16 +30,24 @@
               class="img-fluid rounded-circle"
               />
           <div class="ms-3">
-            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="{% url 'item-detail' item.id %}">{{ item.name }}</a></p>
+            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="{% url 'item-detail' reservation.item.id %}">{{ reservation.item.name }}</a></p>
           </div>
         </div>
       </td>
       <td class="align-middle">
-            <p class="fw-normal mb-1">{{ item.category }}</p>
+            <p class="fw-normal mb-1 d-none d-lg-block">{{ reservation.item.category }}</p>
       </td>
       <td class="align-middle">
-        <span class="badge badge-{{ item.badge_status }} rounded-pill d-inline">{{ item.final_status }}</span>
+            <p class="fw-normal mb-1">{{ reservation.user.firstname }}</p>
       </td>
+
+        <td class="align-middle">
+            <p class="fw-normal mb-1">{{ reservation.start_date|date:"d.m.y" }}</p>
+        </td>
+
+        <td class="align-middle">
+            <p class="fw-normal mb-1">{{ reservation.end_date|date:"d.m.y" }}</p>
+        </td>
     </tr>
   {% endfor %}
   </tbody>
@@ -64,7 +76,7 @@
     {% endif %}
 
     {% else %}
-        <h1> Zaloguj się, aby otrzymać dostęp do strony!</h1>
+        <h1> Nie masz dostępu do tej strony!</h1>
     {% endif %}
 
 {% endblock content %}

@@ -84,11 +84,15 @@ class ItemCreateReservationView(LoginRequiredMixin, CreateView):
         return super(ItemCreateReservationView, self).form_valid(form)
 
 
-class UserReservationsListView(ListView):
+class ReservationListView(ListView):
     model = ReservationEvent
-    template_name = 'stuff/user_reservations.html'
+    template_name = 'reservation/reservations.html'
     context_object_name = 'reservations'
     paginate_by = 6
+
+
+class UserReservationsListView(ReservationListView):
+    template_name = 'reservation/user_reservations.html'
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))

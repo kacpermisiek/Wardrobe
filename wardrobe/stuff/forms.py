@@ -6,7 +6,7 @@ from datetime import date
 class ItemReservationForm(forms.ModelForm):
     start_date = forms.DateField(widget=forms.SelectDateWidget())
     end_date = forms.DateField(widget=forms.SelectDateWidget())
-    taken = True
+    taken = False
 
     def clean(self):
         cleaned_data = super(ItemReservationForm, self).clean()
@@ -26,5 +26,5 @@ class ItemReservationForm(forms.ModelForm):
 
     class Meta:
         model = ReservationEvent
-        fields = ['start_date', 'end_date', 'taken']
+        fields = ['start_date', 'end_date']
 
