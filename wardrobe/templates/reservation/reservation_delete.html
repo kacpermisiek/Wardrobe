@@ -1,0 +1,22 @@
+{% extends "stuff/base.html" %}
+{% block content %}
+
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Usuwanie rezerwacji</legend>
+                <h2>Jesteś pewien, że chcesz usunąć rezerwację przedmiotu {{ object.item.name }}?</h2>
+                <h3>Szczegóły rezerwacji:</h3>
+                <h4>Osoba rezerwująca: {{ object.user.first_name }} {{ object.user.last_name }}</h4>
+                <h4>Początek rezerwacji: {{ object.start_date }}</h4>
+                <h4>Koniec rezerwacji: {{ object.end_date }}</h4>
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-danger" type="submit">Tak, usuń rezerwację</button>
+                <a class="btn btn-outline-secondary" href="{% url 'item-reservation-detail' object.item.id object.id %}">Anuluj</a>
+            </div>
+
+        </form>
+    </div>
+{% endblock content %}
