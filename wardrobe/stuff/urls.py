@@ -6,6 +6,7 @@ from .views import (
     ItemUpdateView,
     ItemDeleteView,
     ItemCreateReservationView,
+    ReservationListView,
     UserReservationsListView,
 )
 from . import views
@@ -18,6 +19,7 @@ urlpatterns = [
     path('item/<int:pk>/update', ItemUpdateView.as_view(), name='item-update'),
     path('item/<int:pk>/delete', ItemDeleteView.as_view(), name='item-delete'),
     path('item/<int:pk>/reservation_create', ItemCreateReservationView.as_view(), name='item-reservation-create'),
+    path('item/reservations/', ReservationListView.as_view(), name='item-reservation-list'),
     path('about/', views.about, name='stuff-about'),
 
 ]

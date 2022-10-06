@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 from django.urls import reverse
-from django.forms.widgets import NumberInput
+from datetime import date
 
 
 BADGE_STATUSES = {'Dostępny': 'success',
@@ -12,7 +12,7 @@ BADGE_STATUSES = {'Dostępny': 'success',
 
 
 def _get_statuses():
-    return tuple([(key, key) for key in BADGE_STATUSES.keys()])
+    return tuple([(key, key) for key in BADGE_STATUSES.keys() if key != 'Zarezerwowany'])
 
 
 class Category(models.Model):
@@ -35,13 +35,24 @@ class Item(models.Model):
         return {'Dostępny': 'success',
                 'Uszkodzony': 'danger',
                 'Zarezerwowany': 'info',
-                'Niedostępny': 'dark'}[self.status]
+                'Niedostępny': 'dark'}[self.final_status]
+
+    @property  # TODO: bad variable name, should be better
+    def final_status(self):
+        return 'Zarezerwowany' if self.status == 'Dostępny' and self._is_between_dates() else self.status
 
     def __str__(self):
         return f'{self.name} item from {self.category} category'
 
     def get_absolute_url(self):
         return reverse('item-detail', kwargs={'pk': self.pk})
+
+    def _is_between_dates(self):
+        reservations = ReservationEvent.objects.filter(item=self)
+        for reservation in reservations:
+            if reservation.start_date <= date.today() <= reservation.end_date:
+                return True
+        return False
 
 
 class ReservationEvent(models.Model):
