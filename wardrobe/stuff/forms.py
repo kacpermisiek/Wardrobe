@@ -1,5 +1,5 @@
 from django import forms
-from stuff.models import ReservationEvent
+from .models import ReservationEvent
 from datetime import date
 
 
@@ -23,6 +23,8 @@ class ItemReservationForm(forms.ModelForm):
             self.add_error('start_date', 'Data końcowa nie może być wcześniejsza niż aktualna!')
 
         return cleaned_data
+
+    # TODO: Need validation for existing reservations
 
     class Meta:
         model = ReservationEvent
