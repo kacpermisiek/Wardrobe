@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7147d9c9-c80b-415c-b726-c630ac950daa" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wardrobe/templates/reservation/reservations.html" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/templates/reservation/reservations.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wardrobe/templates/reservation/user_reservations.html" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/templates/reservation/user_reservations.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wardrobe/templates/stuff/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/templates/stuff/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wardrobe/templates/stuff/item_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/templates/stuff/item_detail.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

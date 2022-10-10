@@ -6,13 +6,13 @@
         {% if user.is_authenticated %}
     <h1>{{ object.name }}</h1>
     <h1>{{ object.category }}</h1>
-    <span class="badge badge-{{ object.badge_status }} rounded-pill d-inline">{{ object.status }}</span>
+    <span class="badge badge-{{ object.badge_status }} rounded-pill d-inline">{{ object.final_status }}</span>
     <img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxsohb_183AzwYrQN125Lja5-tW2O1kDmQAw&usqp=CAU"
+              src="{{ object.image.url }}"
               alt=""
-              style="width: 50px; height: 50px"
-              class="img-fluid rounded-circle"/>
-    {% if object.status == "Dostępny" %}
+              style="width: 300px; height: 300px"
+              class="img-fluid"/>
+    {% if object.final_status == "Dostępny" %}
         <div class="content-section">
             <h2>Ten przedmiot jest dostępny. <a href="{% url 'item-reservation-create' object.id %}"> Kliknij tutaj</a>, aby zgłosić rezerwację przedmiotu</h2>
         </div>
