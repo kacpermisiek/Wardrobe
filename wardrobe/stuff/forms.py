@@ -24,6 +24,8 @@ class ItemReservationForm(forms.ModelForm):
 
         return cleaned_data
 
+    # TODO: Need validation for existing reservations
+
     class Meta:
         model = ReservationEvent
         fields = ['start_date', 'end_date']
