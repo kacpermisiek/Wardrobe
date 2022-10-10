@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from stuff.models import Item, ReservationEvent, BADGE_STATUSES
+from .models import Item, ReservationEvent, BADGE_STATUSES
 from .forms import ItemReservationForm
 
 
@@ -36,6 +36,7 @@ class ItemListView(ListView):
     context_object_name = 'stuff'
     ordering = ['status', 'name']
     paginate_by = 6
+    # TODO: Ordering by final_status, not status. But it is property, not field
 
 
 class ItemDetailView(DetailView):
@@ -90,6 +91,9 @@ class ReservationListView(ListView):
     context_object_name = 'reservations'
     paginate_by = 6
 
+    def get_queryset(self):
+        return ReservationEvent.objects.all().order_by('start_date')
+
 
 class UserReservationsListView(ReservationListView):
     template_name = 'reservation/user_reservations.html'
@@ -104,3 +108,37 @@ def about(request):
         'title': 'About page'
     }
     return render(request, 'stuff/about.html', context)
+
+
+class ItemDetailReservationView(DetailView):
+    model = ReservationEvent
+
+    template_name = 'reservation/reservation_detail.html'
+
+
+class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = ReservationEvent
+    fields = ['start_date', 'end_date', 'taken']
+    template_name = 'reservation/reservation_update.html'
+    success_url = '/item/reservations/'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_form(self, **kwargs):
+        form = super(ItemUpdateReservationView, self).get_form(self.form_class)
+        form.instance.item = Item.objects.get(pk=self.kwargs.get('id', None))
+        return form
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(ItemUpdateReservationView, self).form_valid(form)
+
+
+class ItemDeleteReservationView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = ReservationEvent
+    success_url = '/item/reservations/'
+    template_name = 'reservation/reservation_delete.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser
