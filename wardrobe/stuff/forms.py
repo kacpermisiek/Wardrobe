@@ -1,5 +1,5 @@
 from django import forms
-from stuff.models import ReservationEvent
+from .models import ReservationEvent
 from datetime import date
 
 
