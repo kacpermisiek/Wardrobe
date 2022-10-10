@@ -6,12 +6,13 @@
         {% if user.is_authenticated %}
     <h1>{{ object.name }}</h1>
     <h1>{{ object.category }}</h1>
+            <h1>{{ object.id }}</h1>
     <span class="badge badge-{{ object.badge_status }} rounded-pill d-inline">{{ object.final_status }}</span>
     <img
               src="{{ object.image.url }}"
               alt=""
               style="width: 300px; height: 300px"
-              class="img-fluid"/>
+              class="img-fluid rounded-circle"/>
     {% if object.final_status == "Dostępny" %}
         <div class="content-section">
             <h2>Ten przedmiot jest dostępny. <a href="{% url 'item-reservation-create' object.id %}"> Kliknij tutaj</a>, aby zgłosić rezerwację przedmiotu</h2>
@@ -21,6 +22,47 @@
             <div class="content-section">
                     <a class="btn btn-outline-info" href="{% url 'item-update' object.id %}">Edytuj przedmiot</a>
                     <a class="btn btn-outline-danger" href="{% url 'item-delete' object.id %}">Usuń przedmiot</a>
+            </div>
+
+            <div class="content-section">
+                <h2>Historia rezerwacji tego przedmiotu</h2>
+
+                    <table class="table align-middle mb-0 bg-white table-hover">
+  <thead class="bg-light">
+    <tr>
+      <th>id</th>
+      <th>Autor</th>
+      <th>Start</th>
+      <th>Koniec</th>
+      <th>Szczegóły</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for reservation in object.reservations %}
+    <tr>
+      <td class="align-middle">
+            <p class="fw-normal mb-1">{{reservation.id}}</p>
+      </td>
+      <td class="align-middle">
+            <p class="fw-normal mb-1">{{ reservation.user.first_name|make_list|first|upper }}.{{ reservation.user.last_name }}</p>
+      </td>
+
+        <td class="align-middle">
+            <p class="fw-normal mb-1">{{ reservation.start_date|date:"d.m.y" }}</p>
+        </td>
+
+        <td class="align-middle">
+            <p class="fw-normal mb-1">{{ reservation.end_date|date:"d.m.y" }}</p>
+        </td>
+
+        <td class="align-middle">
+            <a href="{% url 'item-reservation-detail' object.id reservation.id %}" class="fw-normal mb-1">Szczegóły</a>
+        </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
             </div>
         {% endif %}
         {% else %}

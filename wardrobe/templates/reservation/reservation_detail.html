@@ -1,0 +1,32 @@
+{% extends "stuff/base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{# TODO: Better look for this template #}
+
+
+{% block content %}
+    {% if user.is_authenticated %}
+    <h1>Szczegóły rezerwacji przedmiotu {{ object.item.name }}</h1>
+    <h3>Kategoria przedmiotu: {{ object.item.category }}</h3>
+    <span class="badge badge-{{ object.badge_status }} rounded-pill d-inline">{{ object.final_status }}</span>
+    <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRxsohb_183AzwYrQN125Lja5-tW2O1kDmQAw&usqp=CAU"
+              alt=""
+              style="width: 50px; height: 50px"
+              class="img-fluid rounded-circle"/>
+    {% if object.item.final_status == "Dostępny" %}
+        <div class="content-section">
+            <h2>Ten przedmiot jest dostępny. <a href="{% url 'item-reservation-create' object.id %}"> Kliknij tutaj</a>, aby zgłosić rezerwację przedmiotu</h2>
+        </div>
+        {% endif %}
+        {% if user.is_superuser %}
+            <div class="content-section">
+                    <a class="btn btn-outline-info" href="{% url 'item-reservation-update' object.item.id object.id %}">Edytuj rezerwację</a>
+                    <a class="btn btn-outline-danger" href="{% url 'item-reservation-delete' object.item.id object.id %}">Usuń rezerwację</a>
+            </div>
+        {% endif %}
+        {% else %}
+            <h1> Zaloguj się, aby otrzymać dostęp do strony!</h1>
+        {% endif %}
+{% endblock content %}

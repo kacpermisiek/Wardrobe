@@ -59,6 +59,15 @@ class Item(models.Model):
 
         image.close()
 
+        # if self._is_taken():
+        #     return 'Zabrany'
+        # elif self._is_between_dates():
+        #     return 'Zarezerwowany'
+        # return self.status
+
+    @property
+    def reservations(self):
+        return ReservationEvent.objects.filter(item=self)
 
     def __str__(self):
         return f'{self.name} item from {self.category} category'
