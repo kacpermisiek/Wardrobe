@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.timezone import now
 from django.urls import reverse
 from datetime import date
+from PIL import Image
 
 
 BADGE_STATUSES = {'Dostępny': 'success',
@@ -26,6 +27,7 @@ class Item(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=200, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    image = models.ImageField(default='default_item.png', upload_to='item_pics')
 
     status = models.CharField(max_length=20, choices=_get_statuses(), default='Dostępny')
     date_added = models.DateField(default=now)
@@ -42,15 +44,21 @@ class Item(models.Model):
     def final_status(self):
         return 'Zabrany' if self._is_taken() else 'Zarezerwowany' if self._is_between_dates() else self.status
 
-        # if self._is_taken():
-        #     return 'Zabrany'
-        # elif self._is_between_dates():
-        #     return 'Zarezerwowany'
-        # return self.status
-
     @property
     def reservations(self):
         return ReservationEvent.objects.filter(item=self)
+
+    def save(self, *args, **kwargs):
+        super(Item, self).save()
+        image = Image.open(self.image).convert('RGB')
+
+        if image.height > 300 or image.width > 300:
+            output_size = (300, 300)
+            image.thumbnail(output_size)
+            image.convert('RGB')
+
+        image.save(self.image.path)
+        image.close()
 
     def __str__(self):
         return f'{self.name} item from {self.category} category'
