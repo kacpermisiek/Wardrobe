@@ -2,11 +2,11 @@
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
 
-{# TODO: Better look for this template #}
+{# TODO: Better look for all templates ;) #}
 
 
 {% block content %}
-    {% if user.is_authenticated %}
+    {% if user.id == object.user.id %}
     <h1>Szczegóły rezerwacji przedmiotu {{ object.item.name }}</h1>
     <h3>Kategoria przedmiotu: {{ object.item.category }}</h3>
     <span class="badge badge-{{ object.badge_status }} rounded-pill d-inline">{{ object.final_status }}</span>
@@ -27,6 +27,6 @@
             </div>
         {% endif %}
         {% else %}
-            <h1> Zaloguj się, aby otrzymać dostęp do strony!</h1>
+            <h1> Nie masz dostępu do tej strony!</h1>
         {% endif %}
 {% endblock content %}

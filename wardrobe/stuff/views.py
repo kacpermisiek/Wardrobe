@@ -48,12 +48,12 @@ class ItemCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
         return self.request.user.is_superuser
 
     model = Item
-    fields = ['name', 'description', 'category', 'status']
+    fields = ['name', 'description', 'category', 'status', 'image']
 
 
 class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Item
-    fields = ['name', 'description', 'category', 'status']
+    fields = ['name', 'description', 'category', 'status', 'image']
 
     def test_func(self):
         return self.request.user.is_superuser
