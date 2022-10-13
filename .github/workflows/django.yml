@@ -23,6 +23,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install Dependencies
       run: |
+        gh repo clone django/django
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run Tests

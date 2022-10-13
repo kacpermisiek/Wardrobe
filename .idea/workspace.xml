@@ -1,18 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7147d9c9-c80b-415c-b726-c630ac950daa" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/wardrobe/media/item_pics/515b4656ce395f8a38000000.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wardrobe/media/profile_pics/Animhorse.gif" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wardrobe/media/profile_pics/admin-user-icon-4_cb4Z5sd_w5rXhRW.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wardrobe/media/profile_pics/default_item.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Wardrobe.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Wardrobe.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/media/default_item.png" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/media/default_item.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/templates/stuff/item_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/templates/stuff/item_form.html" afterDir="false" />
+    <list default="true" id="0542cc0b-a8cb-44cc-81e1-8776e9809ab7" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/django.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/django.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,16 +34,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "settings.editor.selected.configurable": "database.query.execution"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;database.query.execution&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Wardrobe" type="Python.DjangoServer" factoryName="Django server">
       <module name="Wardrobe" />
