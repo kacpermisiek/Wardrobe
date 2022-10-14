@@ -22,6 +22,10 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def num_of_objects(self):
+        return len(Item.objects.filter(category=self))
+
 
 class Item(models.Model):
     name = models.CharField(max_length=50)

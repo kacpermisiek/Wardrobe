@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0542cc0b-a8cb-44cc-81e1-8776e9809ab7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Wardrobe.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Wardrobe.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/django.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/django.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -17,8 +17,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -83,7 +83,7 @@
       <workItem from="1660982272216" duration="50000" />
       <workItem from="1665068619074" duration="6627000" />
       <workItem from="1665080999506" duration="4653000" />
-      <workItem from="1665766724603" duration="2066000" />
+      <workItem from="1665766724603" duration="8727000" />
     </task>
     <servers />
   </component>
