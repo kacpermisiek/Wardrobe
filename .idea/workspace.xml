@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0542cc0b-a8cb-44cc-81e1-8776e9809ab7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/django.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/django.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Wardrobe.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Wardrobe.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +75,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="7147d9c9-c80b-415c-b726-c630ac950daa" name="Changes" comment="" />
+      <changelist id="0542cc0b-a8cb-44cc-81e1-8776e9809ab7" name="Changes" comment="" />
       <created>1660982270216</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -81,6 +83,7 @@
       <workItem from="1660982272216" duration="50000" />
       <workItem from="1665068619074" duration="6627000" />
       <workItem from="1665080999506" duration="4653000" />
+      <workItem from="1665766724603" duration="2066000" />
     </task>
     <servers />
   </component>
