@@ -1,0 +1,48 @@
+{% extends "stuff/base.html" %}
+
+{% block content %}
+
+
+    {% if user.is_authenticated %}
+
+    <h3>Lista kategorii</h3>
+
+        {% if user.is_superuser %}
+            <a class="btn btn-info my-4" href="{% url 'category-create' %}">Stwórz kategorię</a>
+        {% endif %}
+
+
+<table class="table align-middle mb-0 bg-white table-hover">
+  <thead class="bg-light">
+    <tr>
+      <th>Nazwa</th>
+      <th>Liczba przedmiotów</th>
+      <th>Akcja</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for category in categories %}
+    <tr>
+      <td class="align-middle">
+            <p class="fw-normal mb-1">{{ category.name }}</p>
+      </td>
+      <td class="align-middle">
+          <p class="fw-normal mb-1">{{ category.num_of_objects }}</p>
+      </td>
+        <td class="align-middle">
+          <p class="fw-normal mb-1"><a href="{% url 'category-update' category.id %}">Edytuj</a></p>
+      </td>
+
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+        {% if user.is_superuser %}
+            <a class="btn btn-info mt-4" href="{% url 'category-create' %}">Stwórz kategorię</a>
+        {% endif %}
+
+    {% else %}
+        <h1> Zaloguj się, aby otrzymać dostęp do strony!</h1>
+    {% endif %}
+
+{% endblock content %}

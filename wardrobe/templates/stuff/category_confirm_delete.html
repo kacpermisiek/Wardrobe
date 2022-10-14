@@ -1,0 +1,22 @@
+{% extends "stuff/base.html" %}
+{% block content %}
+
+    {% if user.is_superuser %}
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Usuwanie kategorii</legend>
+                <h2>Jesteś pewien, że chcesz usunąć kategorię {{ object.name }}?</h2>
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-danger" type="submit">Tak, usuń kategorię</button>
+                <a class="btn btn-outline-secondary" href="{% url 'category-update' category.id %}">Anuluj</a>
+            </div>
+
+        </form>
+    </div>
+    {% else %}
+        <h1> Nie posiadasz uprawnień do usuwania kategorii!</h1>
+    {% endif %}
+{% endblock content %}
