@@ -1,0 +1,23 @@
+{% extends "stuff/base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+    <div class="content-section">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Szczegóły przedmiotu</legend>
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Zapisz</button>
+                <a class="btn btn-outline-info" href="{% url 'category-list' %}">Anuluj</a>
+            </div>
+
+        </form>
+        <div class="form-group">
+                <a class="btn btn-outline-danger" href="{% url 'category-delete' object.id %}">Usuń kategorię</a>
+        </div>
+    </div>
+{% endblock content %}

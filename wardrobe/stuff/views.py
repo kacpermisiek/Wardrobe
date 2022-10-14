@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Item, ReservationEvent, BADGE_STATUSES
+from .models import Item, Category, ReservationEvent, BADGE_STATUSES
 from .forms import ItemReservationForm
 
 
@@ -30,13 +30,50 @@ def home(request):
     return render(request, 'stuff/home.html', context)
 
 
+class CategoryListView(ListView):
+    model = Category
+    template_name = 'stuff/category_list.html'
+    context_object_name = 'categories'
+    ordering = ['name']
+
+
+class CategoryDetailView(DetailView):
+    model = Category
+
+
+class CategoryCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    model = Category
+    fields = ['name']
+    template_name = 'stuff/category_create.html'
+    success_url = '/category'
+
+
+class CategoryUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Category
+    fields = ['name']
+    success_url = '/category'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
+class CategoryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Category
+    success_url = '/category'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
 class ItemListView(ListView):
     model = Item
     template_name = 'stuff/home.html'
     context_object_name = 'stuff'
     ordering = ['status', 'name']
     paginate_by = 6
-    # TODO: Ordering by final_status, not status. But it is property, not field
 
 
 class ItemDetailView(DetailView):
@@ -57,8 +94,6 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         return self.request.user.is_superuser
-
-    # TODO handle_no_permission is not working correctly, when user have no permission it gets 403
 
 
 class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
