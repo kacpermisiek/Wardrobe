@@ -104,22 +104,6 @@ class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user.is_superuser
 
 
-class ItemCreateReservationView(LoginRequiredMixin, CreateView):
-    model = ReservationEvent
-    template_name = 'reservation/reservation_create.html'
-    success_url = '/'
-    form_class = ItemReservationForm
-
-    def get_form(self, **kwargs):
-        form = super(ItemCreateReservationView, self).get_form(self.form_class)
-        form.instance.item = Item.objects.get(pk=self.kwargs.get('pk', None))
-        return form
-    
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super(ItemCreateReservationView, self).form_valid(form)
-
-
 class ReservationListView(ListView):
     model = ReservationEvent
     template_name = 'reservation/reservations.html'
@@ -151,11 +135,27 @@ class ItemDetailReservationView(DetailView):
     template_name = 'reservation/reservation_detail.html'
 
 
+class ItemCreateReservationView(LoginRequiredMixin, CreateView):
+    model = ReservationEvent
+    template_name = 'reservation/reservation_create.html'
+    success_url = '/'
+    form_class = ItemReservationForm
+
+    def get_form(self, **kwargs):
+        form = super(ItemCreateReservationView, self).get_form(self.form_class)
+        form.instance.item = Item.objects.get(pk=self.kwargs.get('pk', None))
+        return form
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(ItemCreateReservationView, self).form_valid(form)
+
+
 class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = ReservationEvent
-    fields = ['start_date', 'end_date', 'taken']
     template_name = 'reservation/reservation_update.html'
     success_url = '/item/reservations/'
+    form_class = ItemReservationForm
 
     def test_func(self):
         return self.request.user.is_superuser
@@ -168,6 +168,24 @@ class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateV
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(ItemUpdateReservationView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['date_range'] = self._dates_to_date_range((
+            context['object'].start_date,
+            context['object'].end_date
+        ))
+        return context
+
+    def _dates_to_date_range(self, dates):
+        result = []
+        for date in dates:
+            result.append(self._date_into_string(date))
+        return f"{result[0]} - {result[1]}"
+
+    @staticmethod
+    def _date_into_string(date):
+        return date.strftime("%d-%m-%Y")
 
 
 class ItemDeleteReservationView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
