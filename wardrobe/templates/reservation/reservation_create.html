@@ -2,18 +2,63 @@
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
 {% block content %}
+    <style>
+        .glyphicon-chevron-right::after {
+            content: ">" !important;
+        }
+
+        .glyphicon-chevron-left::after {
+            content: "<" !important;
+        }
+    </style>
 
     <div class="content-section">
         <form method="POST">
             {% csrf_token %}
+            <legend> Rezerwujesz przedmiot {{ object.name }}</legend>
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Szczegóły rezerwacji</legend>
-                {{ form|crispy }}
+                <input type="text" label="Przedział czasowy rezerwacji" name="date_range"/>
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Zapisz</button>
             </div>
-
         </form>
     </div>
+
+            <!-- Include Required Prerequisites -->
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <!-- Include Date Range Picker -->
+    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+
+    <script>
+
+        let today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        const yyyy = today.getFullYear();
+
+        today = dd + '-' + mm + '-' + yyyy;
+
+
+    $('input[name="date_range"]').daterangepicker(
+    {
+        locale: {
+          format: 'DD-MM-YYYY'
+        },
+        startDate: today,
+        endDate: today,
+        minDate: today,
+
+    },
+    function(start, end, label) {
+        console.log("start date: " + start.format('DD-MM-YYYY'))
+        console.log("end date: " + end.format('DD-MM-YYYY'))
+        console.log("label: " + end.format('DD-MM-YYYY'))
+
+    });
+
+    </script>
+
 {% endblock content %}
