@@ -5,7 +5,7 @@ from datetime import datetime
 
 class ItemReservationForm(forms.ModelForm):
     date_range = forms.CharField()
-    taken = forms.BooleanField()
+    taken = forms.BooleanField(required=False)
 
     class Meta:
         model = ReservationEvent
@@ -14,7 +14,7 @@ class ItemReservationForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(ItemReservationForm, self).clean()
         if not cleaned_data.get('taken'):
-            cleaned_data['taken'] = 0
+            cleaned_data['taken'] = False
 
         cleaned_data['start_date'], cleaned_data['end_date'] = self._convert_date_range_into_dates(
             cleaned_data['date_range'])
