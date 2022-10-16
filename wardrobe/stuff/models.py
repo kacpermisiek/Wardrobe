@@ -72,7 +72,7 @@ class Item(models.Model):
 
     def _is_between_dates(self):
         for reservation in self.reservations:
-            if reservation.start_date <= date.today() <= reservation.end_date:
+            if reservation.is_current:
                 return True
         return False
 

@@ -14,6 +14,12 @@
 
     <h1>Date range: {{ date_range }}</h1>
 
+    {% if form.errors.date_range %}
+    <div class="alert alert-danger" role="alert">
+        {{ form.errors.date_range }}
+    </div>
+    {% endif %}
+
     <div class="content-section">
         <form method="POST">
             {% csrf_token %}

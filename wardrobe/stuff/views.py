@@ -178,6 +178,11 @@ class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateV
         print(context['object'].taken)
         return context
 
+    def get_form_kwargs(self):
+        kwargs = super(ItemUpdateReservationView, self).get_form_kwargs()
+        kwargs.update(self.kwargs)
+        return kwargs
+
     def _dates_to_date_range(self, dates):
         result = []
         for date in dates:
