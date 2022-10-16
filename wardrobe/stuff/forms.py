@@ -53,7 +53,3 @@ class ItemReservationForm(forms.ModelForm):
                 self.add_error('date_range', f'Nie można dokonać rezerwacji w tym terminie. '
                                              f'Ktoś zarezerwował ten przedmiot w terminie '
                                              f'{reservation.start_date} - {reservation.end_date}')
-
-
-
-
