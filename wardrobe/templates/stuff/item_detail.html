@@ -39,7 +39,9 @@
   </thead>
   <tbody>
   {% for reservation in object.reservations %}
-    <tr>
+    <tr class="table-{% if reservation.is_current %}primary
+            {% elif not reservation.is_current and reservation.taken %}danger
+            {% else %} default{% endif %}">
       <td class="align-middle">
             <p class="fw-normal mb-1">{{reservation.id}}</p>
       </td>
