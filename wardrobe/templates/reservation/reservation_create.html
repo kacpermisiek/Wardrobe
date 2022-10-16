@@ -15,9 +15,15 @@
     <div class="content-section">
         <form method="POST">
             {% csrf_token %}
-            <legend> Rezerwujesz przedmiot {{ object.name }}</legend>
+            <legend> Rezerwujesz przedmiot {{ object.item.name }}</legend>
             <fieldset class="form-group">
-                <input type="text" label="Przedział czasowy rezerwacji" name="date_range"/>
+                <input class="form-control" type="text" label="Przedział czasowy rezerwacji" name="date_range"/>
+                <label>Przedział czasowy rezerwacji</label>
+            </br></br>
+
+                 <input type="checkbox" checked data-toggle="toggle" data-onstyle="primary" data-on="Tak" data-off="Nie"
+                        name="taken" value="True">
+                <label>Czy przedmiot został zabrany?</label>
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Zapisz</button>

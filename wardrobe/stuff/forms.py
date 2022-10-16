@@ -5,23 +5,22 @@ from datetime import datetime
 
 class ItemReservationForm(forms.ModelForm):
     date_range = forms.CharField()
-    # start_date = forms.DateField(widget=forms.SelectDateWidget())
-    # end_date = forms.DateField(widget=forms.SelectDateWidget())
-    taken = False
+    taken = forms.BooleanField()
+
+    class Meta:
+        model = ReservationEvent
+        fields = ['start_date', 'end_date', 'taken']
 
     def clean(self):
         cleaned_data = super(ItemReservationForm, self).clean()
+        if not cleaned_data['taken']:
+            cleaned_data['taken'] = False
 
         cleaned_data['start_date'], cleaned_data['end_date'] = self._convert_date_range_into_dates(
             cleaned_data['date_range'])
         del cleaned_data['date_range']
+
         return cleaned_data
-
-    # TODO: Need validation for existing reservations
-
-    class Meta:
-        model = ReservationEvent
-        fields = ['start_date', 'end_date']
 
     def _convert_date_range_into_dates(self, date_range):
         result = []

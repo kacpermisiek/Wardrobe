@@ -175,6 +175,7 @@ class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateV
             context['object'].start_date,
             context['object'].end_date
         ))
+        print('DEBUG\n\n\n', context['object'].taken)
         return context
 
     def _dates_to_date_range(self, dates):

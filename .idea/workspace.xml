@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0542cc0b-a8cb-44cc-81e1-8776e9809ab7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/wardrobe/stuff/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/wardrobe/templates/reservation/reservation_create.html" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/templates/reservation/reservation_create.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/wardrobe/templates/reservation/reservation_update.html" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/templates/reservation/reservation_update.html" afterDir="false" />
