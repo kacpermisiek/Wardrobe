@@ -13,8 +13,8 @@ class ItemReservationForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(ItemReservationForm, self).clean()
-        if not cleaned_data['taken']:
-            cleaned_data['taken'] = False
+        if not cleaned_data.get('taken'):
+            cleaned_data['taken'] = 0
 
         cleaned_data['start_date'], cleaned_data['end_date'] = self._convert_date_range_into_dates(
             cleaned_data['date_range'])
