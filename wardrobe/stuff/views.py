@@ -111,14 +111,12 @@ class ItemCreateReservationView(LoginRequiredMixin, CreateView):
     form_class = ItemReservationForm
 
     def get_form(self, **kwargs):
-        print("HEJOOO get_form")
         form = super(ItemCreateReservationView, self).get_form(self.form_class)
         form.instance.item = Item.objects.get(pk=self.kwargs.get('pk', None))
         return form
     
     def form_valid(self, form):
         form.instance.user = self.request.user
-        print("HEJOOO")
         return super(ItemCreateReservationView, self).form_valid(form)
 
 

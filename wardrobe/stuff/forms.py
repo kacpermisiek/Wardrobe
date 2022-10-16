@@ -15,7 +15,6 @@ class ItemReservationForm(forms.ModelForm):
         cleaned_data['start_date'], cleaned_data['end_date'] = self._convert_date_range_into_dates(
             cleaned_data['date_range'])
         del cleaned_data['date_range']
-        print(cleaned_data)
         return cleaned_data
 
     # TODO: Need validation for existing reservations
