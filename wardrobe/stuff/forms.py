@@ -8,10 +8,10 @@ class ItemReservationForm(forms.ModelForm):
     date_range = forms.CharField()
     taken = forms.BooleanField(required=False)
 
-    def __init__(self, id=None, pk=None, *args, **kwargs):
+    def __init__(self, pk, id=None, *args, **kwargs):
         super(ItemReservationForm, self).__init__(*args, **kwargs)
-        self.item_id = id
-        self.pk = pk
+        self.item_id = pk
+        self.reservation_id = id
 
     class Meta:
         model = ReservationEvent
@@ -43,13 +43,24 @@ class ItemReservationForm(forms.ModelForm):
         Range = namedtuple('Range', ['start', 'end'])
         r1 = Range(start=cleaned_data['start_date'], end=cleaned_data['end_date'])
 
-        reservations = ReservationEvent.objects.filter(item=Item.objects.get(pk=self.item_id)).exclude(pk=self.pk)
+        reservations = self._get_reservations()
         for reservation in reservations:
             r2 = Range(start=reservation.start_date, end=reservation.end_date)
-            latest_start = max(r1.start, r2.start)
-            earliest_end = min(r1.end, r2.end)
+            earliest_end, latest_start = self._get_timestamp(r1, r2)
             delta = (earliest_end - latest_start).days + 1
             if delta > 0:
                 self.add_error('date_range', f'Nie można dokonać rezerwacji w tym terminie. '
                                              f'Ktoś zarezerwował ten przedmiot w terminie '
                                              f'{reservation.start_date} - {reservation.end_date}')
+
+    def _get_reservations(self):
+        print("EEEEEEEEEEEEE KURWA")
+        print(self.item_id)
+        print(Item.objects.get(id=self.item_id))
+        result = ReservationEvent.objects.filter(item=Item.objects.get(id=self.item_id))
+        return result.exclude(pk=self.reservation_id) if self.reservation_id else result
+
+    @staticmethod
+    def _get_timestamp(r1, r2):
+        return min(r1.end, r2.end), max(r1.start, r2.start)
+

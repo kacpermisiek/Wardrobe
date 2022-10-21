@@ -133,6 +133,7 @@ class ItemDetailReservationView(DetailView):
     model = ReservationEvent
 
     template_name = 'reservation/reservation_detail.html'
+    pk_url_kwarg = 'id'
 
 
 class ItemCreateReservationView(LoginRequiredMixin, CreateView):
@@ -143,8 +144,13 @@ class ItemCreateReservationView(LoginRequiredMixin, CreateView):
 
     def get_form(self, **kwargs):
         form = super(ItemCreateReservationView, self).get_form(self.form_class)
-        form.instance.item = Item.objects.get(pk=self.kwargs.get('pk', None))
+        form.instance.item = get_object_or_404(Item, id=self.kwargs.get('pk'))
         return form
+
+    def get_form_kwargs(self):
+        kwargs = super(ItemCreateReservationView, self).get_form_kwargs()
+        kwargs.update(self.kwargs)
+        return kwargs
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -156,13 +162,14 @@ class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateV
     template_name = 'reservation/reservation_update.html'
     success_url = '/item/reservations/'
     form_class = ItemReservationForm
+    pk_url_kwarg = 'id'
 
     def test_func(self):
         return self.request.user.is_superuser
 
     def get_form(self, **kwargs):
         form = super(ItemUpdateReservationView, self).get_form(self.form_class)
-        form.instance.item = Item.objects.get(pk=self.kwargs.get('id', None))
+        form.instance.item = Item.objects.get(pk=self.kwargs.get('pk', None))
         return form
 
     def form_valid(self, form):
@@ -175,7 +182,6 @@ class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateV
             context['object'].start_date,
             context['object'].end_date
         ))
-        print(context['object'].taken)
         return context
 
     def get_form_kwargs(self):
@@ -198,6 +204,7 @@ class ItemDeleteReservationView(LoginRequiredMixin, UserPassesTestMixin, DeleteV
     model = ReservationEvent
     success_url = '/item/reservations/'
     template_name = 'reservation/reservation_delete.html'
+    pk_url_kwarg = 'id'
 
     def test_func(self):
         return self.request.user.is_superuser
