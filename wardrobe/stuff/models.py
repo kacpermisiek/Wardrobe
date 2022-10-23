@@ -72,7 +72,7 @@ class Item(models.Model):
 
     def _is_between_dates(self):
         for reservation in self.reservations:
-            if reservation.start_date <= date.today() <= reservation.end_date:
+            if reservation.is_current:
                 return True
         return False
 
@@ -90,6 +90,10 @@ class ReservationEvent(models.Model):
 
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    @property
+    def is_current(self):
+        return self.start_date <= date.today() <= self.end_date
 
     def __str__(self):
         return f'Rent event\t item:{self.item}\tuser: {self.user}\n' \

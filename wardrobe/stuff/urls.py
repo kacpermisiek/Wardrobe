@@ -32,9 +32,9 @@ urlpatterns = [
     path('category/<int:pk>/update', CategoryUpdateView.as_view(), name='category-update'),
     path('category/<int:pk>/delete', CategoryDeleteView.as_view(), name='category-delete'),
     path('item/<int:pk>/reservation_create', ItemCreateReservationView.as_view(), name='item-reservation-create'),
-    path('item/<int:id>/reservation_detail/<int:pk>', ItemDetailReservationView.as_view(), name='item-reservation-detail'),
-    path('item/<int:id>/reservation_update/<int:pk>', ItemUpdateReservationView.as_view(), name='item-reservation-update'),
-    path('item/<int:id>/reservation_delete/<int:pk>', ItemDeleteReservationView.as_view(), name='item-reservation-delete'),
+    path('item/<int:pk>/reservation_detail/<int:id>', ItemDetailReservationView.as_view(), name='item-reservation-detail'),
+    path('item/<int:pk>/reservation_update/<int:id>', ItemUpdateReservationView.as_view(), name='item-reservation-update'),
+    path('item/<int:pk>/reservation_delete/<int:id>', ItemDeleteReservationView.as_view(), name='item-reservation-delete'),
     path('item/reservations/', ReservationListView.as_view(), name='item-reservation-list'),
     path('about/', views.about, name='stuff-about'),
 
