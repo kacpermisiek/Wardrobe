@@ -8,8 +8,7 @@ from PIL import Image
 
 BADGE_STATUSES = {'Dostępny': 'success',
                   'Uszkodzony': 'danger',
-                  'Zarezerwowany': 'info',
-                  'Niedostępny': 'dark'}
+                  'Zarezerwowany': 'info'}
 
 
 def _get_statuses():
@@ -73,8 +72,7 @@ class Item(models.Model):
         return {'Dostępny': 'success',
                 'Uszkodzony': 'danger',
                 'Zarezerwowany': 'info',
-                'Zabrany': 'dark',
-                'Niedostępny': 'dark'}[self.final_status]
+                'Zabrany': 'dark'}[self.final_status]
 
     @property
     def final_status(self):
@@ -95,6 +93,9 @@ class Item(models.Model):
             if reservation.taken:
                 return True
         return False
+
+    def __str__(self):
+        return f'Item {self.type.name} with status {self.status}'
 
 
 class ReservationEvent(models.Model):

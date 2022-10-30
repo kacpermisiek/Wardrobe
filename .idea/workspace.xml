@@ -3,18 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0542cc0b-a8cb-44cc-81e1-8776e9809ab7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/migrations/0001_initial.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/migrations/0002_alter_item_date_borrowed_alter_item_date_reserved_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/migrations/0003_remove_item_date_borrowed_remove_item_date_reserved_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/migrations/0004_remove_item_borrower.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/migrations/0005_rename_rentevent_reservationevent.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/migrations/0006_alter_reservationevent_end_date_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/migrations/0007_alter_reservationevent_end_date_and_more.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/migrations/0008_item_image_alter_item_status.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/migrations/0009_alter_item_image.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/wardrobe/stuff/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/tests.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,7 +117,7 @@
       <workItem from="1665080999506" duration="4653000" />
       <workItem from="1665766724603" duration="8727000" />
       <workItem from="1665942141233" duration="9950000" />
-      <workItem from="1667123083225" duration="6699000" />
+      <workItem from="1667123083225" duration="6906000" />
     </task>
     <servers />
   </component>
