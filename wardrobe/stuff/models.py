@@ -27,33 +27,25 @@ class Category(models.Model):
         return len(Item.objects.filter(category=self))
 
 
-class Item(models.Model):
+class ItemType(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=200, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     image = models.ImageField(default='default_item.png', upload_to='item_pics')
 
-    status = models.CharField(max_length=20, choices=_get_statuses(), default='Dostępny')
-    date_added = models.DateField(default=now)
+    @property
+    def quantity(self):
+        return len(Item.objects.filter(type=self))
 
     @property
-    def badge_status(self):
-        return {'Dostępny': 'success',
-                'Uszkodzony': 'danger',
-                'Zarezerwowany': 'info',
-                'Zabrany': 'dark',
-                'Niedostępny': 'dark'}[self.final_status]
+    def quantity_available(self):
+        return len(Item.objects.filter(type=self, final_status='Dostępny'))
 
-    @property  # TODO: bad variable name, should be better
-    def final_status(self):
-        return 'Zabrany' if self._is_taken() else 'Zarezerwowany' if self._is_between_dates() else self.status
-
-    @property
-    def reservations(self):
-        return ReservationEvent.objects.filter(item=self)
+    def enough_is_available(self, needed=1):
+        return self.quantity_available >= needed
 
     def save(self, *args, **kwargs):
-        super(Item, self).save()
+        super(ItemType, self).save()
         image = Image.open(self.image).convert('RGB')
 
         if image.height > 300 or image.width > 300:
@@ -65,10 +57,32 @@ class Item(models.Model):
         image.close()
 
     def __str__(self):
-        return f'{self.name} item from {self.category} category'
+        return f'item type: {self.name}'
 
     def get_absolute_url(self):
         return reverse('item-detail', kwargs={'pk': self.pk})
+
+
+class Item(models.Model):
+    type = models.ForeignKey(ItemType, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=_get_statuses(), default='Dostępny')
+    date_added = models.DateField(default=now)
+
+    @property
+    def badge_status(self):
+        return {'Dostępny': 'success',
+                'Uszkodzony': 'danger',
+                'Zarezerwowany': 'info',
+                'Zabrany': 'dark',
+                'Niedostępny': 'dark'}[self.final_status]
+
+    @property
+    def final_status(self):
+        return 'Zabrany' if self._is_taken() else 'Zarezerwowany' if self._is_between_dates() else self.status
+
+    @property
+    def reservations(self):
+        return ReservationEvent.objects.filter(item=self)
 
     def _is_between_dates(self):
         for reservation in self.reservations:

@@ -54,9 +54,6 @@ class ItemReservationForm(forms.ModelForm):
                                              f'{reservation.start_date} - {reservation.end_date}')
 
     def _get_reservations(self):
-        print("EEEEEEEEEEEEE KURWA")
-        print(self.item_id)
-        print(Item.objects.get(id=self.item_id))
         result = ReservationEvent.objects.filter(item=Item.objects.get(id=self.item_id))
         return result.exclude(pk=self.reservation_id) if self.reservation_id else result
 
