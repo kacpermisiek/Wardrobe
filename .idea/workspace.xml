@@ -2,19 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0542cc0b-a8cb-44cc-81e1-8776e9809ab7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/wardrobe/media/item_pics/515b4656ce395f8a38000000_BnCsoc8.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wardrobe/stuff/migrations/0002_alter_set_options.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wardrobe/templates/stuff/item_template/create.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/wardrobe/templates/stuff/item_template/list.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/wardrobe/templates/stuff/item/create.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/wardrobe/templates/stuff/item_template/detail.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/migrations/0001_initial.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/migrations/0001_initial.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/wardrobe/stuff/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/stuff/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/tests.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/wardrobe/stuff/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/wardrobe/stuff/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/stuff/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/wardrobe/templates/stuff/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/templates/stuff/base.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wardrobe/templates/stuff/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/templates/stuff/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wardrobe/templates/stuff/item_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/templates/stuff/item/detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wardrobe/templates/stuff/item_template/list.html" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/templates/stuff/item_template/list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wardrobe/users/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/wardrobe/users/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,8 +25,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
-        <option value="HTML File" />
         <option value="JavaScript File" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -62,6 +59,11 @@
     ]
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\KacperM\Desktop\Wardrobe\wardrobe\templates\stuff\item" />
+    </key>
+  </component>
   <component name="RunManager" selected="Python.scratch">
     <configuration name="scratch" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Wardrobe" />

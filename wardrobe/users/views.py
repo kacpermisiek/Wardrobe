@@ -5,7 +5,6 @@ from django.contrib.auth.views import PasswordResetView
 from utils.forms_functions import proceed_redirection, request_method_is_post, all_forms_are_valid
 
 
-
 def _get_user_and_profile_update_forms(request):
     return (UserUpdateForm(request.POST, instance=request.user),
             ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile))

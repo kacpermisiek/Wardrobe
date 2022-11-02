@@ -1,3 +1,4 @@
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
@@ -70,6 +71,11 @@ class ItemTemplateListView(ListView):
     template_name = 'stuff/item_template/list.html'
 
 
+class ItemTemplateDetailView(LoginRequiredMixin, DetailView):
+    model = ItemTemplate
+    template_name = 'stuff/item_template/detail.html'
+
+
 class ItemListView(ListView):
     model = Item
     context_object_name = 'stuff'
@@ -79,6 +85,7 @@ class ItemListView(ListView):
 
 class ItemDetailView(DetailView):
     model = Item
+    template_name = 'stuff/item/detail.html'
 
 
 class ItemCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -87,6 +94,16 @@ class ItemCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     model = Item
     fields = ['name', 'description', 'category', 'status', 'image']
+
+
+def item_create(request, template_id):
+    if request.user.is_superuser:
+        template = ItemTemplate.objects.get(id=template_id)
+        item = Item(type=template, status='Dostępny')
+        item.save()
+        context = {'object': template}
+        return render(request, f'stuff/item_template/detail.html', context)
+    return Http404()
 
 
 class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

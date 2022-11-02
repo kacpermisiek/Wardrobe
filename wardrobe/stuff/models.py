@@ -41,6 +41,10 @@ class ItemTemplate(models.Model):
     def quantity_available(self):
         return len(Item.objects.filter(type=self, final_status='Dostępny'))
 
+    @property
+    def item_instances(self):
+        return Item.objects.filter(type=self)
+
     def enough_is_available(self, needed=1):
         return self.quantity_available >= needed
 
@@ -80,25 +84,25 @@ class Item(models.Model):
                 'Zarezerwowany': 'info',
                 'Zabrany': 'dark'}[self.final_status]
 
-    @property
-    def final_status(self):
-        return 'Zabrany' if self._is_taken() else 'Zarezerwowany' if self._is_between_dates() else self.status
-
-    @property
-    def reservations(self):
-        return ReservationEvent.objects.filter(item=self)
-
-    def _is_between_dates(self):
-        for reservation in self.reservations:
-            if reservation.is_current:
-                return True
-        return False
-
-    def _is_taken(self):
-        for reservation in self.reservations:
-            if reservation.taken:
-                return True
-        return False
+    # @property
+    # def final_status(self):
+    #     return 'Zabrany' if self._is_taken() else 'Zarezerwowany' if self._is_between_dates() else self.status
+    #
+    # @property
+    # def reservations(self):
+    #     return ReservationEvent.objects.filter(set__items__in=self)
+    #
+    # def _is_between_dates(self):
+    #     for reservation in self.reservations:
+    #         if reservation.is_current:
+    #             return True
+    #     return False
+    #
+    # def _is_taken(self):
+    #     for reservation in self.reservations:
+    #         if reservation.taken:
+    #             return True
+    #     return False
 
     def __str__(self):
         return f'Item {self.type.name} with status {self.status}'

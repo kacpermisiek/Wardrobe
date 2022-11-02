@@ -18,16 +18,18 @@ from .views import (
     CategoryDeleteView,
     ItemTemplateCreateView,
     ItemTemplateListView,
+    ItemTemplateDetailView
 )
 from . import views
 
 urlpatterns = [
     path('', SetListView.as_view(), name='stuff-home'),
     # path('user/<str:username>', UserReservationsListView.as_view(), name='user-reservations'),
-    path('item_template/new', ItemTemplateCreateView.as_view(), name='item-template-create'),
     path('item_template', ItemTemplateListView.as_view(), name='item-template-list'),
-    # path('item/<int:pk>/', ItemDetailView.as_view(), name='item-detail'),
-    # path('item/new/', ItemCreateView.as_view(), name='item-create'),
+    path('item_template/new', ItemTemplateCreateView.as_view(), name='item-template-create'),
+    path('item_template/<int:pk>', ItemTemplateDetailView.as_view(), name='item-template-detail'),
+    path('item/new/<int:template_id>', views.item_create, name='item-create'),
+    path('item/<int:pk>/', ItemDetailView.as_view(), name='item-detail'),
     # path('item/<int:pk>/update', ItemUpdateView.as_view(), name='item-update'),
     # path('item/<int:pk>/delete', ItemDeleteView.as_view(), name='item-delete'),
     # path('category', CategoryListView.as_view(), name='category-list'),
