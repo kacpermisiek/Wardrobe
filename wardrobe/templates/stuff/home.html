@@ -3,38 +3,28 @@
 {% block content %}
     {% if user.is_authenticated %}
 
-    <h3>Lista przedmiotów</h3>
+    <h3>Lista zestawów</h3>
 
 
 <table class="table align-middle mb-0 bg-white table-hover">
   <thead class="bg-light">
     <tr>
       <th>Nazwa</th>
-      <th>Kategoria</th>
       <th>Status</th>
     </tr>
   </thead>
   <tbody>
-  {% for item in stuff|dictsort:'final_status' %}
+  {% for set in sets %}
     <tr>
       <td>
         <div class="d-flex align-items-center">
-          <img
-              src="{{ item.image.url }}"
-              alt=""
-              style="width: 50px; height: 50px"
-              class="img-fluid rounded-circle"
-              />
           <div class="ms-3">
-            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="{% url 'item-detail' item.id %}">{{ item.name }}</a></p>
+            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="#">{{ set.set_template_name }}</a></p>
           </div>
         </div>
       </td>
       <td class="align-middle">
-            <p class="fw-normal mb-1">{{ item.category }}</p>
-      </td>
-      <td class="align-middle">
-        <span class="badge badge-{{ item.badge_status }} rounded-pill d-inline">{{ item.final_status }}</span>
+        <span class="badge badge-danger rounded-pill d-inline">{{ set.set_status }}</span>
       </td>
     </tr>
   {% endfor %}

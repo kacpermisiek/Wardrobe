@@ -1,9 +1,10 @@
+from PIL import Image
+from datetime import date
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 from django.urls import reverse
-from datetime import date
-from PIL import Image
+from django.core.validators import MinValueValidator
 
 
 BADGE_STATUSES = {'Dostępny': 'success',
@@ -23,10 +24,10 @@ class Category(models.Model):
 
     @property
     def num_of_objects(self):
-        return len(Item.objects.filter(category=self))
+        return len(Item.objects.filter(type__category=self))
 
 
-class ItemType(models.Model):
+class ItemTemplate(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=200, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
@@ -44,7 +45,7 @@ class ItemType(models.Model):
         return self.quantity_available >= needed
 
     def save(self, *args, **kwargs):
-        super(ItemType, self).save()
+        super(ItemTemplate, self).save()
         image = Image.open(self.image).convert('RGB')
 
         if image.height > 300 or image.width > 300:
@@ -55,15 +56,20 @@ class ItemType(models.Model):
         image.save(self.image.path)
         image.close()
 
+
+class ItemRequired(ItemTemplate):
+    quantity_required = models.IntegerField(validators=[MinValueValidator(1)])
+    item_type = models.ForeignKey(ItemTemplate, on_delete=models.CASCADE, related_name='+')
+
     def __str__(self):
         return f'item type: {self.name}'
 
-    def get_absolute_url(self):
-        return reverse('item-detail', kwargs={'pk': self.pk})
+    # def get_absolute_url(self):
+    #     return reverse('item-detail', kwargs={'pk': self.pk})
 
 
 class Item(models.Model):
-    type = models.ForeignKey(ItemType, on_delete=models.CASCADE)
+    type = models.ForeignKey(ItemTemplate, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=_get_statuses(), default='Dostępny')
     date_added = models.DateField(default=now)
 
@@ -98,12 +104,32 @@ class Item(models.Model):
         return f'Item {self.type.name} with status {self.status}'
 
 
+class SetTemplate(models.Model):
+    name = models.CharField(max_length=50)
+    items_required = models.ManyToManyField(ItemRequired)
+
+    def __str__(self):
+        return f"SetTemplate object name: {self.name}"
+
+
+class Set(models.Model):
+    items = models.ManyToManyField(Item)
+    set_template = models.ForeignKey(SetTemplate, on_delete=models.CASCADE)
+    set_status = models.CharField(max_length=20, default='Dostępny')
+
+    class Meta:
+        ordering = ['set_status']
+
+    def __str__(self):
+        return f'Set object'
+
+
 class ReservationEvent(models.Model):
     start_date = models.DateField(null=True, blank=True, default=now)
     end_date = models.DateField(null=True, blank=True, default=now)
     taken = models.BooleanField(default=False)
 
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    set = models.ForeignKey(Set, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     @property

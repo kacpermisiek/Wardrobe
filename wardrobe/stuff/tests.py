@@ -1,6 +1,6 @@
 from django.utils.timezone import now
 from django.test import TestCase
-from .models import Category, ItemType, Item, ReservationEvent
+from .models import Category, ItemTemplate, Item, ReservationEvent
 
 CATEGORY_NAME = 'testing category'
 ITEM_TYPE_NAME = 'item type name'
@@ -21,14 +21,14 @@ class CategoryTestCase(TestCase):
 class ItemTypeTestCase(TestCase):
     def setUp(self):
         Category.objects.create(name=CATEGORY_NAME)
-        ItemType.objects.create(
+        ItemTemplate.objects.create(
             name=ITEM_TYPE_NAME,
             description=ITEM_TYPE_DESCRIPTION,
             category=Category.objects.get(name=CATEGORY_NAME)
         )
 
     def test_item_type_is_valid(self):
-        item_type = ItemType.objects.get(name=ITEM_TYPE_NAME)
+        item_type = ItemTemplate.objects.get(name=ITEM_TYPE_NAME)
         self.assertEqual(item_type.name, ITEM_TYPE_NAME)
         self.assertEqual(item_type.description, ITEM_TYPE_DESCRIPTION)
         self.assertEqual(item_type.category.name, CATEGORY_NAME)
@@ -38,13 +38,13 @@ class ItemTypeTestCase(TestCase):
 class ItemTestCase(TestCase):
     def setUp(self):
         Category.objects.create(name=CATEGORY_NAME)
-        ItemType.objects.create(
+        ItemTemplate.objects.create(
             name=ITEM_TYPE_NAME,
             description=ITEM_TYPE_DESCRIPTION,
             category=Category.objects.get(name=CATEGORY_NAME)
         )
         Item.objects.create(
-            type=ItemType.objects.get(name=ITEM_TYPE_NAME)
+            type=ItemTemplate.objects.get(name=ITEM_TYPE_NAME)
         )
 
     def test_item_is_valid(self):

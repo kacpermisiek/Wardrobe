@@ -2,29 +2,13 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Item, Category, ReservationEvent, BADGE_STATUSES
+from .models import Item, Category, ReservationEvent, BADGE_STATUSES, SetTemplate, Set, ItemTemplate
 from .forms import ItemReservationForm
 
 
 def home(request):
-
-    def _get_badge_status(status):
-        return BADGE_STATUSES[status]
-
-    def _set_badge_statuses(items):
-        for item in items:
-            try:
-                item.badge_status = _get_badge_status(item.status)
-            except KeyError:
-                item.badge_status = 'dark'
-
-        return items
-
-    def _get_items():
-        return _set_badge_statuses(Item.objects.all())
-
     context = {
-        'stuff': _get_items(),
+        'sets': Set.objects.all(),
         'title': 'strona główna'
     }
     return render(request, 'stuff/home.html', context)
@@ -68,9 +52,26 @@ class CategoryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user.is_superuser
 
 
+class ItemTemplateCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    model = ItemTemplate
+    fields = ['name', 'description', 'category', 'image']
+    template_name = 'stuff/item_template/create.html'
+    success_url = '/'  # TODO: Change url to /item_template
+
+
+class ItemTemplateListView(ListView):
+    model = ItemTemplate
+    context_object_name = 'item_templates'
+    paginate_by = 6
+    ordering = ['name']
+    template_name = 'stuff/item_template/list.html'
+
+
 class ItemListView(ListView):
     model = Item
-    template_name = 'stuff/home.html'
     context_object_name = 'stuff'
     ordering = ['status', 'name']
     paginate_by = 6
@@ -127,6 +128,14 @@ def about(request):
         'title': 'About page'
     }
     return render(request, 'stuff/about.html', context)
+
+
+class SetListView(ListView):
+    model = Set
+    context_object_name = 'stuff'
+    ordering = ['set_status']
+    template_name = 'stuff/home.html'
+    paginate_by = 6
 
 
 class ItemDetailReservationView(DetailView):

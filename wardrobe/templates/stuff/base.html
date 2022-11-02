@@ -68,12 +68,13 @@
         <h3>Opcje</h3>
           <ul class="list-group">
             {% if user.is_superuser %}
-                <li class="list-group-item list-group-item-light"><a href="{% url 'item-create' %}">Dodaj przedmiot</a></li>
-                <li class="list-group-item list-group-item-light"><a href="{% url 'category-list' %}">Kategorie przedmiotów</a></li>
-                <li class="list-group-item list-group-item-light"><a href="{% url 'item-reservation-list' %}">Rezerwacje użytkowników</a></li>
+                <li class="list-group-item list-group-item-light"><a href="{% url 'item-template-create' %}">Dodaj nowy przedmiot</a></li>
+                <li class="list-group-item list-group-item-light"><a href="{% url 'item-template-list' %}">Lista przedmiotów</a></li>
+                <li class="list-group-item list-group-item-light"><a href="#">Kategorie przedmiotów</a></li>
+                <li class="list-group-item list-group-item-light"><a href="#">Rezerwacje użytkowników</a></li>
             {% endif %}
             {% if user.is_authenticated %}
-              <li class="list-group-item list-group-item-light"><a href="{% url 'user-reservations' user.username %}">Moje rezerwacje</a></li>
+              <li class="list-group-item list-group-item-light"><a href="#">Moje rezerwacje</a></li>
             {% endif %}
             <li class="list-group-item list-group-item-light">Basic</li>
             <li class="list-group-item list-group-item-light">Buttons</li>
