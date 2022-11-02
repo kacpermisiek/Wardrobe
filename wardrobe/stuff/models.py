@@ -68,9 +68,6 @@ class ItemRequired(ItemTemplate):
     def __str__(self):
         return f'item type: {self.name}'
 
-    # def get_absolute_url(self):
-    #     return reverse('item-detail', kwargs={'pk': self.pk})
-
 
 class Item(models.Model):
     type = models.ForeignKey(ItemTemplate, on_delete=models.CASCADE)
@@ -84,25 +81,30 @@ class Item(models.Model):
                 'Zarezerwowany': 'info',
                 'Zabrany': 'dark'}[self.final_status]
 
-    # @property
-    # def final_status(self):
-    #     return 'Zabrany' if self._is_taken() else 'Zarezerwowany' if self._is_between_dates() else self.status
-    #
-    # @property
-    # def reservations(self):
-    #     return ReservationEvent.objects.filter(set__items__in=self)
-    #
-    # def _is_between_dates(self):
-    #     for reservation in self.reservations:
-    #         if reservation.is_current:
-    #             return True
-    #     return False
-    #
-    # def _is_taken(self):
-    #     for reservation in self.reservations:
-    #         if reservation.taken:
-    #             return True
-    #     return False
+    @property
+    def final_status(self):
+        return 'Zabrany' if self._is_taken() else 'Zarezerwowany' if self._is_between_dates() else self.status
+
+    @property
+    def reservations(self):
+        result = []
+        reservations = ReservationEvent.objects.all()
+        for reservation in reservations:
+            if self in reservation.items:
+                result.append(reservation)
+        return result
+
+    def _is_between_dates(self):
+        for reservation in self.reservations:
+            if reservation.is_current:
+                return True
+        return False
+
+    def _is_taken(self):
+        for reservation in self.reservations:
+            if reservation.taken:
+                return True
+        return False
 
     def __str__(self):
         return f'Item {self.type.name} with status {self.status}'

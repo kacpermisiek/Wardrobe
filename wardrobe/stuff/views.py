@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse
 from .models import Item, Category, ReservationEvent, BADGE_STATUSES, SetTemplate, Set, ItemTemplate
 from .forms import ItemReservationForm
 
@@ -101,8 +102,7 @@ def item_create(request, template_id):
         template = ItemTemplate.objects.get(id=template_id)
         item = Item(type=template, status='Dostępny')
         item.save()
-        context = {'object': template}
-        return render(request, f'stuff/item_template/detail.html', context)
+        return render(request, 'stuff/item_template/list.html')  # todo: redirect not working
     return Http404()
 
 
@@ -116,10 +116,13 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Item
-    success_url = '/'
+    template_name = 'stuff/item/confirm_delete.html'
 
     def test_func(self):
         return self.request.user.is_superuser
+
+    def get_success_url(self):
+        return reverse('item-template-detail', kwargs={'pk': self.object.type.id})
 
 
 class ReservationListView(ListView):
