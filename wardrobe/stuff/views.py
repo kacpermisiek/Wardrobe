@@ -2,6 +2,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse
 from .models import Item, Category, ReservationEvent, BADGE_STATUSES, SetTemplate, Set, ItemTemplate
@@ -61,7 +62,9 @@ class ItemTemplateCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView
     model = ItemTemplate
     fields = ['name', 'description', 'category', 'image']
     template_name = 'stuff/item_template/create.html'
-    success_url = '/'  # TODO: Change url to /item_template
+
+    def get_success_url(self):
+        return reverse('item-template-list')
 
 
 class ItemTemplateListView(ListView):
@@ -75,6 +78,18 @@ class ItemTemplateListView(ListView):
 class ItemTemplateDetailView(LoginRequiredMixin, DetailView):
     model = ItemTemplate
     template_name = 'stuff/item_template/detail.html'
+
+
+class ItemTemplateUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = ItemTemplate
+    fields = ['name', 'description', 'category', 'image']
+    template_name = 'stuff/item_template/form.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_success_url(self):
+        return reverse('item-template-detail', kwargs={'pk': self.object.id})
 
 
 class ItemListView(ListView):
@@ -102,7 +117,11 @@ def item_create(request, template_id):
         template = ItemTemplate.objects.get(id=template_id)
         item = Item(type=template, status='Dostępny')
         item.save()
-        return render(request, 'stuff/item_template/list.html')  # todo: redirect not working
+        messages.success(request, "Przedmiot został utworzony!")
+        context = {
+            'object': template
+        }
+        return render(request, 'stuff/item_template/detail.html', context)
     return Http404()
 
 

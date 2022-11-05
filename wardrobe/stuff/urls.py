@@ -18,7 +18,8 @@ from .views import (
     CategoryDeleteView,
     ItemTemplateCreateView,
     ItemTemplateListView,
-    ItemTemplateDetailView
+    ItemTemplateDetailView,
+    ItemTemplateUpdateView,
 )
 from . import views
 
@@ -28,6 +29,7 @@ urlpatterns = [
     path('item_template', ItemTemplateListView.as_view(), name='item-template-list'),
     path('item_template/new', ItemTemplateCreateView.as_view(), name='item-template-create'),
     path('item_template/<int:pk>', ItemTemplateDetailView.as_view(), name='item-template-detail'),
+    path('item_template/<int:pk>/update', ItemTemplateUpdateView.as_view(), name='item-template-update'),
     path('item/new/<int:template_id>', views.item_create, name='item-create'),
     path('item/<int:pk>/', ItemDetailView.as_view(), name='item-detail'),
     # path('item/<int:pk>/update', ItemUpdateView.as_view(), name='item-update'),

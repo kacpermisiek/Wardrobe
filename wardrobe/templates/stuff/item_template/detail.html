@@ -3,15 +3,19 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-        {% if user.is_authenticated %}
-    <h1>{{ object.name }}</h1>
-    <h1>{{ object.category }}</h1>
-            <h1>{{ object.id }}</h1>
-    <img
+    {% if user.is_authenticated %}
+        <div class="content-section">
+            <img
               src="{{ object.image.url }}"
               alt=""
               style="width: 300px; height: 300px"
               class="img-fluid rounded-circle"/>
+        </br>
+            Nazwa: <h1>{{ object.name }}</h1>
+            Kategoria: <h1>{{ object.category }}</h1>
+            Id: <h1>{{ object.id }}</h1>
+
+        </div>
     {% if object.final_status == "Dostępny" %}
         <div class="content-section">
             <h2>Ten przedmiot jest dostępny. <a href=#"> Kliknij tutaj</a>, aby zgłosić rezerwację przedmiotu</h2>
@@ -20,7 +24,7 @@
         {% if user.is_superuser %}
             <div class="content-section">
                     <a class="btn btn-outline-success" href="{% url 'item-create' object.id %}">Dodaj przedmiot tego typu</a>
-                    <a class="btn btn-outline-info" href="#">Edytuj szablon</a>
+                    <a class="btn btn-outline-info" href="{% url 'item-template-update' object.id %}">Edytuj szablon</a>
                     <a class="btn btn-outline-danger" href="#">Usuń szablon</a>
             </div>
 
@@ -28,7 +32,7 @@
                 <h2>Lista przedmiotów tego typu</h2>
 
                     <table class="table align-middle mb-0 bg-white table-hover">
-  <thead class="bg-light">
+  <thead class="thead-dark">
     <tr>
       <th>id</th>
       <th>Nazwa</th>
@@ -38,7 +42,7 @@
   </thead>
   <tbody>
   {% for item in object.item_instances %}
-    <tr class="table-primary">
+    <tr class="">
       <td class="align-middle">
             <p class="fw-normal mb-1">{{item.id}}</p>
       </td>
