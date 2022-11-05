@@ -1,6 +1,7 @@
 from django.urls import path
 from .views import (
     SetListView,
+    SetTemplateListView,
     ItemDetailView,
     ItemCreateView,
     ItemUpdateView,
@@ -24,7 +25,7 @@ from .views import (
 from . import views
 
 urlpatterns = [
-    path('', SetListView.as_view(), name='stuff-home'),
+    path('', SetTemplateListView.as_view(), name='stuff-home'),
     # path('user/<str:username>', UserReservationsListView.as_view(), name='user-reservations'),
     path('item_template', ItemTemplateListView.as_view(), name='item-template-list'),
     path('item_template/new', ItemTemplateCreateView.as_view(), name='item-template-create'),
@@ -34,11 +35,11 @@ urlpatterns = [
     path('item/<int:pk>/', ItemDetailView.as_view(), name='item-detail'),
     # path('item/<int:pk>/update', ItemUpdateView.as_view(), name='item-update'),
     path('item/delete/<int:pk>', ItemDeleteView.as_view(), name='item-delete'),
-    # path('category', CategoryListView.as_view(), name='category-list'),
-    # path('category/<int:pk>/', CategoryDetailView.as_view(), name='category-detail'),
-    # path('category/new', CategoryCreateView.as_view(), name='category-create'),
-    # path('category/<int:pk>/update', CategoryUpdateView.as_view(), name='category-update'),
-    # path('category/<int:pk>/delete', CategoryDeleteView.as_view(), name='category-delete'),
+    path('category', CategoryListView.as_view(), name='category-list'),
+    path('category/<int:pk>/', CategoryDetailView.as_view(), name='category-detail'),
+    path('category/new', CategoryCreateView.as_view(), name='category-create'),
+    path('category/<int:pk>/update', CategoryUpdateView.as_view(), name='category-update'),
+    path('category/<int:pk>/delete', CategoryDeleteView.as_view(), name='category-delete'),
     # path('item/<int:pk>/reservation_create', ItemCreateReservationView.as_view(), name='item-reservation-create'),
     # path('item/<int:pk>/reservation_detail/<int:id>', ItemDetailReservationView.as_view(), name='item-reservation-detail'),
     # path('item/<int:pk>/reservation_update/<int:id>', ItemUpdateReservationView.as_view(), name='item-reservation-update'),

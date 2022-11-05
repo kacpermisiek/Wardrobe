@@ -19,13 +19,14 @@ def home(request):
 
 class CategoryListView(ListView):
     model = Category
-    template_name = 'stuff/category_list.html'
+    template_name = 'stuff/category/category_list.html'
     context_object_name = 'categories'
     ordering = ['name']
 
 
 class CategoryDetailView(DetailView):
     model = Category
+    template_name = 'stuff/category/category_form.html'
 
 
 class CategoryCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -34,7 +35,7 @@ class CategoryCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     model = Category
     fields = ['name']
-    template_name = 'stuff/category_create.html'
+    template_name = 'stuff/category/category_create.html'
     success_url = '/category'
 
 
@@ -42,6 +43,7 @@ class CategoryUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Category
     fields = ['name']
     success_url = '/category'
+    template_name = 'stuff/category/category_form.html'
 
     def test_func(self):
         return self.request.user.is_superuser
@@ -50,6 +52,7 @@ class CategoryUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class CategoryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Category
     success_url = '/category'
+    template_name = 'stuff/category/category_confirm_delete.html'
 
     def test_func(self):
         return self.request.user.is_superuser
@@ -173,6 +176,14 @@ class SetListView(ListView):
     model = Set
     context_object_name = 'stuff'
     ordering = ['set_status']
+    template_name = 'stuff/home.html'
+    paginate_by = 6
+
+
+class SetTemplateListView(ListView):
+    model = SetTemplate
+    context_object_name = 'stuff'
+    ordering = ['name']
     template_name = 'stuff/home.html'
     paginate_by = 6
 
