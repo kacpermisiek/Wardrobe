@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse
 from .models import Item, Category, ReservationEvent, BADGE_STATUSES, SetTemplate, Set, ItemTemplate
-from .forms import ItemReservationForm
+from .forms import ItemReservationForm, SetTemplateForm
 
 
 def home(request):
@@ -186,6 +186,16 @@ class SetTemplateListView(ListView):
     ordering = ['name']
     template_name = 'stuff/home.html'
     paginate_by = 6
+
+
+class SetTemplateCreateView(UserPassesTestMixin, CreateView):
+    model = SetTemplate
+    template_name = 'stuff/set_template/create.html'
+    success_url = '/'
+    form_class = SetTemplateForm
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
 
 class ItemDetailReservationView(DetailView):

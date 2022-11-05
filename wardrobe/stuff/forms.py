@@ -1,7 +1,7 @@
 from collections import namedtuple
 from django import forms
 from datetime import datetime
-from .models import ReservationEvent, Item
+from .models import ReservationEvent, Item, SetTemplate
 
 
 class ItemReservationForm(forms.ModelForm):
@@ -61,3 +61,14 @@ class ItemReservationForm(forms.ModelForm):
     def _get_timestamp(r1, r2):
         return min(r1.end, r2.end), max(r1.start, r2.start)
 
+
+class SetTemplateForm(forms.ModelForm):
+    name = forms.CharField()
+    items_required = forms.ModelMultipleChoiceField(
+        queryset=SetTemplate.objects.all(),
+        widget=forms.CheckboxSelectMultiple
+    )
+
+    class Meta:
+        model = SetTemplate
+        fields = ['name', 'items_required']

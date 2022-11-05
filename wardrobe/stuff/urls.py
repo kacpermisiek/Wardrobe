@@ -2,6 +2,7 @@ from django.urls import path
 from .views import (
     SetListView,
     SetTemplateListView,
+    SetTemplateCreateView,
     ItemDetailView,
     ItemCreateView,
     ItemUpdateView,
@@ -26,6 +27,7 @@ from . import views
 
 urlpatterns = [
     path('', SetTemplateListView.as_view(), name='stuff-home'),
+    path('set_template/create', SetTemplateCreateView.as_view(), name='set-template-create'),
     # path('user/<str:username>', UserReservationsListView.as_view(), name='user-reservations'),
     path('item_template', ItemTemplateListView.as_view(), name='item-template-list'),
     path('item_template/new', ItemTemplateCreateView.as_view(), name='item-template-create'),
