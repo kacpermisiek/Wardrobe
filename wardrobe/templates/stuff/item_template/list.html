@@ -17,7 +17,8 @@
     <tr>
       <th>Nazwa</th>
       <th>Ilość</th>
-      <th>Akcja</th>
+      <th>Szczegóły</th>
+      <th>Dodaj do zestawu</th>
     </tr>
   </thead>
   <tbody>
@@ -32,6 +33,10 @@
         <td class="align-middle">
           <p class="fw-normal mb-1"><a href="{% url 'item-template-detail' template.id %}">Szczegóły</a></p>
       </td>
+
+        <td class="align-middle">
+            <p class="fw-normal mb-1"><a class="btn btn-info" href="#">+</a></p>
+        </td>
 
     </tr>
   {% endfor %}

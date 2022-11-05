@@ -47,6 +47,6 @@ urlpatterns = [
     # path('item/<int:pk>/reservation_update/<int:id>', ItemUpdateReservationView.as_view(), name='item-reservation-update'),
     # path('item/<int:pk>/reservation_delete/<int:id>', ItemDeleteReservationView.as_view(), name='item-reservation-delete'),
     # path('item/reservations/', ReservationListView.as_view(), name='item-reservation-list'),
-    # path('about/', views.about, name='stuff-about'),
+    path('about/', views.about, name='stuff-about'),
 
 ]

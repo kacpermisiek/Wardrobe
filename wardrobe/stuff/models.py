@@ -118,6 +118,14 @@ class SetTemplate(models.Model):
         return f"SetTemplate object name: {self.name}"
 
 
+class CurrentSetTemplate(models.Model):
+    name = models.CharField(max_length=50)
+    items_required = models.ManyToManyField(ItemRequired)
+
+    def __str__(self):
+        return f"SetTemplate object name: {self.name}"
+
+
 class Set(models.Model):
     items = models.ManyToManyField(Item)
     set_template = models.ForeignKey(SetTemplate, on_delete=models.CASCADE)
