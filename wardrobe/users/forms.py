@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import EmailValidator
 from .models import Profile
-from stuff.models import CurrentSetTemplate
 
 
 class UserRegistrationForm(UserCreationForm):

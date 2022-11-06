@@ -5,8 +5,32 @@
         {{ object.name }}
 
         <div class="content-section">
-            <h2>Aktualny zestaw:</h2>
-            <p>{{ user.profile.current_set_template_index }}</p>
+            <h2>Aktualny zestaw: {{ curr_set.name }}</h2>
+            <h3>Lista przedmiotów w zestawie</h3>
+            <table class="table align-middle mb-0 bg-white table-hover">
+                <thead class="bg-steel">
+                    <th>Nazwa</th>
+                    <th>Kategoria</th>
+                    <th>Ilość</th>
+                </thead>
+                <tbody>
+                    {% for item_required in curr_set.items_required.all %}
+                            <tr>
+                              <td>
+                                <div class="d-flex align-items-center">
+                                    <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="#">{{ item_required.item_type.name }}</a></p>
+                                </div>
+                              </td>
+                                <td class="align-middle">
+                                    <p class="fw-bold">{{ item_required.item_type.category.name }}</p>
+                                </td>
+                                <td class="align-middle">
+                                    <p class="fw-bold">{{ item_required.quantity_required }}</p>
+                                </td>
+                            </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
 
     <h3>Lista zestawów</h3>

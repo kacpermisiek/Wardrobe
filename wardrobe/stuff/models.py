@@ -30,8 +30,8 @@ class Category(models.Model):
 class ItemTemplate(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=200, null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    image = models.ImageField(default='default_item.png', upload_to='item_pics')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='qwe')
+    image = models.ImageField(default='default_item.png', upload_to='item_pics', blank=True, null=True)
 
     @property
     def quantity(self):
@@ -61,12 +61,12 @@ class ItemTemplate(models.Model):
         image.close()
 
 
-class ItemRequired(ItemTemplate):
+class ItemRequired(models.Model):
     quantity_required = models.IntegerField(validators=[MinValueValidator(1)])
-    item_type = models.ForeignKey(ItemTemplate, on_delete=models.CASCADE, related_name='+')
+    item_type = models.ForeignKey(ItemTemplate, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'item type: {self.name}'
+        return f'item type: {self.item_type.name}'
 
 
 class Item(models.Model):
@@ -111,14 +111,6 @@ class Item(models.Model):
 
 
 class SetTemplate(models.Model):
-    name = models.CharField(max_length=50)
-    items_required = models.ManyToManyField(ItemRequired)
-
-    def __str__(self):
-        return f"SetTemplate object name: {self.name}"
-
-
-class CurrentSetTemplate(models.Model):
     name = models.CharField(max_length=50)
     items_required = models.ManyToManyField(ItemRequired)
 

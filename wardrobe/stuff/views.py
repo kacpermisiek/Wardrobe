@@ -19,9 +19,11 @@ from .forms import ItemReservationForm, SetTemplateForm
 
 def home(request):
     context = {
-        'sets': Set.objects.all(),
+        'sets': SetTemplate.objects.all(),
         'title': 'strona główna'
     }
+    if request.user.is_superuser:
+        context['curr_set'] = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
     return render(request, 'stuff/home.html', context)
 
 
@@ -209,36 +211,38 @@ class SetTemplateCreateView(UserPassesTestMixin, CreateView):
 def add_item_template_to_set_template(request, template_id):
     if request.user.is_superuser:
         item_template = ItemTemplate.objects.get(id=template_id)
-        usr_set_template = request.user.profile.curr_set_template
+        set_template = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
 
-        if _is_already_in_user_set_template(item_template, request.user):
-            _increment_required_item_quantity(usr_set_template, request.user, item_template)
+        if _item_template_is_already_in_set_template(template_id, set_template):
+            _increment_required_item_quantity(set_template, template_id)
         else:
-            _create_required_item(item_template, request, usr_set_template)
-        context = {
-            'object': item_template
-        }
-        return render(request, 'stuff/item_template/detail.html', context)
+            _create_new_required_item(set_template, template_id)
+
+        set_template.save()
+        messages.success(request, "Przedmiot został dodany do zestawu!")
+        return render(request, 'stuff/item_template/list.html')
     return Http404()
 
 
-def _increment_required_item_quantity(usr_set_template, user, item):
-    item_required = usr_set_template.items_required.get(user=user, item_type=item)
+def _create_new_required_item(set_template, template_id):
+    print("Creating new required item")
+    new_item_required = ItemRequired.objects.create(
+        item_type_id=template_id,
+        quantity_required=1
+    )
+    set_template.items_required.add(new_item_required)
+    new_item_required.save()
+
+
+def _increment_required_item_quantity(set_template, template_id):
+    print("Increasing value")
+    item_required = set_template.items_required.get(item_type_id=template_id)
     item_required.quantity_required += 1
     item_required.save()
 
 
-def _create_required_item(item_template, request, usr_set_template):
-    item_required = ItemRequired.objects.create(
-        quantity_required=1,
-        item_type=item_template
-    )
-    usr_set_template.items_required.add(item_required)
-    messages.success(request, "Przedmiot został utworzony!")
-
-
-def _is_already_in_user_set_template(item_template, user):
-    return ItemRequired.objects.filter(item_type=item_template, user=user).exists()
+def _item_template_is_already_in_set_template(item_template_id, set_template):
+    return set_template.items_required.filter(item_type_id=item_template_id).exists()
 
 
 class ItemDetailReservationView(DetailView):

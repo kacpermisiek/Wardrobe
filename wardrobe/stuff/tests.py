@@ -1,6 +1,6 @@
 from django.utils.timezone import now
 from django.test import TestCase
-from .models import Category, ItemTemplate, Item, ReservationEvent
+from .models import Category, ItemTemplate, Item, ItemRequired, SetTemplate, Set
 
 CATEGORY_NAME = 'testing category'
 ITEM_TYPE_NAME = 'item type name'
@@ -54,3 +54,18 @@ class ItemTestCase(TestCase):
         self.assertEqual(item.date_added.year, now().year)
         self.assertEqual(item.date_added.month, now().month)
         self.assertEqual(item.date_added.day, now().day)
+
+
+class ItemRequiredTestCase(TestCase):
+    def setUp(self):
+        category = Category.objects.create(name=CATEGORY_NAME)
+        item_template = ItemTemplate.objects.create(
+            name=ITEM_TYPE_NAME,
+            description=ITEM_TYPE_DESCRIPTION,
+            category=category,
+        )
+        ItemRequired.objects.create(item_type=item_template, quantity_required=2)
+
+    def test_set_Template_is_valid(self):
+        item_required = ItemRequired.objects.first()
+        self.assertEqual(ITEM_TYPE_NAME, item_required.item_type.name)
