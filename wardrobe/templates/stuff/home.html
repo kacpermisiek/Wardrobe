@@ -40,7 +40,7 @@
   <thead class="bg-light">
     <tr>
       <th>Nazwa</th>
-      <th>Status</th>
+      <th>Przedmioty</th>
     </tr>
   </thead>
   <tbody>
@@ -54,7 +54,11 @@
         </div>
       </td>
       <td class="align-middle">
-        <p class="fw-bold">{{ set.items_required }}</p>
+          <ul>
+              {% for item in set.items_required.all %}
+                  <li>{{ item.item_type.name }}</li>
+              {% endfor %}
+          </ul>
       </td>
     </tr>
   {% endfor %}

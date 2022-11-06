@@ -201,16 +201,24 @@ class SetTemplateListView(ListView):
 class SetTemplateCreateView(UserPassesTestMixin, CreateView):
     model = SetTemplate
     template_name = 'stuff/set_template/create.html'
-    success_url = '/'
+    # success_url = '/'
     form_class = SetTemplateForm
 
     def test_func(self):
         return self.request.user.is_superuser
 
+    def get_success_url(self):
+        #  TODO: change current set template not working
+        print(f'Before: {self.request.user.profile.current_set_template_index}')
+        user = self.request.user
+        user.profile.current_set_template_index = self.object.id
+        user.save()
+        print(f'After: {self.request.user.profile.current_set_template_index}')
+        return '/'
+
 
 def add_item_template_to_set_template(request, template_id):
     if request.user.is_superuser:
-        item_template = ItemTemplate.objects.get(id=template_id)
         set_template = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
 
         if _item_template_is_already_in_set_template(template_id, set_template):

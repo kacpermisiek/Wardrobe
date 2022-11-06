@@ -37,3 +37,7 @@ class Profile(models.Model):
             self._template_curr_index = set_template.id
         return self._template_curr_index
 
+    @current_set_template_index.setter
+    def current_set_template_index(self, value):
+        self._current_set_template_index = value
+

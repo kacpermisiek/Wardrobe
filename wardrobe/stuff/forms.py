@@ -64,11 +64,7 @@ class ItemReservationForm(forms.ModelForm):
 
 class SetTemplateForm(forms.ModelForm):
     name = forms.CharField()
-    items_required = forms.ModelMultipleChoiceField(
-        queryset=ItemRequired.objects.all(),
-        widget=forms.CheckboxSelectMultiple
-    )
 
     class Meta:
         model = SetTemplate
-        fields = ['name', 'items_required']
+        fields = ['name']
