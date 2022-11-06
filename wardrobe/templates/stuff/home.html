@@ -1,7 +1,7 @@
 {% extends "stuff/base.html" %}
 
 {% block content %}
-    {% if user.is_authenticated %}
+    {% if user.is_superuser %}
         {{ object.name }}
 
         <div class="content-section">
@@ -49,14 +49,14 @@
       <td>
         <div class="d-flex align-items-center">
           <div class="ms-3">
-            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="#">{{ set.name }}</a></p>
+            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="{% url 'set-template-detail' set.id %}">{{ set.name }}</a></p>
           </div>
         </div>
       </td>
       <td class="align-middle">
           <ul>
               {% for item in set.items_required.all %}
-                  <li>{{ item.item_type.name }}</li>
+                  <li>{{ item.item_type.name }} ({{ item.quantity_required }})</li>
               {% endfor %}
           </ul>
       </td>

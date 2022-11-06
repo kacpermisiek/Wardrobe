@@ -1,0 +1,58 @@
+{% extends "stuff/base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="content-section">
+            Nazwa: <h1>{{ object.name }}</h1>
+            Ilość przedmiotów: <h1>{{ object.category }}</h1>
+            Id: <h1>{{ object.id }}</h1>
+
+        </div>
+
+            <div class="content-section">
+            <a class="btn btn-outline-success" href="#">Zarezerwuj zestaw</a>
+            {% if user.is_superuser %}
+                    <a class="btn btn-outline-info" href="#">Edytuj szablon</a>
+                    <a class="btn btn-outline-danger" href="#">Usuń szablon</a>
+            </div>
+
+            <div class="content-section">
+                <h2>Lista przedmiotów tego typu</h2>
+
+                    <table class="table align-middle mb-0 bg-white table-hover">
+  <thead class="thead-dark">
+    <tr>
+      <th>id</th>
+      <th>Nazwa</th>
+      <th>Status</th>
+      <th>Data Dodania</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for item in object.item_instances %}
+    <tr class="">
+      <td class="align-middle">
+            <p class="fw-normal mb-1">{{item.id}}</p>
+      </td>
+      <td class="align-middle">
+            <p class="fw-normal mb-1"><a href="{% url 'item-detail' item.id %}">{{ item.type.name }}</a></p>
+      </td>
+
+        <td class="align-middle">
+            <p class="fw-normal mb-1">{{ item.status }}</p>
+        </td>
+        <td class="align-middle">
+            <p class="fw-normal mb-1">{{ item.date_added }}</p>
+        </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+            </div>
+        {% endif %}
+        {% else %}
+            <h1> Zaloguj się, aby otrzymać dostęp do strony!</h1>
+        {% endif %}
+{% endblock content %}
