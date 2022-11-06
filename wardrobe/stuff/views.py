@@ -5,7 +5,15 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse
-from .models import Item, Category, ReservationEvent, BADGE_STATUSES, SetTemplate, Set, ItemTemplate
+from .models import (
+    Item,
+    Category,
+    ReservationEvent,
+    SetTemplate,
+    Set,
+    ItemTemplate,
+    ItemRequired
+)
 from .forms import ItemReservationForm, SetTemplateForm
 
 
@@ -182,8 +190,8 @@ class SetListView(ListView):
 
 class SetTemplateListView(ListView):
     model = SetTemplate
-    context_object_name = 'stuff'
     ordering = ['name']
+    context_object_name = 'sets'
     template_name = 'stuff/home.html'
     paginate_by = 6
 
@@ -196,6 +204,41 @@ class SetTemplateCreateView(UserPassesTestMixin, CreateView):
 
     def test_func(self):
         return self.request.user.is_superuser
+
+
+def add_item_template_to_set_template(request, template_id):
+    if request.user.is_superuser:
+        item_template = ItemTemplate.objects.get(id=template_id)
+        usr_set_template = request.user.profile.curr_set_template
+
+        if _is_already_in_user_set_template(item_template, request.user):
+            _increment_required_item_quantity(usr_set_template, request.user, item_template)
+        else:
+            _create_required_item(item_template, request, usr_set_template)
+        context = {
+            'object': item_template
+        }
+        return render(request, 'stuff/item_template/detail.html', context)
+    return Http404()
+
+
+def _increment_required_item_quantity(usr_set_template, user, item):
+    item_required = usr_set_template.items_required.get(user=user, item_type=item)
+    item_required.quantity_required += 1
+    item_required.save()
+
+
+def _create_required_item(item_template, request, usr_set_template):
+    item_required = ItemRequired.objects.create(
+        quantity_required=1,
+        item_type=item_template
+    )
+    usr_set_template.items_required.add(item_required)
+    messages.success(request, "Przedmiot został utworzony!")
+
+
+def _is_already_in_user_set_template(item_template, user):
+    return ItemRequired.objects.filter(item_type=item_template, user=user).exists()
 
 
 class ItemDetailReservationView(DetailView):

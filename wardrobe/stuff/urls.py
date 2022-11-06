@@ -28,6 +28,7 @@ from . import views
 urlpatterns = [
     path('', SetTemplateListView.as_view(), name='stuff-home'),
     path('set_template/create', SetTemplateCreateView.as_view(), name='set-template-create'),
+    path('set_template/add_item/<int:template_id>', views.add_item_template_to_set_template, name='set-template-add-item'),
     # path('user/<str:username>', UserReservationsListView.as_view(), name='user-reservations'),
     path('item_template', ItemTemplateListView.as_view(), name='item-template-list'),
     path('item_template/new', ItemTemplateCreateView.as_view(), name='item-template-create'),

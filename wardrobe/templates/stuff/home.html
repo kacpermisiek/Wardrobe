@@ -2,6 +2,12 @@
 
 {% block content %}
     {% if user.is_authenticated %}
+        {{ object.name }}
+
+        <div class="content-section">
+            <h2>Aktualny zestaw:</h2>
+            <p>{{ user.profile.current_set_template_index }}</p>
+        </div>
 
     <h3>Lista zestawów</h3>
 
@@ -19,12 +25,12 @@
       <td>
         <div class="d-flex align-items-center">
           <div class="ms-3">
-            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="#">{{ set.set_template_name }}</a></p>
+            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="#">{{ set.name }}</a></p>
           </div>
         </div>
       </td>
       <td class="align-middle">
-        <span class="badge badge-danger rounded-pill d-inline">{{ set.set_status }}</span>
+        <p class="fw-bold">{{ set.items_required }}</p>
       </td>
     </tr>
   {% endfor %}
