@@ -7,6 +7,13 @@
         <div class="content-section">
             Nazwa: <h1>{{ object.name }}</h1>
             Id: <h1>{{ object.id }}</h1>
+            Wymagane przedmioty:
+            <ul>
+              {% for item in object.items_required.all %}
+                  <li>{{ item.item_type.name }} ({{ item.quantity_required }})</li>
+              {% endfor %}
+            </ul>
+
 
         </div>
 
@@ -15,7 +22,7 @@
             {% if user.is_superuser %}
                     <a class="btn btn-outline-primary" href="{% url 'set-template-set-current' object.id %}">Ustaw jako aktualnie edytowany</a>
                     <a class="btn btn-outline-info" href="#">Edytuj szablon</a>
-                    <a class="btn btn-outline-danger" href="#">Usuń szablon</a>
+                    <a class="btn btn-outline-danger" href="{% url 'set-template-delete' object.id %}">Usuń szablon</a>
             </div>
 
             <div class="content-section">
@@ -50,8 +57,9 @@
   {% endfor %}
   </tbody>
 </table>
-            </div>
+
         {% endif %}
+        </div>
         {% else %}
             <h1> Zaloguj się, aby otrzymać dostęp do strony!</h1>
         {% endif %}

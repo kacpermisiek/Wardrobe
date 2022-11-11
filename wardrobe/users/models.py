@@ -11,7 +11,7 @@ class Profile(models.Model):
 
     @property
     def current_set_template_index(self):
-        return self._template_curr_index if self._template_curr_index else self._set_template_index()
+        return self._template_curr_index if self._set_template_is_available() else self._set_set_template_index()
 
     def __str__(self):
         return f'Profile of {self.user.username}'
@@ -26,9 +26,9 @@ class Profile(models.Model):
             image.thumbnail(output_size)
             image.convert('RGB').save(self.image.path)
 
-        image.close()  # TODO Not sure if it's necessary
+        image.close()
 
-    def _set_template_index(self):
+    def _set_set_template_index(self):
         if SetTemplate.objects.all().exists():
             self._template_curr_index = SetTemplate.objects.first().id
         else:
@@ -40,3 +40,7 @@ class Profile(models.Model):
     def set_template_curr_index(self, value):
         self._template_curr_index = value
 
+    def _set_template_is_available(self):
+        if self._template_curr_index:
+            return SetTemplate.objects.filter(id=self._template_curr_index).exists()
+        return self._set_set_template_index()

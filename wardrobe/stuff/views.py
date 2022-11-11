@@ -26,7 +26,6 @@ def home(request):
     }
     if request.user.is_superuser:
         context['curr_set'] = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
-        print(f"a tak naprawde to {context['curr_set'].id}")
     return render(request, 'stuff/home.html', context)
 
 
@@ -216,6 +215,15 @@ class SetTemplateDetailView(LoginRequiredMixin, DetailView):
     template_name = 'stuff/set_template/details.html'
 
 
+class SetTemplateDeleteView(UserPassesTestMixin, DeleteView):
+    model = SetTemplate
+    template_name = 'stuff/set_template/confirm_delete.html'
+    success_url = '/'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
 def add_item_template_to_set_template(request, template_id):
     if request.user.is_superuser:
         set_template = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
@@ -227,9 +235,7 @@ def add_item_template_to_set_template(request, template_id):
 
         set_template.save()
         messages.success(request, "Przedmiot został dodany do zestawu!")
-
-        context = {'item_templates': ItemTemplate.objects.all()}
-        return render(request, 'stuff/item_template/list.html', context)
+        return home(request)
     return Http404()
 
 
@@ -244,7 +250,6 @@ def set_current_set_template(request, pk):
 
 
 def _create_new_required_item(set_template, template_id):
-    print("Creating new required item")
     new_item_required = ItemRequired.objects.create(
         item_type_id=template_id,
         quantity_required=1
@@ -254,7 +259,6 @@ def _create_new_required_item(set_template, template_id):
 
 
 def _increment_required_item_quantity(set_template, template_id):
-    print("Increasing value")
     item_required = set_template.items_required.get(item_type_id=template_id)
     item_required.quantity_required += 1
     item_required.save()
@@ -262,6 +266,28 @@ def _increment_required_item_quantity(set_template, template_id):
 
 def _item_template_is_already_in_set_template(item_template_id, set_template):
     return set_template.items_required.filter(item_type_id=item_template_id).exists()
+
+
+def remove_item_template_from_set_template(request, template_id):
+    set_template = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
+    item_required = set_template.items_required.filter(item_type_id=template_id).first()
+    set_template.items_required.remove(item_required)
+    set_template.save()
+    messages.success(request, "Przedmiot został usunięty z szablonu")
+    return home(request)
+
+
+def decrement_required_item_quantity(request, template_id):
+    if request.user.is_superuser:
+        set_template = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
+        item_required = set_template.items_required.filter(item_type_id=template_id).first()
+        if item_required.quantity_required <= 1:
+            return remove_item_template_from_set_template(request, template_id)
+        item_required.quantity_required -= 1
+        item_required.save()
+        messages.success(request, "Potrzebna ilość do tego szablonu została zmniejszona")
+        return home(request)
+    return Http404
 
 
 class ItemDetailReservationView(DetailView):
