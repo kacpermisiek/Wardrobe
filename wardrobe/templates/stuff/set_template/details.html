@@ -6,7 +6,6 @@
     {% if user.is_authenticated %}
         <div class="content-section">
             Nazwa: <h1>{{ object.name }}</h1>
-            Ilość przedmiotów: <h1>{{ object.category }}</h1>
             Id: <h1>{{ object.id }}</h1>
 
         </div>
@@ -14,6 +13,7 @@
             <div class="content-section">
             <a class="btn btn-outline-success" href="#">Zarezerwuj zestaw</a>
             {% if user.is_superuser %}
+                    <a class="btn btn-outline-primary" href="{% url 'set-template-set-current' object.id %}">Ustaw jako aktualnie edytowany</a>
                     <a class="btn btn-outline-info" href="#">Edytuj szablon</a>
                     <a class="btn btn-outline-danger" href="#">Usuń szablon</a>
             </div>

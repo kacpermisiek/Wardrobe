@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse
+
+from users.models import Profile
 from .models import (
     Item,
     Category,
@@ -24,6 +26,7 @@ def home(request):
     }
     if request.user.is_superuser:
         context['curr_set'] = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
+        print(f"a tak naprawde to {context['curr_set'].id}")
     return render(request, 'stuff/home.html', context)
 
 
@@ -224,7 +227,19 @@ def add_item_template_to_set_template(request, template_id):
 
         set_template.save()
         messages.success(request, "Przedmiot został dodany do zestawu!")
-        return render(request, 'stuff/item_template/list.html')
+
+        context = {'item_templates': ItemTemplate.objects.all()}
+        return render(request, 'stuff/item_template/list.html', context)
+    return Http404()
+
+
+def set_current_set_template(request, pk):
+    if request.user.is_superuser:
+        user = User.objects.get(id=request.user.id)
+        user.profile.set_template_curr_index(pk)
+        user.save()
+        messages.success(request, "Szablon zestawu został ustawiony jako aktualnie edytowany")
+        return home(request)
     return Http404()
 
 
