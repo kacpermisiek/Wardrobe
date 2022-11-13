@@ -1,44 +1,46 @@
+import os.path
+
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Item, Category, ReservationEvent, BADGE_STATUSES
-from .forms import ItemReservationForm
+from django.urls import reverse
+
+from users.models import Profile
+from .models import (
+    Item,
+    Category,
+    ReservationEvent,
+    SetTemplate,
+    Set,
+    ItemTemplate,
+    ItemRequired
+)
+from .forms import ItemReservationForm, SetTemplateForm
 
 
 def home(request):
-
-    def _get_badge_status(status):
-        return BADGE_STATUSES[status]
-
-    def _set_badge_statuses(items):
-        for item in items:
-            try:
-                item.badge_status = _get_badge_status(item.status)
-            except KeyError:
-                item.badge_status = 'dark'
-
-        return items
-
-    def _get_items():
-        return _set_badge_statuses(Item.objects.all())
-
     context = {
-        'stuff': _get_items(),
+        'sets': SetTemplate.objects.all(),
         'title': 'strona główna'
     }
+    if request.user.is_superuser:
+        context['curr_set'] = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
     return render(request, 'stuff/home.html', context)
 
 
 class CategoryListView(ListView):
     model = Category
-    template_name = 'stuff/category_list.html'
+    template_name = 'stuff/category/category_list.html'
     context_object_name = 'categories'
     ordering = ['name']
 
 
 class CategoryDetailView(DetailView):
     model = Category
+    template_name = 'stuff/category/category_form.html'
 
 
 class CategoryCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -47,7 +49,7 @@ class CategoryCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     model = Category
     fields = ['name']
-    template_name = 'stuff/category_create.html'
+    template_name = 'stuff/category/category_create.html'
     success_url = '/category'
 
 
@@ -55,6 +57,7 @@ class CategoryUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Category
     fields = ['name']
     success_url = '/category'
+    template_name = 'stuff/category/category_form.html'
 
     def test_func(self):
         return self.request.user.is_superuser
@@ -63,14 +66,63 @@ class CategoryUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class CategoryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Category
     success_url = '/category'
+    template_name = 'stuff/category/category_confirm_delete.html'
 
     def test_func(self):
         return self.request.user.is_superuser
 
 
+class ItemTemplateCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    model = ItemTemplate
+    fields = ['name', 'description', 'category', 'image']
+    template_name = 'stuff/item_template/create.html'
+
+    def get_success_url(self):
+        return reverse('item-template-list')
+
+
+class ItemTemplateListView(ListView):
+    model = ItemTemplate
+    context_object_name = 'item_templates'
+    paginate_by = 6
+    ordering = ['name']
+    template_name = 'stuff/item_template/list.html'
+
+
+class ItemTemplateDetailView(LoginRequiredMixin, DetailView):
+    model = ItemTemplate
+    template_name = 'stuff/item_template/detail.html'
+
+
+class ItemTemplateUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = ItemTemplate
+    fields = ['name', 'description', 'category', 'image']
+    template_name = 'stuff/item_template/form.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_success_url(self):
+        return reverse('item-template-detail', kwargs={'pk': self.object.id})
+
+
+class ItemTemplateDeleteView(UserPassesTestMixin, DeleteView):
+    model = ItemTemplate
+    template_name = 'stuff/item_template/confirm_delete.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_success_url(self):
+        messages.success(self.request, "Szablon przedmiotu został usunięty")
+        return '/'
+
+
 class ItemListView(ListView):
     model = Item
-    template_name = 'stuff/home.html'
     context_object_name = 'stuff'
     ordering = ['status', 'name']
     paginate_by = 6
@@ -78,6 +130,7 @@ class ItemListView(ListView):
 
 class ItemDetailView(DetailView):
     model = Item
+    template_name = 'stuff/item/detail.html'
 
 
 class ItemCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -86,6 +139,19 @@ class ItemCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     model = Item
     fields = ['name', 'description', 'category', 'status', 'image']
+
+
+def item_create(request, template_id):
+    if request.user.is_superuser:
+        template = ItemTemplate.objects.get(id=template_id)
+        item = Item(type=template, status='Dostępny')
+        item.save()
+        messages.success(request, "Przedmiot został utworzony!")
+        context = {
+            'object': template
+        }
+        return render(request, 'stuff/item_template/detail.html', context)
+    return Http404()
 
 
 class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -98,10 +164,13 @@ class ItemUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Item
-    success_url = '/'
+    template_name = 'stuff/item/confirm_delete.html'
 
     def test_func(self):
         return self.request.user.is_superuser
+
+    def get_success_url(self):
+        return reverse('item-template-detail', kwargs={'pk': self.object.type.id})
 
 
 class ReservationListView(ListView):
@@ -127,6 +196,124 @@ def about(request):
         'title': 'About page'
     }
     return render(request, 'stuff/about.html', context)
+
+
+class SetListView(ListView):
+    model = Set
+    context_object_name = 'stuff'
+    ordering = ['set_status']
+    template_name = 'stuff/home.html'
+    paginate_by = 6
+
+
+class SetTemplateListView(ListView):
+    model = SetTemplate
+    ordering = ['name']
+    context_object_name = 'sets'
+    template_name = 'stuff/home.html'
+    paginate_by = 6
+
+
+class SetTemplateCreateView(UserPassesTestMixin, CreateView):
+    model = SetTemplate
+    template_name = 'stuff/set_template/create.html'
+    success_url = '/'
+    form_class = SetTemplateForm
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
+class SetTemplateDetailView(LoginRequiredMixin, DetailView):
+    model = SetTemplate
+    template_name = 'stuff/set_template/details.html'
+
+
+class SetTemplateDeleteView(UserPassesTestMixin, DeleteView):
+    model = SetTemplate
+    template_name = 'stuff/set_template/confirm_delete.html'
+    success_url = '/'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
+class SetTemplateUpdateView(UserPassesTestMixin, UpdateView):
+    model = SetTemplate
+    fields = ['name']
+    template_name = 'stuff/set_template/update.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_success_url(self):
+        return os.path.join('/set_template/', str(self.object.id))
+
+
+def add_item_template_to_set_template(request, template_id):
+    if request.user.is_superuser:
+        set_template = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
+
+        if _item_template_is_already_in_set_template(template_id, set_template):
+            _increment_required_item_quantity(set_template, template_id)
+        else:
+            _create_new_required_item(set_template, template_id)
+
+        set_template.save()
+        messages.success(request, "Przedmiot został dodany do zestawu!")
+        return home(request)
+    return Http404()
+
+
+def set_current_set_template(request, pk):
+    if request.user.is_superuser:
+        user = User.objects.get(id=request.user.id)
+        user.profile.set_template_curr_index(pk)
+        user.save()
+        messages.success(request, "Szablon zestawu został ustawiony jako aktualnie edytowany")
+        return home(request)
+    return Http404()
+
+
+def _create_new_required_item(set_template, template_id):
+    new_item_required = ItemRequired.objects.create(
+        item_type_id=template_id,
+        quantity_required=1
+    )
+    set_template.items_required.add(new_item_required)
+    new_item_required.save()
+
+
+def _increment_required_item_quantity(set_template, template_id):
+    item_required = set_template.items_required.get(item_type_id=template_id)
+    item_required.quantity_required += 1
+    item_required.save()
+
+
+def _item_template_is_already_in_set_template(item_template_id, set_template):
+    return set_template.items_required.filter(item_type_id=item_template_id).exists()
+
+
+def remove_item_template_from_set_template(request, template_id):
+    set_template = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
+    item_required = set_template.items_required.filter(item_type_id=template_id).first()
+    set_template.items_required.remove(item_required)
+    set_template.save()
+    messages.success(request, "Przedmiot został usunięty z szablonu")
+    return home(request)
+
+
+def decrement_required_item_quantity(request, template_id):
+    if request.user.is_superuser:
+        set_template = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
+        item_required = set_template.items_required.filter(item_type_id=template_id).first()
+        if item_required.quantity_required <= 1:
+            return remove_item_template_from_set_template(request, template_id)
+        item_required.quantity_required -= 1
+        item_required.save()
+        messages.success(request, "Potrzebna ilość do tego szablonu została zmniejszona")
+        return home(request)
+    return Http404
 
 
 class ItemDetailReservationView(DetailView):
