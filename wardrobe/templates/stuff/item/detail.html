@@ -4,23 +4,17 @@
 
 {% block content %}
         {% if user.is_authenticated %}
-    <h1>{{ object.name }}</h1>
-    <h1>{{ object.category }}</h1>
-            <h1>{{ object.id }}</h1>
+    <h1>Przedmiot: {{ object.type.name }}</h1>
+    <h1>Kategoria: {{ object.type.category }}</h1>
+    <h1>Id: {{ object.id }}</h1>
     <span class="badge badge-{{ object.badge_status }} rounded-pill d-inline">{{ object.final_status }}</span>
     <img
-              src="{{ object.image.url }}"
+              src="{{ object.type.image.url }}"
               alt=""
               style="width: 300px; height: 300px"
               class="img-fluid rounded-circle"/>
-    {% if object.final_status == "Dostępny" %}
-        <div class="content-section">
-            <h2>Ten przedmiot jest dostępny. <a href="{% url 'item-reservation-create' object.id %}"> Kliknij tutaj</a>, aby zgłosić rezerwację przedmiotu</h2>
-        </div>
-        {% endif %}
         {% if user.is_superuser %}
             <div class="content-section">
-                    <a class="btn btn-outline-info" href="{% url 'item-update' object.id %}">Edytuj przedmiot</a>
                     <a class="btn btn-outline-danger" href="{% url 'item-delete' object.id %}">Usuń przedmiot</a>
             </div>
 
