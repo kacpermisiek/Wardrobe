@@ -72,6 +72,7 @@ class SetTemplateForm(forms.ModelForm):
 
 class SetForm(forms.ModelForm):
     set_status = forms.BooleanField(required=False, label='Czy zestaw został zabrany?')
+    items = forms.CharField(required=False, widget=forms.HiddenInput())
 
     def __init__(self, set_template_id, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -98,15 +99,16 @@ class SetForm(forms.ModelForm):
         for arg in to_delete:
             del cleaned_data[arg]
 
+        cleaned_data['set_template'] = SetTemplate.objects.get(id=self.set_template_id)
         return cleaned_data
 
     class Meta:
         model = Set
-        exclude = ['set_template', 'items']
+        exclude = ['set_template']
 
     @staticmethod
     def _create_choices(item_name):
-        return tuple([(item, item) for item in Item.objects.filter(type__name=item_name, status='Dostępny').all()])
+        return tuple([(item.id, item) for item in Item.objects.filter(type__name=item_name, status='Dostępny').all()])
 
     def get_items_fields(self):
         for field_name in self.fields:

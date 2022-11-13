@@ -219,7 +219,7 @@ class SetTemplateDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(SetTemplateDetailView, self).get_context_data(**kwargs)
-        context['sets'] = Set.objects.filter(set_template_id=self.object.id)
+        context['sets'] = Set.objects.filter(set_template_id=self.object.id).order_by('id')
         return context
 
 

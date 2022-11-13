@@ -107,7 +107,7 @@ class Item(models.Model):
         return False
 
     def __str__(self):
-        return f'({self.id}) item: {self.type.name}'
+        return f'({self.id}) {self.type.name}'
 
 
 class SetTemplate(models.Model):
@@ -128,6 +128,9 @@ class Set(models.Model):
 
     def __str__(self):
         return f'Set object'
+
+    def get_items(self):
+        return self.items.all()
 
 
 class ReservationEvent(models.Model):
