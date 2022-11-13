@@ -76,33 +76,34 @@ class SetForm(forms.ModelForm):
     def __init__(self, set_template_id, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.set_template_id = set_template_id
-        self.item_fields = {}
         items_required = [val for val in SetTemplate.objects.get(id=self.set_template_id).items_required.all()]
         for item_required in items_required:
-            field_name = f"item_{item_required.item_type.name}"
-            print(f"field_name: {field_name}")
-            choices = Item.objects.filter(status='Dostępny', type__name=item_required.item_type.name)
-            print(f"choices: {choices}")
-            self.item_fields[field_name] = forms.MultipleChoiceField(
+            field_name = item_required.item_type.name
+            self.fields[field_name] = forms.MultipleChoiceField(
                 required=True,
                 widget=forms.CheckboxSelectMultiple,
-                choices=choices
+                choices=self._create_choices(item_required.item_type.name)
             )
 
     def clean(self):
         cleaned_data = super(SetForm, self).clean()
+        cleaned_data['items'] = []
+        to_delete = []
         for arg in cleaned_data.items():
-            cleaned_data[arg[0]] = arg[1]
+            if arg[0] not in ['set_status', 'items']:
+                cleaned_data['items'].extend(arg[1])
+                to_delete.append(arg[0])
 
-        print(cleaned_data)
-        cleaned_data['set_template_id'] = self.set_template_id
+        for arg in to_delete:
+            del cleaned_data[arg]
+
         return cleaned_data
-
-    # def save(self, **kwargs):
-    #     set_instance = self.instance
-    #     set_instance.set_status = self.cleaned_data["set_status"]
-    #     set_instance.
 
     class Meta:
         model = Set
         exclude = ['set_template', 'items']
+
+    @staticmethod
+    def _create_choices(item_name):
+        return tuple([(item, item) for item in Item.objects.filter(type__name=item_name, status='Dostępny').all()])
+

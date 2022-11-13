@@ -107,7 +107,7 @@ class Item(models.Model):
         return False
 
     def __str__(self):
-        return f'Item {self.type.name} with status {self.status}'
+        return f'({self.id}) item: {self.type.name}'
 
 
 class SetTemplate(models.Model):
