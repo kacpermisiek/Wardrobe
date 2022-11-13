@@ -39,20 +39,17 @@
     </tr>
   </thead>
   <tbody>
-  {% for item in object.item_instances %}
+  {% for set in sets %}
     <tr class="">
       <td class="align-middle">
-            <p class="fw-normal mb-1">{{item.id}}</p>
+            <p class="fw-normal mb-1">{{set.id}}</p>
       </td>
       <td class="align-middle">
-            <p class="fw-normal mb-1"><a href="{% url 'item-detail' item.id %}">{{ item.type.name }}</a></p>
+            <p class="fw-normal mb-1"><a href="#">{{ set.set_status }}</a></p>
       </td>
 
         <td class="align-middle">
-            <p class="fw-normal mb-1">{{ item.status }}</p>
-        </td>
-        <td class="align-middle">
-            <p class="fw-normal mb-1">{{ item.date_added }}</p>
+            <p class="fw-normal mb-1">{{ set.items }}</p>
         </td>
     </tr>
   {% endfor %}

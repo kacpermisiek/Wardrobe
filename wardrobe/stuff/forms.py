@@ -75,8 +75,9 @@ class SetForm(forms.ModelForm):
 
     def __init__(self, set_template_id, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.set_template_id = set_template_id
         self.item_fields = {}
-        items_required = [val for val in SetTemplate.objects.get(id=set_template_id).items_required.all()]
+        items_required = [val for val in SetTemplate.objects.get(id=self.set_template_id).items_required.all()]
         for item_required in items_required:
             field_name = f"item_{item_required.item_type.name}"
             print(f"field_name: {field_name}")
@@ -88,7 +89,20 @@ class SetForm(forms.ModelForm):
                 choices=choices
             )
 
+    def clean(self):
+        cleaned_data = super(SetForm, self).clean()
+        for arg in cleaned_data.items():
+            cleaned_data[arg[0]] = arg[1]
+
+        print(cleaned_data)
+        cleaned_data['set_template_id'] = self.set_template_id
+        return cleaned_data
+
+    # def save(self, **kwargs):
+    #     set_instance = self.instance
+    #     set_instance.set_status = self.cleaned_data["set_status"]
+    #     set_instance.
+
     class Meta:
         model = Set
-        fields = ['set_status']
-
+        exclude = ['set_template', 'items']

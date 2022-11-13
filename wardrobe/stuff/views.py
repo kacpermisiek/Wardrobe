@@ -217,6 +217,11 @@ class SetTemplateDetailView(LoginRequiredMixin, DetailView):
     model = SetTemplate
     template_name = 'stuff/set_template/details.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(SetTemplateDetailView, self).get_context_data(**kwargs)
+        context['sets'] = Set.objects.filter(set_template_id=self.object.id)
+        return context
+
 
 class SetTemplateDeleteView(UserPassesTestMixin, DeleteView):
     model = SetTemplate
@@ -322,6 +327,10 @@ class SetCreateView(UserPassesTestMixin, CreateView):
         kwargs['set_template_id'] = self.kwargs.get('set_template_id')
         kwargs.update()
         return kwargs
+
+    def form_valid(self, form):
+        form.instance.set_template = SetTemplate.objects.get(id=self.kwargs.get('set_template_id'))
+        return super(SetCreateView, self).form_valid(form)
 
 
 class ItemDetailReservationView(DetailView):
