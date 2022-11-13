@@ -71,7 +71,7 @@ class SetTemplateForm(forms.ModelForm):
 
 
 class SetForm(forms.ModelForm):
-    set_status = forms.BooleanField(required=False)
+    set_status = forms.BooleanField(required=False, label='Czy zestaw został zabrany?')
 
     def __init__(self, set_template_id, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -82,7 +82,8 @@ class SetForm(forms.ModelForm):
             self.fields[field_name] = forms.MultipleChoiceField(
                 required=True,
                 widget=forms.CheckboxSelectMultiple,
-                choices=self._create_choices(item_required.item_type.name)
+                choices=self._create_choices(item_required.item_type.name),
+                label=f"Wybierz {item_required.quantity_required} przedmioty typu {item_required.item_type.name}",
             )
 
     def clean(self):
@@ -111,7 +112,7 @@ class SetForm(forms.ModelForm):
         for field_name in self.fields:
             if self._is_item_field(field_name):
                 yield field_name
-                
+
     @staticmethod
     def _is_item_field(field_name):
         return field_name not in ['set_status', 'items']
