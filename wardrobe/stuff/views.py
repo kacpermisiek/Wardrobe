@@ -1,3 +1,5 @@
+import os.path
+
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -105,6 +107,18 @@ class ItemTemplateUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView
 
     def get_success_url(self):
         return reverse('item-template-detail', kwargs={'pk': self.object.id})
+
+
+class ItemTemplateDeleteView(UserPassesTestMixin, DeleteView):
+    model = ItemTemplate
+    template_name = 'stuff/item_template/confirm_delete.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_success_url(self):
+        messages.success(self.request, "Szablon przedmiotu został usunięty")
+        return '/'
 
 
 class ItemListView(ListView):
@@ -222,6 +236,18 @@ class SetTemplateDeleteView(UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         return self.request.user.is_superuser
+
+
+class SetTemplateUpdateView(UserPassesTestMixin, UpdateView):
+    model = SetTemplate
+    fields = ['name']
+    template_name = 'stuff/set_template/update.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_success_url(self):
+        return os.path.join('/set_template/', str(self.object.id))
 
 
 def add_item_template_to_set_template(request, template_id):

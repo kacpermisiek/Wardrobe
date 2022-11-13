@@ -1,12 +1,13 @@
 from django.urls import path
 from .views import (
     SetListView,
-    SetTemplateListView, SetTemplateCreateView, SetTemplateDetailView, SetTemplateDeleteView,
+    SetTemplateListView, SetTemplateCreateView, SetTemplateDetailView, SetTemplateDeleteView, SetTemplateUpdateView,
     ItemDetailView, ItemCreateView, ItemUpdateView, ItemDeleteView,
     ItemCreateReservationView, ItemDetailReservationView, ItemUpdateReservationView, ItemDeleteReservationView,
     ReservationListView, UserReservationsListView,
     CategoryListView, CategoryDetailView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView,
     ItemTemplateCreateView, ItemTemplateListView, ItemTemplateDetailView, ItemTemplateUpdateView,
+    ItemTemplateDeleteView,
 )
 from . import views
 
@@ -20,11 +21,13 @@ urlpatterns = [
     path('set_template/<int:pk>', SetTemplateDetailView.as_view(), name='set-template-detail'),
     path('set_template/set_current/<int:pk>', views.set_current_set_template, name='set-template-set-current'),
     path('set_template/delete/<int:pk>', SetTemplateDeleteView.as_view(), name='set-template-delete'),
+    path('set_template/update/<int:pk>', SetTemplateUpdateView.as_view(), name='set-template-update'),
 
     path('item_template', ItemTemplateListView.as_view(), name='item-template-list'),
     path('item_template/new', ItemTemplateCreateView.as_view(), name='item-template-create'),
     path('item_template/<int:pk>', ItemTemplateDetailView.as_view(), name='item-template-detail'),
     path('item_template/<int:pk>/update', ItemTemplateUpdateView.as_view(), name='item-template-update'),
+    path('item_template/<int:pk>/delete', ItemTemplateDeleteView.as_view(), name='item-template-delete'),
 
     path('item/new/<int:template_id>', views.item_create, name='item-create'),
     path('item/<int:pk>/', ItemDetailView.as_view(), name='item-detail'),

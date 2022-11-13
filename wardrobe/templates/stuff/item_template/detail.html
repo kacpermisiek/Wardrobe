@@ -25,7 +25,7 @@
             <div class="content-section">
                     <a class="btn btn-outline-success" href="{% url 'item-create' object.id %}">Dodaj przedmiot tego typu</a>
                     <a class="btn btn-outline-info" href="{% url 'item-template-update' object.id %}">Edytuj szablon</a>
-                    <a class="btn btn-outline-danger" href="#">Usuń szablon</a>
+                    <a class="btn btn-outline-danger" href="{% url 'item-template-delete' object.id %}">Usuń szablon</a>
             </div>
 
             <div class="content-section">
