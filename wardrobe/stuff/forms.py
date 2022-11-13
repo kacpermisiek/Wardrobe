@@ -90,7 +90,7 @@ class SetForm(forms.ModelForm):
         cleaned_data['items'] = []
         to_delete = []
         for arg in cleaned_data.items():
-            if arg[0] not in ['set_status', 'items']:
+            if self._is_item_field(arg[0]):
                 cleaned_data['items'].extend(arg[1])
                 to_delete.append(arg[0])
 
@@ -106,4 +106,13 @@ class SetForm(forms.ModelForm):
     @staticmethod
     def _create_choices(item_name):
         return tuple([(item, item) for item in Item.objects.filter(type__name=item_name, status='Dostępny').all()])
+
+    def get_items_fields(self):
+        for field_name in self.fields:
+            if self._is_item_field(field_name):
+                yield field_name
+                
+    @staticmethod
+    def _is_item_field(field_name):
+        return field_name not in ['set_status', 'items']
 
