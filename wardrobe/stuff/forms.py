@@ -1,7 +1,7 @@
 from collections import namedtuple
 from django import forms
 from datetime import datetime
-from .models import ReservationEvent, Item, SetTemplate, ItemRequired
+from .models import ReservationEvent, Item, SetTemplate, ItemRequired, Set
 
 
 class ItemReservationForm(forms.ModelForm):
@@ -68,3 +68,27 @@ class SetTemplateForm(forms.ModelForm):
     class Meta:
         model = SetTemplate
         fields = ['name']
+
+
+class SetForm(forms.ModelForm):
+    set_status = forms.BooleanField(required=False)
+
+    def __init__(self, set_template_id, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.item_fields = {}
+        items_required = [val for val in SetTemplate.objects.get(id=set_template_id).items_required.all()]
+        for item_required in items_required:
+            field_name = f"item_{item_required.item_type.name}"
+            print(f"field_name: {field_name}")
+            choices = Item.objects.filter(status='Dostępny', type__name=item_required.item_type.name)
+            print(f"choices: {choices}")
+            self.item_fields[field_name] = forms.MultipleChoiceField(
+                required=True,
+                widget=forms.CheckboxSelectMultiple,
+                choices=choices
+            )
+
+    class Meta:
+        model = Set
+        fields = ['set_status']
+

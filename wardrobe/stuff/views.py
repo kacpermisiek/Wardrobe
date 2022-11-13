@@ -1,14 +1,11 @@
 import os.path
-
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse
-
-from users.models import Profile
 from .models import (
     Item,
     Category,
@@ -18,7 +15,7 @@ from .models import (
     ItemTemplate,
     ItemRequired
 )
-from .forms import ItemReservationForm, SetTemplateForm
+from .forms import ItemReservationForm, SetTemplateForm, SetForm
 
 
 def home(request):
@@ -198,14 +195,6 @@ def about(request):
     return render(request, 'stuff/about.html', context)
 
 
-class SetListView(ListView):
-    model = Set
-    context_object_name = 'stuff'
-    ordering = ['set_status']
-    template_name = 'stuff/home.html'
-    paginate_by = 6
-
-
 class SetTemplateListView(ListView):
     model = SetTemplate
     ordering = ['name']
@@ -314,6 +303,25 @@ def decrement_required_item_quantity(request, template_id):
         messages.success(request, "Potrzebna ilość do tego szablonu została zmniejszona")
         return home(request)
     return Http404
+
+
+class SetCreateView(UserPassesTestMixin, CreateView):
+    model = Set
+    template_name = 'stuff/set/create.html'
+    success_url = '/'
+    form_class = SetForm
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_success_url(self):
+        return reverse('set-template-detail', kwargs={'pk': self.object.set_template.id})
+
+    def get_form_kwargs(self):
+        kwargs = super(SetCreateView, self).get_form_kwargs()
+        kwargs['set_template_id'] = self.kwargs.get('set_template_id')
+        kwargs.update()
+        return kwargs
 
 
 class ItemDetailReservationView(DetailView):
