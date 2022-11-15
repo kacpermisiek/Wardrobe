@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (
-    SetCreateView,
+    SetCreateView, SetDetailView, SetDeleteView,
     SetTemplateListView, SetTemplateCreateView, SetTemplateDetailView, SetTemplateDeleteView, SetTemplateUpdateView,
     ItemDetailView, ItemCreateView, ItemUpdateView, ItemDeleteView,
     ItemCreateReservationView, ItemDetailReservationView, ItemUpdateReservationView, ItemDeleteReservationView,
@@ -24,6 +24,8 @@ urlpatterns = [
     path('set_template/update/<int:pk>', SetTemplateUpdateView.as_view(), name='set-template-update'),
 
     path('set/new/<int:set_template_id>', SetCreateView.as_view(), name='set-create'),
+    path('set/detail/<int:pk>', SetDetailView.as_view(), name='set-detail'),
+    path('set/delete/<int:pk>', SetDeleteView.as_view(), name='set-delete'),
 
     path('item_template', ItemTemplateListView.as_view(), name='item-template-list'),
     path('item_template/new', ItemTemplateCreateView.as_view(), name='item-template-create'),

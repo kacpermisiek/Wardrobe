@@ -1,0 +1,18 @@
+{% extends "stuff/base.html" %}
+{% block content %}
+
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Usuwanie zestawu</legend>
+                <h2>Jesteś pewien, że chcesz usunąć zestaw {{ object.set_template.name }}?</h2>
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-danger" type="submit">Tak, usuń szablon</button>
+                <a class="btn btn-outline-secondary" href="{% url 'set-detail' object.id %}">Anuluj</a>
+            </div>
+
+        </form>
+    </div>
+{% endblock content %}

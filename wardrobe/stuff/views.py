@@ -333,6 +333,30 @@ class SetCreateView(UserPassesTestMixin, CreateView):
         return super(SetCreateView, self).form_valid(form)
 
 
+class SetDetailView(DetailView):
+    model = Set
+    template_name = 'stuff/set/detail.html'
+
+
+class SetDeleteView(UserPassesTestMixin, DeleteView):
+    model = Set
+    template_name = 'stuff/set/confirm_delete.html'
+
+    def form_valid(self, form):
+        deleted_set = self.get_object()
+        items_belongs_to_set = deleted_set.items.all()
+        for item in items_belongs_to_set:
+            item.belongs_to_set = False
+            item.save()
+        return super(SetDeleteView, self).form_valid(form)
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_success_url(self):
+        return reverse('set-template-detail', kwargs={'pk': self.object.set_template.id})
+
+
 class ItemDetailReservationView(DetailView):
     model = ReservationEvent
 

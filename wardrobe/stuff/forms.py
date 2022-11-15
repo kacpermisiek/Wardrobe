@@ -71,7 +71,6 @@ class SetTemplateForm(forms.ModelForm):
 
 
 class SetForm(forms.ModelForm):
-    set_status = forms.BooleanField(required=False, label='Czy zestaw został zabrany?')
     items = forms.CharField(required=False, widget=forms.HiddenInput())
 
     def __init__(self, set_template_id, *args, **kwargs):
@@ -104,7 +103,7 @@ class SetForm(forms.ModelForm):
 
     class Meta:
         model = Set
-        exclude = ['set_template']
+        exclude = ['set_template', 'set_status']
 
     @staticmethod
     def _create_choices(item_name):
@@ -117,7 +116,7 @@ class SetForm(forms.ModelForm):
 
     @staticmethod
     def _is_item_field(field_name):
-        return field_name not in ['set_status', 'items']
+        return field_name not in ['items']
 
     def save(self, **kwargs):
         items_ids = self.cleaned_data['items']
