@@ -108,7 +108,7 @@ class SetForm(forms.ModelForm):
 
     @staticmethod
     def _create_choices(item_name):
-        return tuple([(item.id, item) for item in Item.objects.filter(type__name=item_name, status='Dostępny').all()])
+        return tuple([(item.id, item) for item in Item.objects.filter(type__name=item_name, belongs_to_set=False).all()])
 
     def get_items_fields(self):
         for field_name in self.fields:
@@ -118,4 +118,12 @@ class SetForm(forms.ModelForm):
     @staticmethod
     def _is_item_field(field_name):
         return field_name not in ['set_status', 'items']
+
+    def save(self, **kwargs):
+        items_ids = self.cleaned_data['items']
+        items = [Item.objects.get(id=item_id) for item_id in items_ids]
+        for item in items:
+            item.belongs_to_set = True
+            item.save()
+        return super(SetForm, self).save(**kwargs)
 

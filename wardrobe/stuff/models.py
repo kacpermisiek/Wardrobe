@@ -71,7 +71,41 @@ class ItemRequired(models.Model):
 
 class Item(models.Model):
     type = models.ForeignKey(ItemTemplate, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, choices=_get_statuses(), default='Dostępny')
     date_added = models.DateField(default=now)
+    belongs_to_set = models.BooleanField(default=False)
+
+    @property
+    def badge_status(self):
+        return {'Dostępny': 'success',
+                'Uszkodzony': 'danger',
+                'Zarezerwowany': 'info',
+                'Zabrany': 'dark'}[self.final_status]
+
+    @property
+    def final_status(self):
+        return 'Zabrany' if self._is_taken() else 'Zarezerwowany' if self._is_between_dates() else self.status
+
+    @property
+    def reservations(self):
+        result = []
+        reservations = ReservationEvent.objects.all()
+        for reservation in reservations:
+            if self in reservation.items:
+                result.append(reservation)
+        return result
+
+    def _is_between_dates(self):
+        for reservation in self.reservations:
+            if reservation.is_current:
+                return True
+        return False
+
+    def _is_taken(self):
+        for reservation in self.reservations:
+            if reservation.taken:
+                return True
+        return False
 
     def __str__(self):
         return f'({self.id}) {self.type.name}'
@@ -99,38 +133,6 @@ class Set(models.Model):
 
     def get_items(self):
         return self.items.all()
-
-    # @property
-    # def badge_status(self):
-    #     return {'Dostępny': 'success',
-    #             'Uszkodzony': 'danger',
-    #             'Zarezerwowany': 'info',
-    #             'Zabrany': 'dark'}[self.final_status]
-    #
-    # @property
-    # def final_status(self):
-    #     return 'Zabrany' if self._is_taken() else 'Zarezerwowany' if self._is_between_dates() else self.status
-    #
-    # @property
-    # def reservations(self):
-    #     result = []
-    #     reservations = ReservationEvent.objects.all()
-    #     for reservation in reservations:
-    #         if self in reservation.items:
-    #             result.append(reservation)
-    #     return result
-    #
-    # def _is_between_dates(self):
-    #     for reservation in self.reservations:
-    #         if reservation.is_current:
-    #             return True
-    #     return False
-    #
-    # def _is_taken(self):
-    #     for reservation in self.reservations:
-    #         if reservation.taken:
-    #             return True
-    #     return False
 
 
 class ReservationEvent(models.Model):
