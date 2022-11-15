@@ -5,7 +5,7 @@
 {% block content %}
     {% if user.is_authenticated %}
         <div class="content-section">
-            Nazwa: <h1>{{ object.set_template.name }}</h1>
+            Nazwa szablonu zestawu: <h1>{{ object.set_template.name }}</h1>
             Id: <h1>{{ object.id }}</h1>
             Przedmioty w tym zestawie:
             <ul>
@@ -18,7 +18,7 @@
             <div class="content-section">
             <a class="btn btn-outline-success" href="#">Zarezerwuj zestaw</a>
             {% if user.is_superuser %}
-                    <a class="btn btn-outline-info" href="#">Edytuj zestaw</a>
+                    <a class="btn btn-outline-info" href="{% url 'set-update' object.id %}">Edytuj zestaw</a>
                     <a class="btn btn-outline-danger" href="{% url 'set-delete' object.id %}">Usuń zestaw</a>
             </div>
 

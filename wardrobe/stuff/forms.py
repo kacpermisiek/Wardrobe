@@ -1,7 +1,9 @@
 from collections import namedtuple
+from itertools import chain
 from django import forms
+from django.db.models import Q
 from datetime import datetime
-from .models import ReservationEvent, Item, SetTemplate, ItemRequired, Set
+from .models import ReservationEvent, Item, SetTemplate, Set
 
 
 class ItemReservationForm(forms.ModelForm):
@@ -71,11 +73,17 @@ class SetTemplateForm(forms.ModelForm):
 
 
 class SetForm(forms.ModelForm):
+
     items = forms.CharField(required=False, widget=forms.HiddenInput())
 
-    def __init__(self, set_template_id, *args, **kwargs):
+    def __init__(self, set_template_id=None, set_id=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.set_template_id = set_template_id
+        self.create_mode = set_id is None
+        self.set_template_id = set_template_id if self.create_mode else Set.objects.get(id=set_id).set_template.id
+
+        if not self.create_mode:
+            self.current_items = Set.objects.get(id=set_id).items.all()
+
         items_required = [val for val in SetTemplate.objects.get(id=self.set_template_id).items_required.all()]
         for item_required in items_required:
             field_name = item_required.item_type.name
@@ -105,9 +113,12 @@ class SetForm(forms.ModelForm):
         model = Set
         exclude = ['set_template', 'set_status']
 
-    @staticmethod
-    def _create_choices(item_name):
-        return tuple([(item.id, item) for item in Item.objects.filter(type__name=item_name, belongs_to_set=False).all()])
+    def _create_choices(self, item_name):
+        available_items = Item.objects.filter(type__name=item_name, belongs_to_set=False).all()
+        if not self.create_mode:
+            available_items = list(chain(available_items, self.current_items.filter(type__name=item_name)))
+
+        return tuple([(item.id, item) for item in available_items])
 
     def get_items_fields(self):
         for field_name in self.fields:
@@ -125,4 +136,3 @@ class SetForm(forms.ModelForm):
             item.belongs_to_set = True
             item.save()
         return super(SetForm, self).save(**kwargs)
-

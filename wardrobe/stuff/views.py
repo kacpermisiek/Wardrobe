@@ -357,7 +357,23 @@ class SetDeleteView(UserPassesTestMixin, DeleteView):
         return reverse('set-template-detail', kwargs={'pk': self.object.set_template.id})
 
 
-class ItemDetailReservationView(DetailView):
+class SetUpdateView(UserPassesTestMixin, UpdateView):
+    model = Set
+    template_name = 'stuff/set/create.html'
+
+    form_class = SetForm
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_form_kwargs(self):
+        kwargs = super(SetUpdateView, self).get_form_kwargs()
+        kwargs['set_id'] = self.kwargs.get('pk')
+        kwargs.update()
+        return kwargs
+
+
+class ItemDetailReservationView(LoginRequiredMixin, DetailView):
     model = ReservationEvent
 
     template_name = 'reservation/reservation_detail.html'

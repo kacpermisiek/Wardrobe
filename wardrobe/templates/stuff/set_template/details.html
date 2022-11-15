@@ -3,6 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+    <div>
     {% if user.is_authenticated %}
         <div class="content-section">
             Nazwa: <h1>{{ object.name }}</h1>
@@ -24,7 +25,9 @@
                     <a class="btn btn-outline-info" href="{% url 'set-template-update' object.id %}">Edytuj szablon</a>
                     <a class="btn btn-outline-danger" href="{% url 'set-template-delete' object.id %}">Usuń szablon</a>
             </div>
+            {% endif %}
 
+     {% if user.is_authenticated %}
             <div class="content-section">
                 <h2>Lista zestawów tego typu</h2>
 
@@ -62,10 +65,11 @@
   {% endfor %}
   </tbody>
 </table>
-
-        {% endif %}
+            </div>
         </div>
+         {% endif %}
         {% else %}
+
             <h1> Zaloguj się, aby otrzymać dostęp do strony!</h1>
         {% endif %}
 {% endblock content %}
