@@ -1,7 +1,9 @@
 from collections import namedtuple
+from itertools import chain
 from django import forms
+from django.db.models import Q
 from datetime import datetime
-from .models import ReservationEvent, Item, SetTemplate, ItemRequired
+from .models import ReservationEvent, Item, SetTemplate, Set
 
 
 class ItemReservationForm(forms.ModelForm):
@@ -68,3 +70,76 @@ class SetTemplateForm(forms.ModelForm):
     class Meta:
         model = SetTemplate
         fields = ['name']
+
+
+class SetForm(forms.ModelForm):
+
+    items = forms.CharField(required=False, widget=forms.HiddenInput())
+
+    def __init__(self, set_template_id=None, set_id=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.create_mode = set_id is None
+        self.set_template_id = set_template_id if self.create_mode else Set.objects.get(id=set_id).set_template.id
+        self.current_items = Set.objects.get(id=set_id).items.all() if not self.create_mode else []
+
+        items_required = [val for val in SetTemplate.objects.get(id=self.set_template_id).items_required.all()]
+        for item_required in items_required:
+            field_name = item_required.item_type.name
+            self.fields[field_name] = forms.MultipleChoiceField(
+                required=True,
+                widget=forms.CheckboxSelectMultiple,
+                choices=self._create_choices(item_required.item_type.name),
+                label=f"Wybierz {item_required.quantity_required} przedmioty typu {item_required.item_type.name}",
+                initial=self._get_initial_checks(item_required.item_type.name)
+            )
+
+    def clean(self):
+        cleaned_data = super(SetForm, self).clean()
+        cleaned_data['items'] = []
+        to_delete = []
+        for arg in cleaned_data.items():
+            if self._is_item_field(arg[0]):
+                cleaned_data['items'].extend(arg[1])
+                to_delete.append(arg[0])
+
+        for arg in to_delete:
+            del cleaned_data[arg]
+
+        cleaned_data['set_template'] = SetTemplate.objects.get(id=self.set_template_id)
+        return cleaned_data
+
+    class Meta:
+        model = Set
+        exclude = ['set_template', 'set_status']
+
+    def _create_choices(self, item_name):
+        available_items = Item.objects.filter(type__name=item_name, belongs_to_set=False).all()
+        if not self.create_mode:
+            available_items = list(chain(available_items, self.current_items.filter(type__name=item_name)))
+
+        return tuple([(item.id, item) for item in available_items])
+
+    def _get_initial_checks(self, item_name):
+        return [] if self.create_mode else [item.id for item in self.current_items.filter(type__name=item_name).all()]
+
+    def get_items_fields(self):
+        for field_name in self.fields:
+            if self._is_item_field(field_name):
+                yield field_name
+
+    @staticmethod
+    def _is_item_field(field_name):
+        return field_name not in ['items']
+
+    def save(self, **kwargs):
+        items_for_set_ids = self.cleaned_data['items']
+        items_for_set = [Item.objects.get(id=item_id) for item_id in items_for_set_ids]
+        self._set_belong_to_property(self.current_items, False)
+        self._set_belong_to_property(items_for_set, True)
+        return super(SetForm, self).save(**kwargs)
+
+    @staticmethod
+    def _set_belong_to_property(items_list, value):
+        for item in items_list:
+            item.belongs_to_set = value
+            item.save()

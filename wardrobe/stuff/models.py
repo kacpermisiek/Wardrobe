@@ -73,6 +73,7 @@ class Item(models.Model):
     type = models.ForeignKey(ItemTemplate, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=_get_statuses(), default='Dostępny')
     date_added = models.DateField(default=now)
+    belongs_to_set = models.BooleanField(default=False)
 
     @property
     def badge_status(self):
@@ -107,7 +108,7 @@ class Item(models.Model):
         return False
 
     def __str__(self):
-        return f'Item {self.type.name} with status {self.status}'
+        return f'({self.id}) {self.type.name}'
 
 
 class SetTemplate(models.Model):
@@ -122,12 +123,16 @@ class Set(models.Model):
     items = models.ManyToManyField(Item)
     set_template = models.ForeignKey(SetTemplate, on_delete=models.CASCADE)
     set_status = models.CharField(max_length=20, default='Dostępny')
+    description = models.TextField(blank=True, null=True)
 
     class Meta:
         ordering = ['set_status']
 
     def __str__(self):
         return f'Set object'
+
+    def get_items(self):
+        return self.items.all()
 
 
 class ReservationEvent(models.Model):

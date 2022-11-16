@@ -1,14 +1,11 @@
 import os.path
-
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse
-
-from users.models import Profile
 from .models import (
     Item,
     Category,
@@ -18,7 +15,7 @@ from .models import (
     ItemTemplate,
     ItemRequired
 )
-from .forms import ItemReservationForm, SetTemplateForm
+from .forms import ItemReservationForm, SetTemplateForm, SetForm
 
 
 def home(request):
@@ -198,14 +195,6 @@ def about(request):
     return render(request, 'stuff/about.html', context)
 
 
-class SetListView(ListView):
-    model = Set
-    context_object_name = 'stuff'
-    ordering = ['set_status']
-    template_name = 'stuff/home.html'
-    paginate_by = 6
-
-
 class SetTemplateListView(ListView):
     model = SetTemplate
     ordering = ['name']
@@ -227,6 +216,11 @@ class SetTemplateCreateView(UserPassesTestMixin, CreateView):
 class SetTemplateDetailView(LoginRequiredMixin, DetailView):
     model = SetTemplate
     template_name = 'stuff/set_template/details.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SetTemplateDetailView, self).get_context_data(**kwargs)
+        context['sets'] = Set.objects.filter(set_template_id=self.object.id).order_by('id')
+        return context
 
 
 class SetTemplateDeleteView(UserPassesTestMixin, DeleteView):
@@ -316,7 +310,73 @@ def decrement_required_item_quantity(request, template_id):
     return Http404
 
 
-class ItemDetailReservationView(DetailView):
+class SetCreateView(UserPassesTestMixin, CreateView):
+    model = Set
+    template_name = 'stuff/set/create.html'
+    success_url = '/'
+    form_class = SetForm
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_success_url(self):
+        return reverse('set-template-detail', kwargs={'pk': self.object.set_template.id})
+
+    def get_form_kwargs(self):
+        kwargs = super(SetCreateView, self).get_form_kwargs()
+        kwargs['set_template_id'] = self.kwargs.get('set_template_id')
+        kwargs.update()
+        return kwargs
+
+    def form_valid(self, form):
+        form.instance.set_template = SetTemplate.objects.get(id=self.kwargs.get('set_template_id'))
+        return super(SetCreateView, self).form_valid(form)
+
+
+class SetDetailView(DetailView):
+    model = Set
+    template_name = 'stuff/set/detail.html'
+
+
+class SetDeleteView(UserPassesTestMixin, DeleteView):
+    model = Set
+    template_name = 'stuff/set/confirm_delete.html'
+
+    def form_valid(self, form):
+        deleted_set = self.get_object()
+        items_belongs_to_set = deleted_set.items.all()
+        for item in items_belongs_to_set:
+            item.belongs_to_set = False
+            item.save()
+        return super(SetDeleteView, self).form_valid(form)
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_success_url(self):
+        return reverse('set-template-detail', kwargs={'pk': self.object.set_template.id})
+
+
+class SetUpdateView(UserPassesTestMixin, UpdateView):
+    model = Set
+    template_name = 'stuff/set/create.html'
+
+    form_class = SetForm
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def get_form_kwargs(self):
+        kwargs = super(SetUpdateView, self).get_form_kwargs()
+        kwargs['set_id'] = self.kwargs.get('pk')
+        kwargs.update()
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('set-template-detail', kwargs={'pk': self.object.set_template.id})
+
+
+class ItemDetailReservationView(LoginRequiredMixin, DetailView):
     model = ReservationEvent
 
     template_name = 'reservation/reservation_detail.html'

@@ -1,8 +1,6 @@
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.dispatch import receiver
-
-from stuff.models import SetTemplate
 from .models import Profile
 
 
