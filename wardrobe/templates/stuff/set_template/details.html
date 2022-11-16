@@ -3,6 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+    <div>
     {% if user.is_authenticated %}
         <div class="content-section">
             Nazwa: <h1>{{ object.name }}</h1>
@@ -18,49 +19,57 @@
         </div>
 
             <div class="content-section">
-            <a class="btn btn-outline-success" href="#">Zarezerwuj zestaw</a>
             {% if user.is_superuser %}
+                    <a class="btn btn-outline-primary" href="{% url 'set-create' object.id %}">Dodaj taki zestaw</a>
                     <a class="btn btn-outline-primary" href="{% url 'set-template-set-current' object.id %}">Ustaw jako aktualnie edytowany</a>
                     <a class="btn btn-outline-info" href="{% url 'set-template-update' object.id %}">Edytuj szablon</a>
                     <a class="btn btn-outline-danger" href="{% url 'set-template-delete' object.id %}">Usuń szablon</a>
             </div>
+            {% endif %}
 
+     {% if user.is_authenticated %}
             <div class="content-section">
-                <h2>Lista przedmiotów tego typu</h2>
+                <h2>Lista zestawów tego typu</h2>
 
                     <table class="table align-middle mb-0 bg-white table-hover">
   <thead class="thead-dark">
     <tr>
       <th>id</th>
-      <th>Nazwa</th>
+      <th>Przedmioty</th>
       <th>Status</th>
-      <th>Data Dodania</th>
+        <th>Szczegóły</th>
     </tr>
   </thead>
   <tbody>
-  {% for item in object.item_instances %}
+  {% for set in sets %}
     <tr class="">
       <td class="align-middle">
-            <p class="fw-normal mb-1">{{item.id}}</p>
+            <p class="fw-normal mb-1">{{set.id}}</p>
       </td>
       <td class="align-middle">
-            <p class="fw-normal mb-1"><a href="{% url 'item-detail' item.id %}">{{ item.type.name }}</a></p>
+            <ul>
+              {% for item in set.get_items %}
+                  <li>{{ item }}</li>
+              {% endfor %}
+            </ul>
       </td>
 
         <td class="align-middle">
-            <p class="fw-normal mb-1">{{ item.status }}</p>
+            <p class="fw-normal mb-1">{{ set.set_status }}</p>
         </td>
+
         <td class="align-middle">
-            <p class="fw-normal mb-1">{{ item.date_added }}</p>
+            <p class="fw-normal mb-1"><a href="{% url 'set-detail' set.id %}">Szczegóły</a> </p>
         </td>
     </tr>
   {% endfor %}
   </tbody>
 </table>
-
-        {% endif %}
+            </div>
         </div>
+         {% endif %}
         {% else %}
+
             <h1> Zaloguj się, aby otrzymać dostęp do strony!</h1>
         {% endif %}
 {% endblock content %}

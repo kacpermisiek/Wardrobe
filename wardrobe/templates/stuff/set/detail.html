@@ -1,0 +1,61 @@
+{% extends "stuff/base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <div class="content-section">
+            Nazwa szablonu zestawu: <h1>{{ object.set_template.name }}</h1>
+            Id: <h1>{{ object.id }}</h1>
+            Przedmioty w tym zestawie:
+            <ul>
+              {% for item in object.items.all %}
+                  <li>{{ item.type.name }} ({{ item.type.category.name }})</li>
+              {% endfor %}
+            </ul>
+        </div>
+
+            <div class="content-section">
+            <a class="btn btn-outline-success" href="#">Zarezerwuj zestaw</a>
+            {% if user.is_superuser %}
+                    <a class="btn btn-outline-info" href="{% url 'set-update' object.id %}">Edytuj zestaw</a>
+                    <a class="btn btn-outline-danger" href="{% url 'set-delete' object.id %}">Usuń zestaw</a>
+            </div>
+
+            <div class="content-section">
+                <h2>Lista rezerwacji tego zestawu</h2>
+                {#                TODO: Align table for reservations #}
+
+                    <table class="table align-middle mb-0 bg-white table-hover">
+  <thead class="thead-dark">
+    <tr>
+      <th>id</th>
+      <th>Nazwa</th>
+      <th>Status</th>
+      <th>Data Dodania</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for set in sets %}
+    <tr class="">
+      <td class="align-middle">
+            <p class="fw-normal mb-1">{{set.id}}</p>
+      </td>
+      <td class="align-middle">
+            <p class="fw-normal mb-1"><a href="#">{{ set.set_status }}</a></p>
+      </td>
+
+        <td class="align-middle">
+            <p class="fw-normal mb-1">{{ set.items }}</p>
+        </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+        {% endif %}
+        </div>
+        {% else %}
+            <h1> Zaloguj się, aby otrzymać dostęp do strony!</h1>
+        {% endif %}
+{% endblock content %}
