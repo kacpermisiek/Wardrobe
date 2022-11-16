@@ -372,6 +372,9 @@ class SetUpdateView(UserPassesTestMixin, UpdateView):
         kwargs.update()
         return kwargs
 
+    def get_success_url(self):
+        return reverse('set-template-detail', kwargs={'pk': self.object.set_template.id})
+
 
 class ItemDetailReservationView(LoginRequiredMixin, DetailView):
     model = ReservationEvent
