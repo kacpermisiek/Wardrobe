@@ -15,7 +15,7 @@ from .models import (
     ItemTemplate,
     ItemRequired
 )
-from .forms import ItemReservationForm, SetTemplateForm, SetForm
+from .forms import ReservationForm, SetTemplateForm, SetForm
 
 
 def home(request):
@@ -379,36 +379,36 @@ class SetUpdateView(UserPassesTestMixin, UpdateView):
 class ItemDetailReservationView(LoginRequiredMixin, DetailView):
     model = ReservationEvent
 
-    template_name = 'reservation/reservation_detail.html'
+    template_name = 'reservation/detail.html'
     pk_url_kwarg = 'id'
 
 
-class ItemCreateReservationView(LoginRequiredMixin, CreateView):
+class ReservationCreateView(LoginRequiredMixin, CreateView):
     model = ReservationEvent
-    template_name = 'reservation/reservation_create.html'
+    template_name = 'reservation/create.html'
     success_url = '/'
-    form_class = ItemReservationForm
+    form_class = ReservationForm
 
     def get_form(self, **kwargs):
-        form = super(ItemCreateReservationView, self).get_form(self.form_class)
-        form.instance.item = get_object_or_404(Item, id=self.kwargs.get('pk'))
+        form = super(ReservationCreateView, self).get_form(self.form_class)
+        form.instance.set = get_object_or_404(Set, id=self.kwargs.get('set_id'))
         return form
 
     def get_form_kwargs(self):
-        kwargs = super(ItemCreateReservationView, self).get_form_kwargs()
+        kwargs = super(ReservationCreateView, self).get_form_kwargs()
         kwargs.update(self.kwargs)
         return kwargs
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super(ItemCreateReservationView, self).form_valid(form)
+        return super(ReservationCreateView, self).form_valid(form)
 
 
 class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = ReservationEvent
-    template_name = 'reservation/reservation_update.html'
+    template_name = 'reservation/update.html'
     success_url = '/item/reservations/'
-    form_class = ItemReservationForm
+    form_class = ReservationForm
     pk_url_kwarg = 'id'
 
     def test_func(self):
@@ -450,7 +450,7 @@ class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateV
 class ItemDeleteReservationView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = ReservationEvent
     success_url = '/item/reservations/'
-    template_name = 'reservation/reservation_delete.html'
+    template_name = 'reservation/delete.html'
     pk_url_kwarg = 'id'
 
     def test_func(self):

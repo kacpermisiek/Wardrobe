@@ -125,6 +125,10 @@ class Set(models.Model):
     set_status = models.CharField(max_length=20, default='Dostępny')
     description = models.TextField(blank=True, null=True)
 
+    @property
+    def reservations(self):
+        return ReservationEvent.objects.filter(set_id=self.id).all
+
     class Meta:
         ordering = ['set_status']
 

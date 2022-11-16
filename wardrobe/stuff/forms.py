@@ -6,21 +6,21 @@ from datetime import datetime
 from .models import ReservationEvent, Item, SetTemplate, Set
 
 
-class ItemReservationForm(forms.ModelForm):
+class ReservationForm(forms.ModelForm):
     date_range = forms.CharField()
     taken = forms.BooleanField(required=False)
 
-    def __init__(self, pk, id=None, *args, **kwargs):
-        super(ItemReservationForm, self).__init__(*args, **kwargs)
-        self.item_id = pk
-        self.reservation_id = id
+    def __init__(self, reservation_id=None, set_id=None, *args, **kwargs):
+        super(ReservationForm, self).__init__(*args, **kwargs)
+        self.set_id = set_id
+        self.reservation_id = reservation_id
 
     class Meta:
         model = ReservationEvent
         fields = ['start_date', 'end_date', 'taken']
 
     def clean(self):
-        cleaned_data = super(ItemReservationForm, self).clean()
+        cleaned_data = super(ReservationForm, self).clean()
         if not cleaned_data.get('taken'):
             cleaned_data['taken'] = False
 
@@ -51,12 +51,13 @@ class ItemReservationForm(forms.ModelForm):
             earliest_end, latest_start = self._get_timestamp(r1, r2)
             delta = (earliest_end - latest_start).days + 1
             if delta > 0:
+                print('elo')
                 self.add_error('date_range', f'Nie można dokonać rezerwacji w tym terminie. '
                                              f'Ktoś zarezerwował ten przedmiot w terminie '
                                              f'{reservation.start_date} - {reservation.end_date}')
 
     def _get_reservations(self):
-        result = ReservationEvent.objects.filter(item=Item.objects.get(id=self.item_id))
+        result = ReservationEvent.objects.filter(set=Set.objects.get(id=self.set_id))
         return result.exclude(pk=self.reservation_id) if self.reservation_id else result
 
     @staticmethod

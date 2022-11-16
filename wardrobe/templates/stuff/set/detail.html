@@ -16,7 +16,7 @@
         </div>
 
             <div class="content-section">
-            <a class="btn btn-outline-success" href="#">Zarezerwuj zestaw</a>
+            <a class="btn btn-outline-success" href="{% url 'reservation-create' object.id %}">Zarezerwuj zestaw</a>
             {% if user.is_superuser %}
                     <a class="btn btn-outline-info" href="{% url 'set-update' object.id %}">Edytuj zestaw</a>
                     <a class="btn btn-outline-danger" href="{% url 'set-delete' object.id %}">Usuń zestaw</a>
@@ -24,7 +24,6 @@
 
             <div class="content-section">
                 <h2>Lista rezerwacji tego zestawu</h2>
-                {#                TODO: Align table for reservations #}
 
                     <table class="table align-middle mb-0 bg-white table-hover">
   <thead class="thead-dark">
@@ -36,17 +35,17 @@
     </tr>
   </thead>
   <tbody>
-  {% for set in sets %}
+  {% for reservation in object.reservations %}
     <tr class="">
       <td class="align-middle">
-            <p class="fw-normal mb-1">{{set.id}}</p>
+            <p class="fw-normal mb-1">{{reservation.id}}</p>
       </td>
       <td class="align-middle">
-            <p class="fw-normal mb-1"><a href="#">{{ set.set_status }}</a></p>
+            <p class="fw-normal mb-1"><a href="#">{{ reservation.start_date }}</a></p>
       </td>
 
         <td class="align-middle">
-            <p class="fw-normal mb-1">{{ set.items }}</p>
+            <p class="fw-normal mb-1">{{ reservation.end_date }}</p>
         </td>
     </tr>
   {% endfor %}
