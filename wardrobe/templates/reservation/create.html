@@ -12,6 +12,12 @@
         }
     </style>
 
+    {% if form.errors.date_range %}
+    <div class="alert alert-danger" role="alert">
+        {{ form.errors.date_range }}
+    </div>
+    {% endif %}
+
     <div class="content-section">
         <form method="POST">
             {% csrf_token %}
@@ -22,7 +28,9 @@
             </br></br>
 
                  <input type="checkbox" data-toggle="toggle" data-onstyle="primary" data-on="Tak" data-off="Nie"
-                        name="taken" value="True">
+                        name="taken" value="True"
+
+                 >
                 <label>Czy zestaw został zabrany?</label>
             </fieldset>
             <div class="form-group">

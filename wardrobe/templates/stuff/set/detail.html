@@ -13,6 +13,10 @@
                   <li>{{ item.type.name }} ({{ item.type.category.name }})</li>
               {% endfor %}
             </ul>
+        {% if object.description %}
+            <h3>Dodatkowy opis: </h3>
+            {{ object.description }}
+        {% endif %}
         </div>
 
             <div class="content-section">
@@ -41,7 +45,7 @@
             <p class="fw-normal mb-1">{{reservation.id}}</p>
       </td>
       <td class="align-middle">
-            <p class="fw-normal mb-1"><a href="#">{{ reservation.start_date }}</a></p>
+            <p class="fw-normal mb-1">{{ reservation.start_date }}</p>
       </td>
 
         <td class="align-middle">
