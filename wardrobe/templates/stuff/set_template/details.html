@@ -14,8 +14,6 @@
                   <li>{{ item.item_type.name }} ({{ item.quantity_required }})</li>
               {% endfor %}
             </ul>
-
-
         </div>
 
             <div class="content-section">
@@ -24,9 +22,9 @@
                     <a class="btn btn-outline-primary" href="{% url 'set-template-set-current' object.id %}">Ustaw jako aktualnie edytowany</a>
                     <a class="btn btn-outline-info" href="{% url 'set-template-update' object.id %}">Edytuj szablon</a>
                     <a class="btn btn-outline-danger" href="{% url 'set-template-delete' object.id %}">Usuń szablon</a>
-            </div>
-            {% endif %}
 
+            {% endif %}
+            </div>
      {% if user.is_authenticated %}
             <div class="content-section">
                 <h2>Lista zestawów tego typu</h2>
@@ -72,4 +70,6 @@
 
             <h1> Zaloguj się, aby otrzymać dostęp do strony!</h1>
         {% endif %}
+    <div>
+    </div>
 {% endblock content %}
