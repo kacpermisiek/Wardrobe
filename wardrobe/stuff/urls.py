@@ -3,7 +3,7 @@ from .views import (
     SetCreateView, SetDetailView, SetDeleteView, SetUpdateView,
     SetTemplateListView, SetTemplateCreateView, SetTemplateDetailView, SetTemplateDeleteView, SetTemplateUpdateView,
     ItemDetailView, ItemCreateView, ItemUpdateView, ItemDeleteView,
-    ReservationCreateView, ItemDetailReservationView, ItemUpdateReservationView, ItemDeleteReservationView,
+    ItemDetailReservationView, ItemDeleteReservationView,
     ReservationListView, UserReservationsListView,
     CategoryListView, CategoryDetailView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView,
     ItemTemplateCreateView, ItemTemplateListView, ItemTemplateDetailView, ItemTemplateUpdateView,
@@ -51,14 +51,14 @@ set = [
     path('set/update/<int:pk>', SetUpdateView.as_view(), name='set-update'),
 ]
 
-reservation = [
-    path('reservation/new/<int:set_id>', ReservationCreateView.as_view(), name='reservation-create')
-]
+# reservation = [
+#     path('reservation/new/<int:set_template_id>', ReservationCreateView.as_view(), name='reservation-create')
+# ]
 
 urlpatterns = [
     path('', views.home, name='stuff-home'),
     path('about/', views.about, name='stuff-about'),
-] + category + item_template + set_template + item + set + reservation
+] + category + item_template + set_template + item + set  # + reservation
 
 
 # path('item/<int:pk>/update', ItemUpdateView.as_view(), name='item-update'),

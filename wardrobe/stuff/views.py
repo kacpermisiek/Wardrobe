@@ -1,11 +1,20 @@
 import os.path
-from django.http import Http404
-from django.shortcuts import render, get_object_or_404
+from collections import namedtuple
+from datetime import datetime
+
+from django.http import Http404, HttpResponseForbidden
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.edit import FormMixin, FormView
+
+from users.views import _get_user_and_profile_update_forms
 from .models import (
     Item,
     Category,
@@ -15,7 +24,8 @@ from .models import (
     ItemTemplate,
     ItemRequired
 )
-from .forms import ReservationForm, SetTemplateForm, SetForm
+from .forms import SetTemplateForm, SetForm
+from utils.forms_functions import proceed_redirection, request_method_is_post, all_forms_are_valid
 
 
 def home(request):
@@ -213,14 +223,66 @@ class SetTemplateCreateView(UserPassesTestMixin, CreateView):
         return self.request.user.is_superuser
 
 
-class SetTemplateDetailView(LoginRequiredMixin, DetailView):
-    model = SetTemplate
+class SetTemplateDetailView(LoginRequiredMixin, ListView):
+    model = Set
     template_name = 'stuff/set_template/details.html'
+    context_object_name = 'sets'
 
     def get_context_data(self, **kwargs):
         context = super(SetTemplateDetailView, self).get_context_data(**kwargs)
-        context['sets'] = Set.objects.filter(set_template_id=self.object.id).order_by('id')
+        context['object'] = SetTemplate.objects.get(id=self.kwargs.get('pk', None))
+        # context['sets'] = Set.objects.filter(set_template_id=self.kwargs.get('pk', None)).order_by('id')
         return context
+
+    def get_queryset(self):
+        date_range = self.request.GET.get('date_range')
+        set_template_id = self.kwargs.get('pk', None)
+        if date_range and set_template_id:
+            return self._get_available_sets_in_date_range(set_template_id, date_range)
+        return None
+
+    def _get_available_sets_in_date_range(self, set_template_id, date_range):
+        result = []
+        start_date, end_date = self._convert_date_range_into_dates(date_range)
+        sets = Set.objects.filter(set_template_id=set_template_id).all()
+
+        for set in sets:
+            if self.set_is_available(set, start_date, end_date):
+                result.append(set)
+        return result
+
+    def _convert_date_range_into_dates(self, date_range):
+        result = []
+        for date_string in date_range.split(' - '):
+            result.append(self._string_to_date(date_string))
+
+        return tuple(result)
+
+    @staticmethod
+    def _string_to_date(date_string):
+        return datetime.strptime(date_string, '%d-%m-%Y').date()
+
+    def set_is_available(self, set, start_date, end_date):
+        Range = namedtuple('Range', ['start', 'end'])
+        r1 = Range(start_date, end_date)
+        set_reservations = self._get_set_reservations(set)
+        for reservation in set_reservations:
+            r2 = Range(reservation.start_date, reservation.end_date)
+            if self._dates_overlap(r1, r2):
+                return False
+        return True
+
+    @staticmethod
+    def _get_set_reservations(set):
+        return ReservationEvent.objects.filter(set=set).all()
+
+    def _dates_overlap(self, r1, r2):
+        earliest_end, latest_start = self._get_timestamp(r1, r2)
+        return ((earliest_end - latest_start).days + 1) > 0
+
+    @staticmethod
+    def _get_timestamp(r1, r2):
+        return min(r1.end, r2.end), max(r1.start, r2.start)
 
 
 class SetTemplateDeleteView(UserPassesTestMixin, DeleteView):
@@ -383,68 +445,68 @@ class ItemDetailReservationView(LoginRequiredMixin, DetailView):
     pk_url_kwarg = 'id'
 
 
-class ReservationCreateView(LoginRequiredMixin, CreateView):
-    model = ReservationEvent
-    template_name = 'reservation/create.html'
-    success_url = '/'
-    form_class = ReservationForm
+# class ReservationCreateView(LoginRequiredMixin, CreateView):
+#     model = ReservationEvent
+#     template_name = 'reservation/create.html'
+#     success_url = '/'
+#     form_class = ReservationForm
+#
+#     def get_form(self, **kwargs):
+#         form = super(ReservationCreateView, self).get_form(self.form_class)
+#         form.instance.set_template = get_object_or_404(SetTemplate, id=self.kwargs.get('set_template_id'))
+#         return form
+#
+#     def get_form_kwargs(self):
+#         kwargs = super(ReservationCreateView, self).get_form_kwargs()
+#         kwargs.update(self.kwargs)
+#         return kwargs
+#
+#     def form_valid(self, form):
+#         form.instance.user = self.request.user
+#         return super(ReservationCreateView, self).form_valid(form)
 
-    def get_form(self, **kwargs):
-        form = super(ReservationCreateView, self).get_form(self.form_class)
-        form.instance.set = get_object_or_404(Set, id=self.kwargs.get('set_id'))
-        return form
 
-    def get_form_kwargs(self):
-        kwargs = super(ReservationCreateView, self).get_form_kwargs()
-        kwargs.update(self.kwargs)
-        return kwargs
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super(ReservationCreateView, self).form_valid(form)
-
-
-class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = ReservationEvent
-    template_name = 'reservation/update.html'
-    success_url = '/item/reservations/'
-    form_class = ReservationForm
-    pk_url_kwarg = 'id'
-
-    def test_func(self):
-        return self.request.user.is_superuser
-
-    def get_form(self, **kwargs):
-        form = super(ItemUpdateReservationView, self).get_form(self.form_class)
-        form.instance.item = Item.objects.get(pk=self.kwargs.get('pk', None))
-        return form
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super(ItemUpdateReservationView, self).form_valid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['date_range'] = self._dates_to_date_range((
-            context['object'].start_date,
-            context['object'].end_date
-        ))
-        return context
-
-    def get_form_kwargs(self):
-        kwargs = super(ItemUpdateReservationView, self).get_form_kwargs()
-        kwargs.update(self.kwargs)
-        return kwargs
-
-    def _dates_to_date_range(self, dates):
-        result = []
-        for date in dates:
-            result.append(self._date_into_string(date))
-        return f"{result[0]} - {result[1]}"
-
-    @staticmethod
-    def _date_into_string(date):
-        return date.strftime("%d-%m-%Y")
+# class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+#     model = ReservationEvent
+#     template_name = 'reservation/update.html'
+#     success_url = '/item/reservations/'
+#     form_class = ReservationForm
+#     pk_url_kwarg = 'id'
+#
+#     def test_func(self):
+#         return self.request.user.is_superuser
+#
+#     def get_form(self, **kwargs):
+#         form = super(ItemUpdateReservationView, self).get_form(self.form_class)
+#         form.instance.item = Item.objects.get(pk=self.kwargs.get('pk', None))
+#         return form
+#
+#     def form_valid(self, form):
+#         form.instance.user = self.request.user
+#         return super(ItemUpdateReservationView, self).form_valid(form)
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['date_range'] = self._dates_to_date_range((
+#             context['object'].start_date,
+#             context['object'].end_date
+#         ))
+#         return context
+#
+#     def get_form_kwargs(self):
+#         kwargs = super(ItemUpdateReservationView, self).get_form_kwargs()
+#         kwargs.update(self.kwargs)
+#         return kwargs
+#
+#     def _dates_to_date_range(self, dates):
+#         result = []
+#         for date in dates:
+#             result.append(self._date_into_string(date))
+#         return f"{result[0]} - {result[1]}"
+#
+#     @staticmethod
+#     def _date_into_string(date):
+#         return date.strftime("%d-%m-%Y")
 
 
 class ItemDeleteReservationView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
