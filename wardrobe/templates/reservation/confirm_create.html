@@ -1,0 +1,31 @@
+{% extends "stuff/base.html" %}
+{% block content %}
+
+{#    {% if form.errors.date_range %}#}
+{#    <div class="alert alert-danger" role="alert">#}
+{#        {{ form.errors.date_range }}#}
+{#    </div>#}
+{#    {% endif %}#}
+
+    {% if form.errors %}
+        {{ form.errors }}
+        {{ form.errors.set }}
+        <h1> there are some errors</h1>
+    {% endif %}
+
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Tworzenie rezerwacji</legend>
+                <h2>Jesteś pewien, że chcesz zarezerwować zestaw {{ set.set_template.name }}?</h2>
+                <h3>Termin: {{ start_date }} - {{ end_date }}</h3>
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Tak, zarezerwuj zestaw</button>
+                <a class="btn btn-outline-secondary" href="{% url 'set-template-detail' set.set_template.id %}">Anuluj</a>
+            </div>
+
+        </form>
+    </div>
+{% endblock content %}

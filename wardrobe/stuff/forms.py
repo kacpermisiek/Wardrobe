@@ -6,6 +6,52 @@ from datetime import datetime
 from .models import ReservationEvent, Item, SetTemplate, Set
 
 
+class ReservationConfirmForm(forms.ModelForm):
+    set = forms.CharField(required=False)
+
+    def __init__(self, set, start_date, end_date, *args, **kwargs):
+        super(ReservationConfirmForm, self).__init__(*args, **kwargs)
+        self.set = set
+        self.start_date = self._string_to_date(start_date)
+        self.end_date = self._string_to_date(end_date)
+
+    class Meta:
+        model = ReservationEvent
+        fields = ['set', 'start_date', 'end_date']
+
+    def clean(self):
+        cleaned_data = super(ReservationConfirmForm, self).clean()
+
+        if self._is_reserved_in_this_date_range():
+            pass
+        cleaned_data['set'] = self.set
+        cleaned_data['start_date'] = self.start_date
+        cleaned_data['end_date'] = self.end_date
+        return cleaned_data
+
+    def _is_reserved_in_this_date_range(self):
+        Range = namedtuple('Range', ['start', 'end'])
+        r1 = Range(self.start_date, self.end_date)
+        set_reservations = ReservationEvent.objects.filter(set=self.set).all()
+        for reservation in set_reservations:
+            r2 = Range(reservation.start_date, reservation.end_date)
+            if self._dates_overlap(r1, r2):
+                return True
+        return False
+
+    @staticmethod
+    def _string_to_date(str_date):
+        return datetime.strptime(str_date, '%d-%m-%Y').date()
+
+    @staticmethod
+    def _get_timestamp(r1, r2):
+        return min(r1.end, r2.end), max(r1.start, r2.start)
+
+    def _dates_overlap(self, r1, r2):
+        earliest_end, latest_start = self._get_timestamp(r1, r2)
+        delta = (earliest_end - latest_start).days + 1
+        return delta > 0
+
 # class ReservationForm(forms.ModelForm):
 #     date_range = forms.CharField()
 #     taken = forms.BooleanField(required=False)

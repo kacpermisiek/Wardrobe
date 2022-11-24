@@ -1,6 +1,6 @@
 import os.path
 from collections import namedtuple
-from datetime import datetime
+from datetime import date, datetime
 
 from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404, redirect
@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormMixin, FormView
-
+from .forms import ReservationConfirmForm
 from users.views import _get_user_and_profile_update_forms
 from .models import (
     Item,
@@ -231,7 +231,11 @@ class SetTemplateDetailView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(SetTemplateDetailView, self).get_context_data(**kwargs)
         context['object'] = SetTemplate.objects.get(id=self.kwargs.get('pk', None))
-        # context['sets'] = Set.objects.filter(set_template_id=self.kwargs.get('pk', None)).order_by('id')
+        date_range = self.request.GET.get('date_range', None)
+        if date_range:
+            start_date, end_date = self._convert_date_range_into_dates(date_range)
+            context['start_date'] = start_date.strftime('%d-%m-%Y')
+            context['end_date'] = end_date.strftime('%d-%m-%Y')
         return context
 
     def get_queryset(self):
@@ -261,6 +265,7 @@ class SetTemplateDetailView(LoginRequiredMixin, ListView):
     @staticmethod
     def _string_to_date(date_string):
         return datetime.strptime(date_string, '%d-%m-%Y').date()
+
 
     def set_is_available(self, set, start_date, end_date):
         Range = namedtuple('Range', ['start', 'end'])
@@ -445,25 +450,32 @@ class ItemDetailReservationView(LoginRequiredMixin, DetailView):
     pk_url_kwarg = 'id'
 
 
-# class ReservationCreateView(LoginRequiredMixin, CreateView):
-#     model = ReservationEvent
-#     template_name = 'reservation/create.html'
-#     success_url = '/'
-#     form_class = ReservationForm
-#
-#     def get_form(self, **kwargs):
-#         form = super(ReservationCreateView, self).get_form(self.form_class)
-#         form.instance.set_template = get_object_or_404(SetTemplate, id=self.kwargs.get('set_template_id'))
-#         return form
-#
-#     def get_form_kwargs(self):
-#         kwargs = super(ReservationCreateView, self).get_form_kwargs()
-#         kwargs.update(self.kwargs)
-#         return kwargs
-#
-#     def form_valid(self, form):
-#         form.instance.user = self.request.user
-#         return super(ReservationCreateView, self).form_valid(form)
+class ReservationConfirmView(LoginRequiredMixin, CreateView):
+    model = ReservationEvent
+    template_name = 'reservation/confirm_create.html'
+    form_class = ReservationConfirmForm
+
+    def get_context_data(self, **kwargs):
+        context_data = super(ReservationConfirmView, self).get_context_data(**kwargs)
+        context_data['set'] = Set.objects.get(id=self.kwargs.get('set_id', None))
+        context_data['start_date'] = self.kwargs.get('start_date', None)
+        context_data['end_date'] = self.kwargs.get('end_date', None)
+        return context_data
+
+    def get_form_kwargs(self):
+        kwargs = super(ReservationConfirmView, self).get_form_kwargs()
+        kwargs['set'] = Set.objects.get(id=self.kwargs.get('set_id', None))
+        kwargs['start_date'] = self.kwargs.get('start_date', None)
+        kwargs['end_date'] = self.kwargs.get('end_date', None)
+        kwargs.update()
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('set-template-detail', kwargs={'pk': self.object.set.set_template.id})
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(ReservationConfirmView, self).form_valid(form)
 
 
 # class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
