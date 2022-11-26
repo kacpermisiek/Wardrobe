@@ -46,13 +46,6 @@
                         <fieldset class="form-group">
                             <input class="form-control" type="text" label="Przedział czasowy rezerwacji" name="date_range"/>
                             <label>Przedział czasowy rezerwacji</label>
-                        </br></br>
-                            <div {% if not user.is_superuser %} style="display: none" }{% endif %}>
-                             <input type="checkbox" data-toggle="toggle" data-onstyle="primary" data-on="Tak" data-off="Nie"
-                                    name="taken" value="True"
-                             >
-                            <label>Czy zestaw został zabrany?</label>
-                                </div>
                         </fieldset>
                         <div class="form-group">
                             <button class="btn btn-outline-info" type="submit">Wyszukaj</button>
@@ -61,17 +54,21 @@
                   </div>
                 </div>
             </div>
-     {% if user.is_authenticated and sets %}
+     {% if user.is_authenticated %}
+         {% if sets %}
             <div class="content-section">
+            {% if start_date %}
                 <h2>Lista zestawów dostępnych w terminie <br> {{ start_date }} - {{ end_date }}</h2>
-
+            {% else %}
+                <h2>Lista wszystkich zestawów</h2>
+            {% endif %}
                     <table class="table align-middle mb-0 bg-white table-hover">
   <thead class="thead-dark">
     <tr>
       <th>id</th>
       <th>Przedmioty</th>
       <th>Status</th>
-        <th>Zarezerwuj</th>
+        {% if start_date %}<th>Zarezerwuj</th> {% endif %}
         {% if user.is_superuser %}<th>Szczegóły</th> {% endif %}
     </tr>
   </thead>
@@ -93,9 +90,11 @@
             <p class="fw-normal mb-1">{{ set.set_status }}</p>
         </td>
 
+        {% if start_date %}
         <td class="align-middle">
                 <p class="fw-normal mb-1"><a href="{% url 'reservation-confirm' set_id=set.id start_date=start_date end_date=end_date %}">Rezerwuj</a> </p>
         </td>
+        {% endif %}
 
         {% if user.is_superuser %}
             <td class="align-middle">
@@ -107,6 +106,10 @@
   </tbody>
 </table>
             </div>
+             {% elif start_date %}
+                <div><h1>Brak dostępnych zestawów w tym przedziale czasowym</h1></div>
+             {% endif %}
+
      {% endif %}
         </div>
         {% else %}

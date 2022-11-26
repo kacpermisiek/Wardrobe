@@ -40,14 +40,14 @@ def home(request):
 
 class CategoryListView(ListView):
     model = Category
-    template_name = 'stuff/category/category_list.html'
+    template_name = 'stuff/category/list.html'
     context_object_name = 'categories'
     ordering = ['name']
 
 
 class CategoryDetailView(DetailView):
     model = Category
-    template_name = 'stuff/category/category_form.html'
+    template_name = 'stuff/category/form.html'
 
 
 class CategoryCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -56,7 +56,7 @@ class CategoryCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     model = Category
     fields = ['name']
-    template_name = 'stuff/category/category_create.html'
+    template_name = 'stuff/category/create.html'
     success_url = '/category'
 
 
@@ -64,7 +64,7 @@ class CategoryUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Category
     fields = ['name']
     success_url = '/category'
-    template_name = 'stuff/category/category_form.html'
+    template_name = 'stuff/category/form.html'
 
     def test_func(self):
         return self.request.user.is_superuser
@@ -73,7 +73,7 @@ class CategoryUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class CategoryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Category
     success_url = '/category'
-    template_name = 'stuff/category/category_confirm_delete.html'
+    template_name = 'stuff/category/confirm_delete.html'
 
     def test_func(self):
         return self.request.user.is_superuser
@@ -182,7 +182,7 @@ class ItemDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class ReservationListView(ListView):
     model = ReservationEvent
-    template_name = 'reservation/reservations.html'
+    template_name = 'reservation/list.html'
     context_object_name = 'reservations'
     paginate_by = 6
 
@@ -239,10 +239,16 @@ class SetTemplateDetailView(LoginRequiredMixin, ListView):
         return context
 
     def get_queryset(self):
-        date_range = self.request.GET.get('date_range')
+        date_range = self.request.GET.get('date_range', None)
         set_template_id = self.kwargs.get('pk', None)
         if date_range and set_template_id:
             return self._get_available_sets_in_date_range(set_template_id, date_range)
+        if set_template_id and self.request.user.is_superuser:
+            result = []
+            sets = Set.objects.filter(set_template_id=set_template_id).all()
+            for set in sets:
+                result.append(set)
+            return result
         return None
 
     def _get_available_sets_in_date_range(self, set_template_id, date_range):
@@ -476,6 +482,15 @@ class ReservationConfirmView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super(ReservationConfirmView, self).form_valid(form)
+
+
+class ReservationListView(UserPassesTestMixin, ListView):
+    model = ReservationEvent
+    template_name = 'reservation/list.html'
+    context_object_name = 'reservations'
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
 
 # class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):

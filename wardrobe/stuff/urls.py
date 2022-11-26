@@ -3,7 +3,7 @@ from .views import (
     SetCreateView, SetDetailView, SetDeleteView, SetUpdateView,
     SetTemplateCreateView, SetTemplateDetailView, SetTemplateDeleteView, SetTemplateUpdateView,
     ItemDetailView, ItemDeleteView,
-    ReservationConfirmView,
+    ReservationConfirmView, ReservationListView,
     CategoryListView, CategoryDetailView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView,
     ItemTemplateCreateView, ItemTemplateListView, ItemTemplateDetailView, ItemTemplateUpdateView,
     ItemTemplateDeleteView,
@@ -55,7 +55,8 @@ set = [
 
 reservation = [
     path('reservation/new/<int:set_id>?<str:start_date>?<str:end_date>', ReservationConfirmView.as_view(),
-         name='reservation-confirm')
+         name='reservation-confirm'),
+    path('reservation', ReservationListView.as_view(), name='reservation-list')
 ]
 
 urlpatterns = [
