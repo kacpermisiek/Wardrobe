@@ -2,28 +2,20 @@
 {% load crispy_forms_filters %}
 {% load crispy_forms_tags %}
 
-{# TODO: Better look for all templates ;) #}
 
 
 {% block content %}
-    {% if user.id == object.user.id %}
-    <h1>Szczegóły rezerwacji przedmiotu {{ object.item.name }}</h1>
-    <h3>Kategoria przedmiotu: {{ object.item.category }}</h3>
-    <span class="badge badge-{{ object.badge_status }} rounded-pill d-inline">{{ object.final_status }}</span>
-    <img
-              src="{{ object.item.image.url }}"
-              alt=""
-              style="width: 50px; height: 50px"
-              class="img-fluid rounded-circle"/>
-    {% if object.item.final_status == "Dostępny" %}
-        <div class="content-section">
-            <h2>Ten przedmiot jest dostępny. <a href="{% url 'item-reservation-create' object.id %}"> Kliknij tutaj</a>, aby zgłosić rezerwację przedmiotu</h2>
-        </div>
-        {% endif %}
+    {% if user.id == object.user.id or user.is_superuser %}
+    <h1>Szczegóły rezerwacji zestawu {{ object.set.set_template.name }}</h1>
+
+
         {% if user.is_superuser %}
             <div class="content-section">
-                    <a class="btn btn-outline-info" href="{% url 'item-reservation-update' object.item.id object.id %}">Edytuj rezerwację</a>
-                    <a class="btn btn-outline-danger" href="{% url 'item-reservation-delete' object.item.id object.id %}">Usuń rezerwację</a>
+                <h2>Id zestawu: {{ object.set.id }}</h2>
+                <h3>Początek rezerwacji: {{ object.start_date }}</h3>
+                <h3>Koniec rezerwacji: {{ object.end_date }}</h3>
+{#                <a class="btn btn-outline-info" href="{% url 'item-reservation-update' object.item.id object.id %}">Edytuj rezerwację</a>#}
+                <a class="btn btn-outline-danger" href="{% url 'reservation-delete' object.id %}">Usuń rezerwację</a>
             </div>
         {% endif %}
         {% else %}

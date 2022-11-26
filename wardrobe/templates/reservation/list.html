@@ -22,7 +22,7 @@
     <tr>
       <td class="align-middle">
         <div class="d-flex align-items-center">
-            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="#">{{ reservation.id }}</a></p>
+            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="{% url 'reservation-detail' reservation.id %}">{{ reservation.id }}</a></p>
         </div>
       </td>
       <td class="align-middle">

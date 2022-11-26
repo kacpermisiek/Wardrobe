@@ -493,6 +493,16 @@ class ReservationListView(UserPassesTestMixin, ListView):
         return self.request.user.is_superuser
 
 
+class ReservationDetailView(UserPassesTestMixin, DetailView):
+    model = ReservationEvent
+    template_name = 'reservation/detail.html'
+
+    def test_func(self):
+        xd = self.kwargs.get('pk', None)
+        print(xd)
+        return self.request.user.is_superuser or self.request.user.id == self.kwargs.get('pk')
+
+
 # class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 #     model = ReservationEvent
 #     template_name = 'reservation/update.html'
@@ -536,11 +546,12 @@ class ReservationListView(UserPassesTestMixin, ListView):
 #         return date.strftime("%d-%m-%Y")
 
 
-class ItemDeleteReservationView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class ReservationDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = ReservationEvent
-    success_url = '/item/reservations/'
     template_name = 'reservation/delete.html'
-    pk_url_kwarg = 'id'
 
     def test_func(self):
         return self.request.user.is_superuser
+
+    def get_success_url(self):
+        return reverse('reservation-list')
