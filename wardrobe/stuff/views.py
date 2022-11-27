@@ -191,7 +191,7 @@ class ReservationListView(ListView):
 
 
 class UserReservationsListView(ReservationListView):
-    template_name = 'reservation/user_reservations.html'
+    template_name = 'reservation/user_list.html'
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
@@ -491,6 +491,16 @@ class ReservationListView(UserPassesTestMixin, ListView):
 
     def test_func(self):
         return self.request.user.is_superuser
+
+
+class UserReservationListView(ReservationListView):
+    template_name = 'reservation/user_list.html'
+
+    def test_func(self):
+        return self.request.user.is_authenticated
+
+    def get_queryset(self):
+        return ReservationEvent.objects.filter(user_id=self.request.user.id)
 
 
 class ReservationDetailView(UserPassesTestMixin, DetailView):

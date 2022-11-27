@@ -3,7 +3,7 @@
 {% block content %}
 
     {% if user.is_authenticated %}
-    <h1 class="mb-3"> Przedmioty rezerwowane przez użytkownika {{ view.kwargs.username }} ({{ page_obj.paginator.count }})</h1>
+    <h1 class="mb-3"> Przedmioty rezerwowane przez użytkownika {{ user.username }} ({{ page_obj.paginator.count }})</h1>
 
 
 <table class="table align-middle mb-0 bg-white table-hover">
@@ -21,15 +21,8 @@
     <tr>
       <td class="d-none d-lg-block">
         <div class="d-flex align-items-center">
-{#            TODO: STATIC image! items should have their own pics :) #}
-          <img
-              src="{{ reservation.item.image.url }}"
-              alt=""
-              style="width: 50px; height: 50px"
-              class="img-fluid rounded-circle"
-              />
           <div class="ms-3">
-            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="{% url 'item-detail' reservation.item.id %}">{{ reservation.item.name }}</a></p>
+            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="{% url 'set-detail' reservation.set.id %}">{{ reservation.set.set_template.name }}</a></p>
           </div>
         </div>
       </td>

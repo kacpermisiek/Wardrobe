@@ -3,7 +3,7 @@ from .views import (
     SetCreateView, SetDetailView, SetDeleteView, SetUpdateView,
     SetTemplateCreateView, SetTemplateDetailView, SetTemplateDeleteView, SetTemplateUpdateView,
     ItemDetailView, ItemDeleteView,
-    ReservationConfirmView, ReservationListView, ReservationDetailView,
+    ReservationConfirmView, ReservationListView, ReservationDetailView, UserReservationListView,
     CategoryListView, CategoryDetailView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView,
     ItemTemplateCreateView, ItemTemplateListView, ItemTemplateDetailView, ItemTemplateUpdateView,
     ItemTemplateDeleteView, ReservationDeleteView,
@@ -57,6 +57,7 @@ reservation = [
     path('reservation/new/<int:set_id>?<str:start_date>?<str:end_date>', ReservationConfirmView.as_view(),
          name='reservation-confirm'),
     path('reservation', ReservationListView.as_view(), name='reservation-list'),
+    path('user_reservation', UserReservationListView.as_view(), name='reservation-user-list'),
     path('reservation/<int:pk>', ReservationDetailView.as_view(), name='reservation-detail'),
     path('reservation/delete/<int:pk>', ReservationDeleteView.as_view(), name='reservation-delete'),
 ]
