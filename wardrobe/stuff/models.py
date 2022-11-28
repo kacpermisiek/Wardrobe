@@ -152,5 +152,5 @@ class ReservationEvent(models.Model):
         return self.start_date <= date.today() <= self.end_date
 
     def __str__(self):
-        return f'Rent event\t item:{self.item}\tuser: {self.user}\n' \
+        return f'Rent event\t item:{self.set}\tuser: {self.user}\n' \
                f'from {self.start_date} to {self.end_date}'

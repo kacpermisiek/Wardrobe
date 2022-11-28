@@ -24,7 +24,7 @@ from .models import (
     ItemTemplate,
     ItemRequired
 )
-from .forms import SetTemplateForm, SetForm
+from .forms import SetTemplateForm, SetForm, ReservationUpdateForm
 from utils.forms_functions import proceed_redirection, request_method_is_post, all_forms_are_valid
 
 
@@ -508,52 +508,47 @@ class ReservationDetailView(UserPassesTestMixin, DetailView):
     template_name = 'reservation/detail.html'
 
     def test_func(self):
-        xd = self.kwargs.get('pk', None)
-        print(xd)
         return self.request.user.is_superuser or self.request.user.id == self.kwargs.get('pk')
 
 
-# class ItemUpdateReservationView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-#     model = ReservationEvent
-#     template_name = 'reservation/update.html'
-#     success_url = '/item/reservations/'
-#     form_class = ReservationForm
-#     pk_url_kwarg = 'id'
-#
-#     def test_func(self):
-#         return self.request.user.is_superuser
-#
-#     def get_form(self, **kwargs):
-#         form = super(ItemUpdateReservationView, self).get_form(self.form_class)
-#         form.instance.item = Item.objects.get(pk=self.kwargs.get('pk', None))
-#         return form
-#
-#     def form_valid(self, form):
-#         form.instance.user = self.request.user
-#         return super(ItemUpdateReservationView, self).form_valid(form)
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['date_range'] = self._dates_to_date_range((
-#             context['object'].start_date,
-#             context['object'].end_date
-#         ))
-#         return context
-#
-#     def get_form_kwargs(self):
-#         kwargs = super(ItemUpdateReservationView, self).get_form_kwargs()
-#         kwargs.update(self.kwargs)
-#         return kwargs
-#
-#     def _dates_to_date_range(self, dates):
-#         result = []
-#         for date in dates:
-#             result.append(self._date_into_string(date))
-#         return f"{result[0]} - {result[1]}"
-#
-#     @staticmethod
-#     def _date_into_string(date):
-#         return date.strftime("%d-%m-%Y")
+class ReservationUpdateView(UserPassesTestMixin, UpdateView):
+    model = ReservationEvent
+    template_name = 'reservation/update.html'
+    form_class = ReservationUpdateForm
+
+    def test_func(self):
+        return self.request.user.is_superuser
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(ReservationUpdateView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['date_range'] = self._dates_to_date_range((
+            context['object'].start_date,
+            context['object'].end_date
+        ))
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(ReservationUpdateView, self).get_form_kwargs()
+        # kwargs['reservation_id'] = self.kwargs.get('pk', None)
+        kwargs.update(self.kwargs)
+        return kwargs
+
+    def _dates_to_date_range(self, dates):
+        result = []
+        for date in dates:
+            result.append(self._date_into_string(date))
+        return f"{result[0]} - {result[1]}"
+
+    @staticmethod
+    def _date_into_string(date):
+        return date.strftime("%d-%m-%Y")
+
+    def get_success_url(self):
+        return reverse('reservation-detail', kwargs={'pk': self.object.id})
 
 
 class ReservationDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

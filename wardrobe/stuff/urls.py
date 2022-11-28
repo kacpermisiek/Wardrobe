@@ -4,6 +4,7 @@ from .views import (
     SetTemplateCreateView, SetTemplateDetailView, SetTemplateDeleteView, SetTemplateUpdateView,
     ItemDetailView, ItemDeleteView,
     ReservationConfirmView, ReservationListView, ReservationDetailView, UserReservationListView,
+    ReservationUpdateView,
     CategoryListView, CategoryDetailView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView,
     ItemTemplateCreateView, ItemTemplateListView, ItemTemplateDetailView, ItemTemplateUpdateView,
     ItemTemplateDeleteView, ReservationDeleteView,
@@ -60,6 +61,7 @@ reservation = [
     path('user_reservation', UserReservationListView.as_view(), name='reservation-user-list'),
     path('reservation/<int:pk>', ReservationDetailView.as_view(), name='reservation-detail'),
     path('reservation/delete/<int:pk>', ReservationDeleteView.as_view(), name='reservation-delete'),
+    path('reservation/update/<int:pk>', ReservationUpdateView.as_view(), name='reservation-update'),
 ]
 
 urlpatterns = [

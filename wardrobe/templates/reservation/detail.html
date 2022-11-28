@@ -14,7 +14,15 @@
                 <h2>Id zestawu: {{ object.set.id }}</h2>
                 <h3>Początek rezerwacji: {{ object.start_date }}</h3>
                 <h3>Koniec rezerwacji: {{ object.end_date }}</h3>
-{#                <a class="btn btn-outline-info" href="{% url 'item-reservation-update' object.item.id object.id %}">Edytuj rezerwację</a>#}
+                <h3>Przedmiot został zabrany:
+                {% if object.taken %}
+                    Tak
+                {% else %}
+                    Nie
+                {% endif %}
+
+                </h3>
+                <a class="btn btn-outline-info" href="{% url 'reservation-update' object.id %}">Edytuj rezerwację</a>
                 <a class="btn btn-outline-danger" href="{% url 'reservation-delete' object.id %}">Usuń rezerwację</a>
             </div>
         {% endif %}
