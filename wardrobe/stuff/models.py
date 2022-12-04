@@ -48,17 +48,17 @@ class ItemTemplate(models.Model):
     def enough_is_available(self, needed=1):
         return self.quantity_available >= needed
 
-    def save(self, *args, **kwargs):
-        super(ItemTemplate, self).save()
-        image = Image.open(self.image).convert('RGB')
-
-        if image.height > 300 or image.width > 300:
-            output_size = (300, 300)
-            image.thumbnail(output_size)
-            image.convert('RGB')
-
-        image.save(self.image.path)
-        image.close()
+    # def save(self, *args, **kwargs):
+    #     super(ItemTemplate, self).save()
+    #     image = Image.open(self.image).convert('RGB')
+    #
+    #     if image.height > 300 or image.width > 300:
+    #         output_size = (300, 300)
+    #         image.thumbnail(output_size)
+    #         image.convert('RGB')
+    #
+    #     image.save(self.image.path)
+    #     image.close()
 
 
 class ItemRequired(models.Model):
