@@ -12,23 +12,33 @@
         }
     </style>
 
+    <h1>Date range: {{ date_range }}</h1>
+
+    {% if form.errors.date_range %}
+    <div class="alert alert-danger" role="alert">
+        {{ form.errors.date_range }}
+    </div>
+    {% endif %}
+
     <div class="content-section">
         <form method="POST">
             {% csrf_token %}
-            <legend> Rezerwujesz przedmiot {{ object.item.name }}</legend>
+            <legend> Rezerwujesz zestaw {{ object.set.set_template.name }} ({{ object.set.id }})</legend>
             <fieldset class="form-group">
-                <input class="form-control" type="text" label="Przedział czasowy rezerwacji" name="date_range"/>
+                <input class="form-control" type="text" label="Przedział czasowy rezerwacji" name="date_range"
+                value="{{ date_range }}"/>
                 <label>Przedział czasowy rezerwacji</label>
             </br></br>
-
                  <input type="checkbox" data-toggle="toggle" data-onstyle="primary" data-on="Tak" data-off="Nie"
-                        name="taken" value="True">
+                        name="taken" {% if object.taken %} checked {% endif %}>
                 <label>Czy przedmiot został zabrany?</label>
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Zapisz</button>
             </div>
         </form>
+
+
     </div>
 
             <!-- Include Required Prerequisites -->
@@ -55,9 +65,6 @@
         locale: {
           format: 'DD-MM-YYYY'
         },
-        startDate: today,
-        endDate: today,
-        minDate: today,
     },
     function(start, end, label) {
     });

@@ -1,26 +1,73 @@
 from collections import namedtuple
 from itertools import chain
 from django import forms
-from django.db.models import Q
 from datetime import datetime
 from .models import ReservationEvent, Item, SetTemplate, Set
 
 
-class ItemReservationForm(forms.ModelForm):
+class ReservationConfirmForm(forms.ModelForm):
+    set = forms.CharField(required=False)
+
+    def __init__(self, set, start_date, end_date, *args, **kwargs):
+        super(ReservationConfirmForm, self).__init__(*args, **kwargs)
+        self.set = set
+        self.start_date = self._string_to_date(start_date)
+        self.end_date = self._string_to_date(end_date)
+
+    class Meta:
+        model = ReservationEvent
+        fields = ['set', 'start_date', 'end_date']
+
+    def clean(self):
+        cleaned_data = super(ReservationConfirmForm, self).clean()
+
+        if self._is_reserved_in_this_date_range():
+            pass
+        cleaned_data['set'] = self.set
+        cleaned_data['start_date'] = self.start_date
+        cleaned_data['end_date'] = self.end_date
+        return cleaned_data
+
+    def _is_reserved_in_this_date_range(self):
+        Range = namedtuple('Range', ['start', 'end'])
+        r1 = Range(self.start_date, self.end_date)
+        set_reservations = ReservationEvent.objects.filter(set=self.set).all()
+        for reservation in set_reservations:
+            r2 = Range(reservation.start_date, reservation.end_date)
+            if self._dates_overlap(r1, r2):
+                return True
+        return False
+
+    @staticmethod
+    def _string_to_date(str_date):
+        return datetime.strptime(str_date, '%d-%m-%Y').date()
+
+    @staticmethod
+    def _get_timestamp(r1, r2):
+        return min(r1.end, r2.end), max(r1.start, r2.start)
+
+    def _dates_overlap(self, r1, r2):
+        earliest_end, latest_start = self._get_timestamp(r1, r2)
+        delta = (earliest_end - latest_start).days + 1
+        return delta > 0
+
+
+class ReservationUpdateForm(forms.ModelForm):
     date_range = forms.CharField()
     taken = forms.BooleanField(required=False)
 
-    def __init__(self, pk, id=None, *args, **kwargs):
-        super(ItemReservationForm, self).__init__(*args, **kwargs)
-        self.item_id = pk
-        self.reservation_id = id
+    def __init__(self, *args, **kwargs):
+        self.reservation = ReservationEvent.objects.get(id=kwargs.get('pk', None))
+        kwargs.pop('pk', None)
+        self.set = self.reservation.set
+        super(ReservationUpdateForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = ReservationEvent
         fields = ['start_date', 'end_date', 'taken']
 
     def clean(self):
-        cleaned_data = super(ItemReservationForm, self).clean()
+        cleaned_data = super(ReservationUpdateForm, self).clean()
         if not cleaned_data.get('taken'):
             cleaned_data['taken'] = False
 
@@ -51,13 +98,14 @@ class ItemReservationForm(forms.ModelForm):
             earliest_end, latest_start = self._get_timestamp(r1, r2)
             delta = (earliest_end - latest_start).days + 1
             if delta > 0:
+                print('elo')
                 self.add_error('date_range', f'Nie można dokonać rezerwacji w tym terminie. '
                                              f'Ktoś zarezerwował ten przedmiot w terminie '
                                              f'{reservation.start_date} - {reservation.end_date}')
 
     def _get_reservations(self):
-        result = ReservationEvent.objects.filter(item=Item.objects.get(id=self.item_id))
-        return result.exclude(pk=self.reservation_id) if self.reservation_id else result
+        result = ReservationEvent.objects.filter(set=Set.objects.get(id=self.set.id))
+        return result.exclude(pk=self.reservation.id) if self.reservation.id else result
 
     @staticmethod
     def _get_timestamp(r1, r2):
@@ -143,3 +191,32 @@ class SetForm(forms.ModelForm):
         for item in items_list:
             item.belongs_to_set = value
             item.save()
+
+
+class SetRequestForm(forms.Form):
+    message = forms.CharField(widget=forms.Textarea, max_length=2000)
+
+    def __init__(self, pk, start_date, end_date, user):
+        self.set_template = SetTemplate.objects.get(id=pk)
+        self.start_date = start_date
+        self.end_date = end_date
+        self.user = user
+        super(SetRequestForm, self).__init__()
+        self.initial['message'] = self.get_msg_template()
+
+    def generate_message(self):
+        return f'xd {self.start_date}'
+
+    def get_msg_template(self):
+        return f"""
+Szanowny Panie,
+    zwracam się do Pana z prośbą o możliwość udostępnienia zestawu {self.set_template.name} 
+    w terminie {self.start_date} - {self.end_date}.
+
+Pozdrawiam serdecznie,
+{self.user.first_name} {self.user.last_name}
+{self.user.email}
+        """
+
+    class Meta:
+        fields = ['message']
