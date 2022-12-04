@@ -52,6 +52,7 @@ set = [
     path('set/detail/<int:pk>', SetDetailView.as_view(), name='set-detail'),
     path('set/delete/<int:pk>', SetDeleteView.as_view(), name='set-delete'),
     path('set/update/<int:pk>', SetUpdateView.as_view(), name='set-update'),
+    path('set/request/<int:pk>?<str:start_date>?<str:end_date>', views.set_request, name='set-request'),
 ]
 
 reservation = [

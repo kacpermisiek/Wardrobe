@@ -107,7 +107,11 @@
 </table>
             </div>
              {% elif start_date %}
-                <div><h1>Brak dostępnych zestawów w tym przedziale czasowym</h1></div>
+                <div class="content-section">
+                    <h1>Brak dostępnych zestawów w tym przedziale czasowym</h1>
+                    <h2>Możesz wysłać informację o braku potrzebnego zestawu</h2>
+                <a class="btn btn-info" href="{% url 'set-request' object.id start_date end_date %}">Wyślij informację</a>
+                </div>
              {% endif %}
 
      {% endif %}

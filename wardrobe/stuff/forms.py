@@ -191,3 +191,32 @@ class SetForm(forms.ModelForm):
         for item in items_list:
             item.belongs_to_set = value
             item.save()
+
+
+class SetRequestForm(forms.Form):
+    message = forms.CharField(widget=forms.Textarea, max_length=2000)
+
+    def __init__(self, pk, start_date, end_date, user):
+        self.set_template = SetTemplate.objects.get(id=pk)
+        self.start_date = start_date
+        self.end_date = end_date
+        self.user = user
+        super(SetRequestForm, self).__init__()
+        self.initial['message'] = self.get_msg_template()
+
+    def generate_message(self):
+        return f'xd {self.start_date}'
+
+    def get_msg_template(self):
+        return f"""
+Szanowny Panie,
+    zwracam się do Pana z prośbą o możliwość udostępnienia zestawu {self.set_template.name} 
+    w terminie {self.start_date} - {self.end_date}.
+
+Pozdrawiam serdecznie,
+{self.user.first_name} {self.user.last_name}
+{self.user.email}
+        """
+
+    class Meta:
+        fields = ['message']

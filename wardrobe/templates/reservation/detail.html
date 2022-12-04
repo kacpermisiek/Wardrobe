@@ -9,7 +9,7 @@
     <h1>Szczegóły rezerwacji zestawu {{ object.set.set_template.name }}</h1>
 
 
-        {% if user.is_superuser %}
+
             <div class="content-section">
                 <h2>Id zestawu: {{ object.set.id }}</h2>
                 <h3>Początek rezerwacji: {{ object.start_date }}</h3>
@@ -22,10 +22,12 @@
                 {% endif %}
 
                 </h3>
+            {% if user.is_superuser %}
                 <a class="btn btn-outline-info" href="{% url 'reservation-update' object.id %}">Edytuj rezerwację</a>
                 <a class="btn btn-outline-danger" href="{% url 'reservation-delete' object.id %}">Usuń rezerwację</a>
-            </div>
+
         {% endif %}
+        </div>
         {% else %}
             <h1> Nie masz dostępu do tej strony!</h1>
         {% endif %}

@@ -1,20 +1,17 @@
 import os.path
 from collections import namedtuple
-from datetime import date, datetime
+from datetime import datetime
 
-from django.http import Http404, HttpResponseForbidden
-from django.shortcuts import render, get_object_or_404, redirect
+from django.core.mail import send_mail, BadHeaderError
+from django.http import Http404
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from django.views.generic.detail import SingleObjectMixin
-from django.views.generic.edit import FormMixin, FormView
-from .forms import ReservationConfirmForm
-from users.views import _get_user_and_profile_update_forms
+from .forms import ReservationConfirmForm, SetRequestForm
 from .models import (
     Item,
     Category,
@@ -508,7 +505,7 @@ class ReservationDetailView(UserPassesTestMixin, DetailView):
     template_name = 'reservation/detail.html'
 
     def test_func(self):
-        return self.request.user.is_superuser or self.request.user.id == self.kwargs.get('pk')
+        return self.request.user.is_superuser or self.request.user.id == ReservationEvent.objects.get(id=self.kwargs.get('pk')).user.id
 
 
 class ReservationUpdateView(UserPassesTestMixin, UpdateView):
@@ -533,7 +530,6 @@ class ReservationUpdateView(UserPassesTestMixin, UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super(ReservationUpdateView, self).get_form_kwargs()
-        # kwargs['reservation_id'] = self.kwargs.get('pk', None)
         kwargs.update(self.kwargs)
         return kwargs
 
@@ -560,3 +556,30 @@ class ReservationDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
 
     def get_success_url(self):
         return reverse('reservation-list')
+
+
+def set_request(request, pk, start_date, end_date):
+    if request_method_is_post(request.method):
+        subject = 'Wardrobe - brakujący zestaw'
+        message = request.POST.get('message', None)
+
+        context = {}
+        if request.user.is_superuser:
+            context['curr_set'] = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
+
+        try:
+            send_mail(subject, message, request.user.email, ["315560@uwr.edu.pl"])
+        except BadHeaderError:
+            messages.error(request, 'Coś poszło nie tak! Wiadomość nie została wysłana')
+            return render(request, 'stuff/home.html', context)
+        else:
+            messages.success(request, "Mail został wysłany")
+            return render(request, 'stuff/home.html', context)
+
+    context = {
+        'form': SetRequestForm(pk, start_date, end_date, request.user)
+    }
+    return render(request, "stuff/set/request.html", context)
+
+
+
