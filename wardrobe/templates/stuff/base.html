@@ -50,7 +50,6 @@
           </div>
     </nav>
   </header>
-
   <main role="main" class="container">
   <div class="row">
     <div class="col-md-8">
@@ -70,12 +69,12 @@
             {% if user.is_superuser %}
                 <li class="list-group-item list-group-item-light"><a href="{% url 'item-template-list' %}">Lista szablonów przedmiotów</a></li>
                 <li class="list-group-item list-group-item-light"><a href="{% url 'category-list' %}">Kategorie przedmiotów</a></li>
-                <li class="list-group-item list-group-item-light"><a href="#">Rezerwacje użytkowników</a></li>
+                <li class="list-group-item list-group-item-light"><a href="{% url 'reservation-list' %}">Rezerwacje użytkowników</a></li>
                 <li class="list-group-item list-group-item-light"><a href="{% url 'set-template-create' %}"><b>Stwórz nowy zestaw</b></a> </li>
             {% endif %}
             {% if user.is_authenticated %}
-              <li class="list-group-item list-group-item-light"><a href="#">Lista zestawów</a></li>
-              <li class="list-group-item list-group-item-light"><a href="#">Moje rezerwacje</a></li>
+              <li class="list-group-item list-group-item-light"><a href="{% url 'stuff-home' %}">Lista zestawów</a></li>
+              <li class="list-group-item list-group-item-light"><a href="{% url 'reservation-user-list' %}">Moje rezerwacje</a></li>
             {% endif %}
           </ul>
       </div>
