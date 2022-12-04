@@ -32,7 +32,6 @@ class ItemTypeTestCase(TestCase):
         self.assertEqual(item_type.name, ITEM_TYPE_NAME)
         self.assertEqual(item_type.description, ITEM_TYPE_DESCRIPTION)
         self.assertEqual(item_type.category.name, CATEGORY_NAME)
-        self.assertEqual(item_type.image.url, DEFAULT_ITEM_IMG_URL)
 
 
 class ItemTestCase(TestCase):
