@@ -560,7 +560,7 @@ class ReservationDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
 
 def set_request(request, pk, start_date, end_date):
     if request_method_is_post(request.method):
-        subject = 'Wardrobe - brakujący zestaw'
+        subject = 'wardrobe - brakujący zestaw'
         message = request.POST.get('message', None)
 
         context = {}
