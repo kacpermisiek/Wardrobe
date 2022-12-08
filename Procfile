@@ -1,1 +1,1 @@
-web: gunicorn wardrobe.wsgi
+web: gunicorn --chdir wardrobe wardrobe.wsgi
