@@ -17,7 +17,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['Wardrobe.herokuapp.com', '127.0.0.1']
+ALLOWED_HOSTS = ['wardrobe.herokuapp.com', '127.0.0.1']
 
 
 # Application definition
@@ -46,7 +46,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'Wardrobe.urls'
+ROOT_URLCONF = 'wardrobe.urls'
 
 TEMPLATES = [
     {
@@ -65,7 +65,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'Wardrobe.wsgi.application'
+WSGI_APPLICATION = 'wardrobe.wsgi.application'
 
 
 # Database
