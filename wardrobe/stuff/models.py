@@ -48,18 +48,6 @@ class ItemTemplate(models.Model):
     def enough_is_available(self, needed=1):
         return self.quantity_available >= needed
 
-    # def save(self, *args, **kwargs):
-    #     super(ItemTemplate, self).save()
-    #     image = Image.open(self.image).convert('RGB')
-    #
-    #     if image.height > 300 or image.width > 300:
-    #         output_size = (300, 300)
-    #         image.thumbnail(output_size)
-    #         image.convert('RGB')
-    #
-    #     image.save(self.image.path)
-    #     image.close()
-
 
 class ItemRequired(models.Model):
     quantity_required = models.IntegerField(validators=[MinValueValidator(1)])
@@ -69,11 +57,45 @@ class ItemRequired(models.Model):
         return f'item type: {self.item_type.name}'
 
 
+class SetTemplate(models.Model):
+    name = models.CharField(max_length=50)
+    items_required = models.ManyToManyField(ItemRequired)
+
+    def __str__(self):
+        return f"SetTemplate object name: {self.name}"
+
+
+class Set(models.Model):
+    #items = models.ManyToManyField(Item)
+    set_template = models.ForeignKey(SetTemplate, on_delete=models.CASCADE)
+    set_status = models.CharField(max_length=20, default='Dostępny')
+    description = models.TextField(blank=True, null=True)
+
+    @property
+    def reservations(self):
+        return ReservationEvent.objects.filter(set_id=self.id).all
+
+    @property
+    def items(self):
+        return Item.objects.filter(item_set=self).all()
+
+    class Meta:
+        ordering = ['set_status']
+
+    def __str__(self):
+        return f'Set object'
+
+
 class Item(models.Model):
     type = models.ForeignKey(ItemTemplate, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=_get_statuses(), default='Dostępny')
     date_added = models.DateField(default=now)
     belongs_to_set = models.BooleanField(default=False)
+    item_set = models.ForeignKey(Set,
+                                 blank=True,
+                                 null=True,
+                                 on_delete=models.CASCADE)
+
 
     @property
     def badge_status(self):
@@ -109,34 +131,6 @@ class Item(models.Model):
 
     def __str__(self):
         return f'({self.id}) {self.type.name}'
-
-
-class SetTemplate(models.Model):
-    name = models.CharField(max_length=50)
-    items_required = models.ManyToManyField(ItemRequired)
-
-    def __str__(self):
-        return f"SetTemplate object name: {self.name}"
-
-
-class Set(models.Model):
-    items = models.ManyToManyField(Item)
-    set_template = models.ForeignKey(SetTemplate, on_delete=models.CASCADE)
-    set_status = models.CharField(max_length=20, default='Dostępny')
-    description = models.TextField(blank=True, null=True)
-
-    @property
-    def reservations(self):
-        return ReservationEvent.objects.filter(set_id=self.id).all
-
-    class Meta:
-        ordering = ['set_status']
-
-    def __str__(self):
-        return f'Set object'
-
-    def get_items(self):
-        return self.items.all()
 
 
 class ReservationEvent(models.Model):
