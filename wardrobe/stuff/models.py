@@ -66,7 +66,6 @@ class SetTemplate(models.Model):
 
 
 class Set(models.Model):
-    #items = models.ManyToManyField(Item)
     set_template = models.ForeignKey(SetTemplate, on_delete=models.CASCADE)
     set_status = models.CharField(max_length=20, default='Dostępny')
     description = models.TextField(blank=True, null=True)
@@ -77,7 +76,7 @@ class Set(models.Model):
 
     @property
     def items(self):
-        return Item.objects.filter(item_set=self).all()
+        return Item.objects.filter(item_set=self)
 
     class Meta:
         ordering = ['set_status']
@@ -90,12 +89,11 @@ class Item(models.Model):
     type = models.ForeignKey(ItemTemplate, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=_get_statuses(), default='Dostępny')
     date_added = models.DateField(default=now)
-    belongs_to_set = models.BooleanField(default=False)
+    #belongs_to_set = models.BooleanField(default=False)
     item_set = models.ForeignKey(Set,
                                  blank=True,
                                  null=True,
                                  on_delete=models.CASCADE)
-
 
     @property
     def badge_status(self):

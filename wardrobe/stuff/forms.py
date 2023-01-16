@@ -127,8 +127,15 @@ class SetForm(forms.ModelForm):
     def __init__(self, set_template_id=None, set_id=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.create_mode = set_id is None
-        self.set_template_id = set_template_id if self.create_mode else Set.objects.get(id=set_id).set_template.id
-        self.current_items = Set.objects.get(id=set_id).items.all() if not self.create_mode else []
+
+        if self.create_mode:
+            self.set_template_id = set_template_id
+            self.current_items = []
+        else:
+            self.set = Set.objects.get(id=set_id)
+            self.set_template_id = self.set.set_template.id
+            print(f"\nDEBUG\nCurrent items: {self.set.items}")
+            self.current_items = self.set.items
 
         items_required = [val for val in SetTemplate.objects.get(id=self.set_template_id).items_required.all()]
         for item_required in items_required:
@@ -161,7 +168,7 @@ class SetForm(forms.ModelForm):
         exclude = ['set_template', 'set_status']
 
     def _create_choices(self, item_name):
-        available_items = Item.objects.filter(type__name=item_name, belongs_to_set=False).all()
+        available_items = Item.objects.filter(type__name=item_name, item_set__isnull=True).all()
         if not self.create_mode:
             available_items = list(chain(available_items, self.current_items.filter(type__name=item_name)))
 
@@ -180,16 +187,26 @@ class SetForm(forms.ModelForm):
         return field_name not in ['items']
 
     def save(self, **kwargs):
-        items_for_set_ids = self.cleaned_data['items']
-        items_for_set = [Item.objects.get(id=item_id) for item_id in items_for_set_ids]
-        self._set_belong_to_property(self.current_items, False)
-        self._set_belong_to_property(items_for_set, True)
-        return super(SetForm, self).save(**kwargs)
+        items_for_set = [Item.objects.get(id=item_id) for item_id in self.cleaned_data['items']]
+
+        output = super(SetForm, self).save(**kwargs)
+        self._remove_sets_from_previous_items(self.current_items)
+        self._add_sets_for_new_items(items_for_set, self.instance.id)
+        return output
 
     @staticmethod
-    def _set_belong_to_property(items_list, value):
-        for item in items_list:
-            item.belongs_to_set = value
+    def _remove_sets_from_previous_items(current_items):
+        for item in current_items:
+            item.item_set = None
+            item.save()
+
+    @staticmethod
+    def _add_sets_for_new_items(items_for_set, id_of_set):
+        set_to_set = Set.objects.get(id=id_of_set)
+        print(set_to_set.id)
+        print(items_for_set)
+        for item in items_for_set:
+            item.item_set = set_to_set
             item.save()
 
 

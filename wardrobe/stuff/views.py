@@ -414,9 +414,8 @@ class SetDeleteView(UserPassesTestMixin, DeleteView):
 
     def form_valid(self, form):
         deleted_set = self.get_object()
-        items_belongs_to_set = deleted_set.items.all()
-        for item in items_belongs_to_set:
-            item.belongs_to_set = False
+        for item in deleted_set.items.all():
+            item.item_set = None
             item.save()
         return super(SetDeleteView, self).form_valid(form)
 
