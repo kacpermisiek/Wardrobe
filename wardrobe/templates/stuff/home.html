@@ -1,7 +1,7 @@
 {% extends "stuff/base.html" %}
 
 {% block content %}
-    {% if user.is_superuser %}
+    {% if user.is_staff %}
         {{ object.name }}
 
         <div class="content-section">

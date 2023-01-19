@@ -60,6 +60,8 @@ class ItemRequired(models.Model):
 class SetTemplate(models.Model):
     name = models.CharField(max_length=50)
     items_required = models.ManyToManyField(ItemRequired)
+    created_by = models.ForeignKey(User, models.CASCADE)
+    ready = models.BooleanField(default=False)
 
     def __str__(self):
         return f"SetTemplate object name: {self.name}"

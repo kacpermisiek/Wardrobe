@@ -27,13 +27,15 @@
         </div>
 
             <div class="content-section">
-            {% if user.is_superuser %}
-                    <a class="btn btn-outline-primary" href="{% url 'set-create' object.id %}">Dodaj taki zestaw</a>
+            {% if user.is_superuser or user.id == object.created_by.id %}
                     <a class="btn btn-outline-primary" href="{% url 'set-template-set-current' object.id %}">Ustaw jako aktualnie edytowany</a>
-                    <a class="btn btn-outline-info" href="{% url 'set-template-update' object.id %}">Edytuj szablon</a>
                     <a class="btn btn-outline-danger" href="{% url 'set-template-delete' object.id %}">Usuń szablon</a>
 
             {% endif %}
+            {% if user.is_superuser %}
+                <a class="btn btn-outline-info" href="{% url 'set-template-update' object.id %}">Edytuj szablon</a>
+                <a class="btn btn-outline-primary" href="{% url 'set-create' object.id %}">Dodaj taki zestaw</a>
+                {% endif %}
                 <p>
                   <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
                     Zarezerwuj taki zestaw

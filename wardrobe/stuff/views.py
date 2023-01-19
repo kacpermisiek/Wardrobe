@@ -8,9 +8,9 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse
+from django.db.models import Q
 from .forms import ReservationConfirmForm, SetRequestForm
 from .models import (
     Item,
@@ -22,15 +22,18 @@ from .models import (
     ItemRequired
 )
 from .forms import SetTemplateForm, SetForm, ReservationUpdateForm
-from utils.forms_functions import proceed_redirection, request_method_is_post, all_forms_are_valid
+from utils.forms_functions import request_method_is_post
+
+
+SUPER_USERS_EMAILS = ["315560@uwr.edu.pl"]
 
 
 def home(request):
     context = {
-        'sets': SetTemplate.objects.all(),
+        'sets': SetTemplate.objects.filter(Q(ready=True) | Q(created_by_id=request.user.id)),
         'title': 'strona główna'
     }
-    if request.user.is_superuser:
+    if request.user.is_staff:
         context['curr_set'] = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
     return render(request, 'stuff/home.html', context)
 
@@ -78,7 +81,7 @@ class CategoryDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 class ItemTemplateCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     def test_func(self):
-        return self.request.user.is_superuser
+        return self.request.user.is_staff
 
     model = ItemTemplate
     fields = ['name', 'description', 'category', 'image']
@@ -135,14 +138,6 @@ class ItemListView(ListView):
 class ItemDetailView(DetailView):
     model = Item
     template_name = 'stuff/item/detail.html'
-
-
-class ItemCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
-    def test_func(self):
-        return self.request.user.is_superuser
-
-    model = Item
-    fields = ['name', 'description', 'category', 'status', 'image']
 
 
 def item_create(request, template_id):
@@ -209,6 +204,10 @@ class SetTemplateListView(ListView):
     template_name = 'stuff/home.html'
     paginate_by = 6
 
+    def get_queryset(self):
+        print("Get queryset")
+        return SetTemplate.objects.filter(ready=False)
+
 
 class SetTemplateCreateView(UserPassesTestMixin, CreateView):
     model = SetTemplate
@@ -217,7 +216,11 @@ class SetTemplateCreateView(UserPassesTestMixin, CreateView):
     form_class = SetTemplateForm
 
     def test_func(self):
-        return self.request.user.is_superuser
+        return self.request.user.is_staff
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super(SetTemplateCreateView, self).form_valid(form)
 
 
 class SetTemplateDetailView(LoginRequiredMixin, ListView):
@@ -269,7 +272,6 @@ class SetTemplateDetailView(LoginRequiredMixin, ListView):
     def _string_to_date(date_string):
         return datetime.strptime(date_string, '%d-%m-%Y').date()
 
-
     def set_is_available(self, set, start_date, end_date):
         Range = namedtuple('Range', ['start', 'end'])
         r1 = Range(start_date, end_date)
@@ -299,12 +301,13 @@ class SetTemplateDeleteView(UserPassesTestMixin, DeleteView):
     success_url = '/'
 
     def test_func(self):
-        return self.request.user.is_superuser
+        set_template_to_delete = self.get_object()
+        return self.request.user.is_superuser or set_template_to_delete.created_by.id == self.request.user.id
 
 
 class SetTemplateUpdateView(UserPassesTestMixin, UpdateView):
     model = SetTemplate
-    fields = ['name']
+    fields = ['name', 'ready']
     template_name = 'stuff/set_template/update.html'
 
     def test_func(self):
@@ -315,7 +318,7 @@ class SetTemplateUpdateView(UserPassesTestMixin, UpdateView):
 
 
 def add_item_template_to_set_template(request, template_id):
-    if request.user.is_superuser:
+    if request.user.is_staff:
         set_template = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
 
         if _item_template_is_already_in_set_template(template_id, set_template):
@@ -330,7 +333,7 @@ def add_item_template_to_set_template(request, template_id):
 
 
 def set_current_set_template(request, pk):
-    if request.user.is_superuser:
+    if request.user.is_staff:
         user = User.objects.get(id=request.user.id)
         user.profile.set_template_curr_index(pk)
         user.save()
@@ -368,7 +371,7 @@ def remove_item_template_from_set_template(request, template_id):
 
 
 def decrement_required_item_quantity(request, template_id):
-    if request.user.is_superuser:
+    if request.user.is_staff:
         set_template = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
         item_required = set_template.items_required.filter(item_type_id=template_id).first()
         if item_required.quantity_required <= 1:
@@ -567,7 +570,7 @@ def set_request(request, pk, start_date, end_date):
             context['curr_set'] = SetTemplate.objects.get(id=request.user.profile.current_set_template_index)
 
         try:
-            send_mail(subject, message, request.user.email, ["315560@uwr.edu.pl"])
+            send_mail(subject, message, request.user.email, SUPER_USERS_EMAILS)
         except BadHeaderError:
             messages.error(request, 'Coś poszło nie tak! Wiadomość nie została wysłana')
             return render(request, 'stuff/home.html', context)
@@ -579,6 +582,5 @@ def set_request(request, pk, start_date, end_date):
         'form': SetRequestForm(pk, start_date, end_date, request.user)
     }
     return render(request, "stuff/set/request.html", context)
-
 
 
