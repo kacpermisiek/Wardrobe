@@ -32,16 +32,19 @@
   <thead class="thead-dark">
     <tr>
       <th>id</th>
-      <th>Nazwa</th>
-      <th>Status</th>
-      <th>Data Dodania</th>
+      <th>Rezerwujący</th>
+      <th>Początek</th>
+      <th>Koniec</th>
     </tr>
   </thead>
   <tbody>
   {% for reservation in object.reservations %}
     <tr class="">
       <td class="align-middle">
-            <p class="fw-normal mb-1">{{reservation.id}}</p>
+            <a href="{% url 'reservation-detail' reservation.id %}"><p class="fw-normal mb-1">{{reservation.id}}</p></a>
+      </td>
+        <td class="align-middle">
+            <p class="fw-normal mb-1">{{reservation.user.first_name}} {{ reservation.user.last_name }}</p>
       </td>
       <td class="align-middle">
             <p class="fw-normal mb-1">{{ reservation.start_date }}</p>
@@ -54,7 +57,6 @@
   {% endfor %}
   </tbody>
 </table>
-            </div>
         {% endif %}
         </div>
         {% else %}
