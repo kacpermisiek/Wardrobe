@@ -14,6 +14,7 @@
                 <h2>Id zestawu: {{ object.set.id }}</h2>
                 <h3>Początek rezerwacji: {{ object.start_date }}</h3>
                 <h3>Koniec rezerwacji: {{ object.end_date }}</h3>
+                <h3>Osoba rezerwująca: {{ object.user.first_name }} {{ object.user.last_name }}</h3>
                 <h3>Przedmiot został zabrany:
                 {% if object.taken %}
                     Tak

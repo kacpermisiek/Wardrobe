@@ -32,7 +32,7 @@
     </tr>
   </thead>
   <tbody>
-  {% for reservation in object.reservations %}
+  {% for reservation in object.item_set.reservations %}
     <tr class="table-{% if reservation.is_current %}primary
             {% elif not reservation.is_current and reservation.taken %}danger
             {% else %} default{% endif %}">
@@ -52,7 +52,7 @@
         </td>
 
         <td class="align-middle">
-            <a href="{% url 'item-reservation-detail' object.id reservation.id %}" class="fw-normal mb-1">Szczegóły</a>
+            <a href="{% url 'reservation-detail' reservation.id %}" class="fw-normal mb-1">Szczegóły</a>
         </td>
     </tr>
   {% endfor %}

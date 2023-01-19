@@ -69,12 +69,3 @@ urlpatterns = [
     path('', views.home, name='stuff-home'),
     path('about/', views.about, name='stuff-about'),
 ] + category + item_template + set_template + item + set + reservation
-
-
-# path('item/<int:pk>/update', ItemUpdateView.as_view(), name='item-update'),
-# path('user/<str:username>', UserReservationsListView.as_view(), name='user-reservations'),
-# path('item/<int:pk>/reservation_create', ItemCreateReservationView.as_view(), name='item-reservation-create'),
-# path('item/<int:pk>/reservation_detail/<int:id>', ItemDetailReservationView.as_view(), name='item-reservation-detail'),
-# path('item/<int:pk>/reservation_update/<int:id>', ItemUpdateReservationView.as_view(), name='item-reservation-update'),
-# path('item/<int:pk>/reservation_delete/<int:id>', ItemDeleteReservationView.as_view(), name='item-reservation-delete'),
-# path('item/reservations/', ReservationListView.as_view(), name='item-reservation-list'),

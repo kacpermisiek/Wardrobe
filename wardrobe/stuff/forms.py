@@ -98,7 +98,6 @@ class ReservationUpdateForm(forms.ModelForm):
             earliest_end, latest_start = self._get_timestamp(r1, r2)
             delta = (earliest_end - latest_start).days + 1
             if delta > 0:
-                print('elo')
                 self.add_error('date_range', f'Nie można dokonać rezerwacji w tym terminie. '
                                              f'Ktoś zarezerwował ten przedmiot w terminie '
                                              f'{reservation.start_date} - {reservation.end_date}')
@@ -134,7 +133,6 @@ class SetForm(forms.ModelForm):
         else:
             self.set = Set.objects.get(id=set_id)
             self.set_template_id = self.set.set_template.id
-            print(f"\nDEBUG\nCurrent items: {self.set.items}")
             self.current_items = self.set.items
 
         items_required = [val for val in SetTemplate.objects.get(id=self.set_template_id).items_required.all()]
@@ -203,8 +201,6 @@ class SetForm(forms.ModelForm):
     @staticmethod
     def _add_sets_for_new_items(items_for_set, id_of_set):
         set_to_set = Set.objects.get(id=id_of_set)
-        print(set_to_set.id)
-        print(items_for_set)
         for item in items_for_set:
             item.item_set = set_to_set
             item.save()
