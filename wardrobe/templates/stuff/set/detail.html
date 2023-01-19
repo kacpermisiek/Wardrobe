@@ -10,7 +10,7 @@
             Przedmioty w tym zestawie:
             <ul>
               {% for item in object.items.all %}
-                  <li>{{ item.type.name }} ({{ item.type.category.name }})</li>
+                  <li>({{ item.id }}) {{ item.type.name }} ({{ item.type.category.name }})</li>
               {% endfor %}
             </ul>
         {% if object.description %}
