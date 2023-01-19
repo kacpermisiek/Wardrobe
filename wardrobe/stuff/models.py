@@ -60,7 +60,7 @@ class ItemRequired(models.Model):
 class SetTemplate(models.Model):
     name = models.CharField(max_length=50)
     items_required = models.ManyToManyField(ItemRequired)
-    created_by = models.ForeignKey(User, models.CASCADE)
+    created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     ready = models.BooleanField(default=False)
 
     def __str__(self):
