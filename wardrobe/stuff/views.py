@@ -29,8 +29,12 @@ SUPER_USERS_EMAILS = ["315560@uwr.edu.pl"]
 
 
 def home(request):
+    if request.user.is_superuser:
+        sets = SetTemplate.objects.all()
+    else:
+        sets = SetTemplate.objects.filter(Q(ready=True) | Q(created_by_id=request.user.id))
     context = {
-        'sets': SetTemplate.objects.filter(Q(ready=True) | Q(created_by_id=request.user.id)),
+        'sets': sets,
         'title': 'strona główna'
     }
     if request.user.is_staff:
