@@ -15,7 +15,7 @@
                 <h3>Początek rezerwacji: {{ object.start_date }}</h3>
                 <h3>Koniec rezerwacji: {{ object.end_date }}</h3>
                 <h3>Osoba rezerwująca: {{ object.user.first_name }} {{ object.user.last_name }}</h3>
-                <h3>Przedmiot został zabrany:
+                <h3>Zestaw jest wypożyczony:
                 {% if object.taken %}
                     Tak
                 {% else %}
