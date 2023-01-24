@@ -26,6 +26,8 @@ from utils.forms_functions import request_method_is_post
 
 
 SUPER_USERS_EMAILS = ["315560@uwr.edu.pl"]
+if os.environ.get('RADWAS_EMAIL'):
+    SUPER_USERS_EMAILS += os.environ.get('RADWAS_EMAIL')
 
 
 def home(request):
