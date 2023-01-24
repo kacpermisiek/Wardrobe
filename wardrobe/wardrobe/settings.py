@@ -151,6 +151,6 @@ AWS_QUERYSTRING_AUTH = False
 AWS_S3_FILE_OVERWRITE = False
 DEBUG_VALUE = "True"
 
-if '/app' in os.environ['HOME']:
+if os.environ.get('HOME') and '/app' in os.environ['HOME']:
     import django_heroku
     django_heroku.settings(locals())

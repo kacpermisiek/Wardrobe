@@ -38,15 +38,8 @@ class ItemTemplate(models.Model):
         return len(Item.objects.filter(type=self))
 
     @property
-    def quantity_available(self):
-        return len(Item.objects.filter(type=self, final_status='Dostępny'))
-
-    @property
     def item_instances(self):
         return Item.objects.filter(type=self)
-
-    def enough_is_available(self, needed=1):
-        return self.quantity_available >= needed
 
 
 class ItemRequired(models.Model):
