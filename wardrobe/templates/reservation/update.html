@@ -12,8 +12,6 @@
         }
     </style>
 
-    <h1>Date range: {{ date_range }}</h1>
-
     {% if form.errors.date_range %}
     <div class="alert alert-danger" role="alert">
         {{ form.errors.date_range }}
@@ -23,7 +21,7 @@
     <div class="content-section">
         <form method="POST">
             {% csrf_token %}
-            <legend> Rezerwujesz zestaw {{ object.set.set_template.name }} ({{ object.set.id }})</legend>
+            <legend> Edycja rezerwacji {{ object.set.set_template.name }} ({{ object.set.id }})</legend>
             <fieldset class="form-group">
                 <input class="form-control" type="text" label="Przedział czasowy rezerwacji" name="date_range"
                 value="{{ date_range }}"/>
@@ -35,6 +33,7 @@
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Zapisz</button>
+                <a class="btn btn-outline-danger" href="{% url 'reservation-detail' object.id %}">Anuluj</a>
             </div>
         </form>
 

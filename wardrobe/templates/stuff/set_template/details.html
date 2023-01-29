@@ -31,6 +31,7 @@
                     <a class="btn btn-outline-primary" href="{% url 'set-template-set-current' object.id %}">Ustaw jako aktualnie edytowany</a>
                     <a class="btn btn-outline-danger" href="{% url 'set-template-delete' object.id %}">Usuń szablon</a>
 
+
             {% endif %}
             {% if user.is_superuser %}
                 <a class="btn btn-outline-info" href="{% url 'set-template-update' object.id %}">Edytuj szablon</a>

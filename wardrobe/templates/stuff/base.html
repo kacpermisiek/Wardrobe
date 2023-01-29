@@ -67,7 +67,7 @@
         <h3>Opcje</h3>
           <ul class="list-group">
             {% if user.is_staff %}
-                <li class="list-group-item list-group-item-light"><a href="{% url 'item-template-list' %}">Lista szablonów przedmiotów</a></li>
+                <li class="list-group-item list-group-item-light"><a href="{% url 'item-template-list' %}">Lista komponentów</a></li>
                 <li class="list-group-item list-group-item-light"><a href="{% url 'set-template-create' %}"><b>Stwórz nowy zestaw</b></a> </li>
             {% endif %}
               {% if user.is_superuser %}

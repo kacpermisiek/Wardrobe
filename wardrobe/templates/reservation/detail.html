@@ -6,7 +6,8 @@
 
 {% block content %}
     {% if user.id == object.user.id or user.is_superuser %}
-    <h1>Szczegóły rezerwacji zestawu {{ object.set.set_template.name }}</h1>
+    <h1>Szczegóły rezerwacji zestawu <a href="{% url 'set-template-detail' object.set.set_template.id %}">
+        {{ object.set.set_template.name }}</a></h1>
 
 
 
@@ -14,7 +15,7 @@
                 <h2>Id zestawu: {{ object.set.id }}</h2>
                 <h3>Początek rezerwacji: {{ object.start_date }}</h3>
                 <h3>Koniec rezerwacji: {{ object.end_date }}</h3>
-                <h3>Osoba rezerwująca: {{ object.user.first_name }} {{ object.user.last_name }}</h3>
+                <h3>Osoba rezerwująca: <a href="{% url 'user-profile' object.user.id %}">{{ object.user.first_name }} {{ object.user.last_name }}</a></h3>
                 <h3>Zestaw jest wypożyczony:
                 {% if object.taken %}
                     Tak

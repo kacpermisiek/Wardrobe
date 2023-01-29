@@ -105,6 +105,14 @@ class ItemTemplateListView(ListView):
     template_name = 'stuff/item_template/list.html'
 
 
+class ItemTemplateFilterByCategoryView(ItemTemplateListView):
+    template_name = 'stuff/item_template/list_filtered.html'
+
+    def get_queryset(self):
+        category = get_object_or_404(Category, id=self.kwargs.get('pk'))
+        return ItemTemplate.objects.filter(category=category)
+
+
 class ItemTemplateDetailView(LoginRequiredMixin, DetailView):
     model = ItemTemplate
     template_name = 'stuff/item_template/detail.html'
@@ -130,7 +138,7 @@ class ItemTemplateDeleteView(UserPassesTestMixin, DeleteView):
         return self.request.user.is_superuser
 
     def get_success_url(self):
-        messages.success(self.request, "Szablon przedmiotu został usunięty")
+        messages.success(self.request, "Komponent został usunięty")
         return '/'
 
 
@@ -211,7 +219,6 @@ class SetTemplateListView(ListView):
     paginate_by = 6
 
     def get_queryset(self):
-        print("Get queryset")
         return SetTemplate.objects.filter(ready=False)
 
 
@@ -384,7 +391,7 @@ def decrement_required_item_quantity(request, template_id):
             return remove_item_template_from_set_template(request, template_id)
         item_required.quantity_required -= 1
         item_required.save()
-        messages.success(request, "Potrzebna ilość do tego szablonu została zmniejszona")
+        messages.success(request, "Potrzebna ilość komponentów do tego szablonu została zmniejszona")
         return redirect('stuff-home')
     return Http404
 
@@ -590,3 +597,10 @@ def set_request(request, pk, start_date, end_date):
     return render(request, "stuff/set/request.html", context)
 
 
+class ReservationFilterByUserListView(ReservationListView):
+    template_name = 'users/detail.html'
+
+    def get_queryset(self):
+        user_id = get_object_or_404(User, id=self.kwargs.get('pk')).id
+        print(ReservationEvent.objects.filter(user_id=user_id))
+        return ReservationEvent.objects.filter(user_id=user_id)

@@ -5,7 +5,7 @@
 
     {% if user.is_authenticated %}
 
-    <h3>Lista komponentów</h3>
+    <h3>Lista komponentów z kategorii {{ item_templates.0.category.name }}</h3>
 
         {% if user.is_superuser %}
             <a class="btn btn-info my-4" href="{% url 'item-template-create' %}">Stwórz komponent</a>

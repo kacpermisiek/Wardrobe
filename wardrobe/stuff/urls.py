@@ -7,7 +7,8 @@ from .views import (
     ReservationUpdateView,
     CategoryListView, CategoryDetailView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView,
     ItemTemplateCreateView, ItemTemplateListView, ItemTemplateDetailView, ItemTemplateUpdateView,
-    ItemTemplateDeleteView, ReservationDeleteView,
+    ItemTemplateDeleteView, ReservationDeleteView, ItemTemplateFilterByCategoryView,
+    ReservationFilterByUserListView
 )
 from . import views
 
@@ -21,6 +22,7 @@ category = [
 
 item_template = [
     path('item_template', ItemTemplateListView.as_view(), name='item-template-list'),
+    path('item_template/filtered/<int:pk>', ItemTemplateFilterByCategoryView.as_view(), name='item-template-filter'),
     path('item_template/new', ItemTemplateCreateView.as_view(), name='item-template-create'),
     path('item_template/<int:pk>', ItemTemplateDetailView.as_view(), name='item-template-detail'),
     path('item_template/<int:pk>/update', ItemTemplateUpdateView.as_view(), name='item-template-update'),
@@ -59,6 +61,7 @@ reservation = [
     path('reservation/new/<int:set_id>?<str:start_date>?<str:end_date>', ReservationConfirmView.as_view(),
          name='reservation-confirm'),
     path('reservation', ReservationListView.as_view(), name='reservation-list'),
+    path('user/<int:pk>', ReservationFilterByUserListView.as_view(), name='user-profile'),
     path('user_reservation', UserReservationListView.as_view(), name='reservation-user-list'),
     path('reservation/<int:pk>', ReservationDetailView.as_view(), name='reservation-detail'),
     path('reservation/delete/<int:pk>', ReservationDeleteView.as_view(), name='reservation-delete'),
