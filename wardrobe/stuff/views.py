@@ -4,7 +4,7 @@ from datetime import datetime
 
 from django.core.mail import send_mail, BadHeaderError
 from django.http import Http404
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -334,7 +334,7 @@ def add_item_template_to_set_template(request, template_id):
 
         set_template.save()
         messages.success(request, "Przedmiot został dodany do zestawu!")
-        return home(request)
+        return redirect('stuff-home')
     return Http404()
 
 
@@ -344,7 +344,7 @@ def set_current_set_template(request, pk):
         user.profile.set_template_curr_index(pk)
         user.save()
         messages.success(request, "Szablon zestawu został ustawiony jako aktualnie edytowany")
-        return home(request)
+        return redirect('stuff-home')
     return Http404()
 
 
@@ -373,7 +373,7 @@ def remove_item_template_from_set_template(request, template_id):
     set_template.items_required.remove(item_required)
     set_template.save()
     messages.success(request, "Przedmiot został usunięty z szablonu")
-    return home(request)
+    return redirect('stuff-home')
 
 
 def decrement_required_item_quantity(request, template_id):
@@ -385,7 +385,7 @@ def decrement_required_item_quantity(request, template_id):
         item_required.quantity_required -= 1
         item_required.save()
         messages.success(request, "Potrzebna ilość do tego szablonu została zmniejszona")
-        return home(request)
+        return redirect('stuff-home')
     return Http404
 
 
