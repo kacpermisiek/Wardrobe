@@ -33,4 +33,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Run Tests
       run: |
+        export SECRET_KEY=${{ env.SECRET_KEY }}
         python3 wardrobe/manage.py test wardrobe
