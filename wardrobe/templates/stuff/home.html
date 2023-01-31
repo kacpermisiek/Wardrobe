@@ -79,8 +79,12 @@
       </td>
       <td class="align-middle">
           <ul>
-              {% for item in set.items_required.all %}
-                  <li>{{ item.item_type.name }} ({{ item.quantity_required }})</li>
+              {% for item in set.items_list %}
+                  <li>
+                  {% if user.is_staff %}<a href="{% url 'item-template-detail' item.item_type.id %}">{% endif %}
+                      {{ item.item_type.name }} ({{ item.quantity_required }})
+                      {% if user.is_staff %}</a>{% endif %}
+                  </li>
               {% endfor %}
           </ul>
       </td>
