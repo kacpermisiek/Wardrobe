@@ -531,10 +531,6 @@ class ReservationUpdateView(UserPassesTestMixin, UpdateView):
     def test_func(self):
         return self.request.user.is_superuser
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super(ReservationUpdateView, self).form_valid(form)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['date_range'] = self._dates_to_date_range((
@@ -559,7 +555,7 @@ class ReservationUpdateView(UserPassesTestMixin, UpdateView):
         return date.strftime("%d-%m-%Y")
 
     def get_success_url(self):
-        return reverse('reservation-detail', kwargs={'pk': self.object.id})
+        return reverse('reservation-list')
 
 
 class ReservationDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
