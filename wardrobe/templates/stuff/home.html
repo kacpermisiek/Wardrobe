@@ -14,7 +14,7 @@
                     <th>Ilość</th>
                 </thead>
                 <tbody>
-                    {% for item_required in curr_set.items_required.all %}
+                    {% for item_required in curr_set.items_list %}
                             <tr>
                               <td class="align-middle">
                                     <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="{% url 'item-template-detail' item_required.item_type.id %}">{{ item_required.item_type.name }}</a></p>

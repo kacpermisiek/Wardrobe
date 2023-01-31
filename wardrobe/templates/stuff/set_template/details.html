@@ -20,8 +20,8 @@
             Id: <h1>{{ object.id }}</h1>
             Wymagane przedmioty:
             <ul>
-              {% for item in object.items_required.all %}
-                  <li>{{ item.item_type.name }} ({{ item.quantity_required }})</li>
+              {% for item in object.items_list %}
+                  <li><a href="{% url 'item-template-detail' item.item_type.id %}">{{ item.item_type.name }} ({{ item.quantity_required }})</a></li>
               {% endfor %}
             </ul>
         </div>

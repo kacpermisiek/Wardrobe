@@ -56,6 +56,9 @@ class SetTemplate(models.Model):
     created_by = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
     ready = models.BooleanField(default=False)
 
+    def items_list(self):
+        return self.items_required.all().order_by('item_type__name')
+
     def __str__(self):
         return f"SetTemplate object name: {self.name}"
 
