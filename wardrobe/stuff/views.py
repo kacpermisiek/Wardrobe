@@ -504,6 +504,9 @@ class ReservationListView(UserPassesTestMixin, ListView):
     def test_func(self):
         return self.request.user.is_superuser
 
+    def get_queryset(self):
+        return ReservationEvent.objects.all().order_by('start_date')
+
 
 class UserReservationListView(ReservationListView):
     template_name = 'reservation/user_list.html'
@@ -512,7 +515,7 @@ class UserReservationListView(ReservationListView):
         return self.request.user.is_authenticated
 
     def get_queryset(self):
-        return ReservationEvent.objects.filter(user_id=self.request.user.id)
+        return ReservationEvent.objects.filter(user_id=self.request.user.id).order_by('start_date')
 
 
 class ReservationDetailView(UserPassesTestMixin, DetailView):
