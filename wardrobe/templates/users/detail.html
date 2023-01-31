@@ -28,7 +28,6 @@
     <tr><a href="{% url 'stuff-home' %}">
       <td class="align-middle">
         <div class="d-flex align-items-center">
-            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="{% url 'reservation-detail' reservation.id %}">{{ reservation.id }}&nbsp</a></p>
 
                         <a href="{% url 'reservation-detail' reservation.id %}">
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-card-list" viewBox="0 0 16 16">
@@ -40,7 +39,7 @@
       </td>
       <td class="align-middle">
         <div class="d-flex align-items-center">
-            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="{% url 'set-detail' reservation.set.id %}">{{ reservation.set.set_template.name }} ({{ reservation.set.id }})</a></p>
+            <p class="fw-bold mb-1 ml-1 ml-m-5"><a href="{% url 'set-detail' reservation.set.id %}">{{ reservation.set.set_template.name }}</a></p>
         </div>
       </td>
 
