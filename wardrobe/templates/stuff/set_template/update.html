@@ -8,7 +8,10 @@
             {% csrf_token %}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Szczegóły zestawu</legend>
-                {{ form|crispy }}
+                <label>Nazwa:</label>
+                <input class="form-control" type="text" label="Przedział czasowy rezerwacji" name="name" value="{{ object.name }}"/>
+                <label>Gotowy do udostępnienia:</label>
+                <input type="checkbox"  name="ready" {% if object.ready %} checked {% endif %}>
             </fieldset>
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Zapisz</button>

@@ -100,7 +100,6 @@ class ItemTemplateCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView
 class ItemTemplateListView(ListView):
     model = ItemTemplate
     context_object_name = 'item_templates'
-    paginate_by = 6
     ordering = ['name']
     template_name = 'stuff/item_template/list.html'
 
