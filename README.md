@@ -56,7 +56,7 @@ W pliku `Wardrobe/wardrobe/stuff/views.py` zmień zawartość listy SUPER_USER_E
 Na podane adresy wysyłane będą wiadomości z prośbą o udostępnienie zestawów.
 
 
-### 7. Uruchom serwer
+### 11. Uruchom serwer
 ```python3 warrdrobe/manage.py runserver```
 
 Możesz teraz wejść na adres 127.0.0.1:8000.  
