@@ -40,8 +40,8 @@ i odkomentować deklaracje zmiennych w pliku `wardrobe/wardrobe/settings.py` od 
 ```python wardrobe/manage.py migrate```
 
 ### 8. Stwórz potrzebne zmienne środowiskowe
-```export SECRET_KEY=SuperSecretKey```
-```export EMAIL_HOST_PASSWORD=PASSWORD```
+```export SECRET_KEY=SuperSecretKey```  
+```export EMAIL_HOST_PASSWORD=PASSWORD```  
 `SECRET_KEY` może być dowolny, natomiast `EMAIL_HOST_PASSWORD` jest poufny. Jeżeli nie masz dostępu do hasła, możesz stworzyć swoje własne hasło do aplikacji [LINK](https://support.google.com/accounts/answer/185833?hl=pl)
 
 ### 9. Stwórz superusera
