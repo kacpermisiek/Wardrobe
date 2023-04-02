@@ -68,8 +68,8 @@ Jeżeli wyskoczył komunikat `A server error occurred. Please contact the admini
 
 ### 2. Superuserzy mają dostęp do panelu administracyjnego aplikacji. Można go znaleźć pod adresem `/admin`, na przykład `127.0.0.1:8000/admin`
 
-### Aplikacja domyślnie jest uruchomiona w trybie debugowania. Oznacza to, że w przypadku rzucenia jakiegokolwiek błędu, wyświetlony zostanie trace błędu. Aby wyłączyć wyświetlanie trace'u, należy zmienić w pliku `wardrobe/settings.py` wartość zmiennej DEBUG na False
+### 3. Aplikacja domyślnie jest uruchomiona w trybie debugowania. Oznacza to, że w przypadku rzucenia jakiegokolwiek błędu, wyświetlony zostanie trace błędu. Aby wyłączyć wyświetlanie trace'u, należy zmienić w pliku `wardrobe/settings.py` wartość zmiennej DEBUG na False
 
-### 3. W celu przechowywania plików w usłudze Amazon S3, należy skonfigurować swój własny bucket na stronie [AWS](https://aws.amazon.com/pm/serv-s3/?trk=518a7bef-5b4f-4462-ad55-80e5c177f12b&sc_channel=ps&ef_id=Cj0KCQjwz6ShBhCMARIsAH9A0qXEBriQ2zlsmv5QCdetZ9IL1GmrjWmXst6Ph0NWIwbTt-qKPQNbNngaAjSPEALw_wcB:G:s&s_kwcid=AL!4422!3!645186213484!e!!g!!amazon%20s3!19579892800!143689755565). Ze względów bezpieczeństwa, twórca aplikacji nie udostępnia danych swojego bucketa.
+### 4. W celu przechowywania plików w usłudze Amazon S3, należy skonfigurować swój własny bucket na stronie [AWS](https://aws.amazon.com/pm/serv-s3/?trk=518a7bef-5b4f-4462-ad55-80e5c177f12b&sc_channel=ps&ef_id=Cj0KCQjwz6ShBhCMARIsAH9A0qXEBriQ2zlsmv5QCdetZ9IL1GmrjWmXst6Ph0NWIwbTt-qKPQNbNngaAjSPEALw_wcB:G:s&s_kwcid=AL!4422!3!645186213484!e!!g!!amazon%20s3!19579892800!143689755565). Ze względów bezpieczeństwa, twórca aplikacji nie udostępnia danych swojego bucketa.
 
-### 4. `EMAIL_HOST_PASSWORD` jest poufny. Jeżeli nie masz dostępu do hasła, możesz stworzyć swoje własne hasło do aplikacji [LINK](https://support.google.com/accounts/answer/185833?hl=pl)
+### 5. `EMAIL_HOST_PASSWORD` jest poufny. Jeżeli nie masz dostępu do hasła, możesz stworzyć swoje własne hasło do aplikacji [LINK](https://support.google.com/accounts/answer/185833?hl=pl)
