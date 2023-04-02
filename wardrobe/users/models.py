@@ -20,18 +20,15 @@ class Profile(models.Model):
         return f'Profile of {self.user.username}'
 
     def _set_set_template_index(self):
-        if self.user.is_superuser:
-            self._template_curr_index = SetTemplate.objects.first().id
+        user_set_templates = SetTemplate.objects.filter(created_by_id=self.user.id)
+        if user_set_templates.exists():
+            self._template_curr_index = user_set_templates.first().id
         else:
-            user_set_templates = SetTemplate.objects.filter(created_by_id=self.user.id)
-            if user_set_templates.exists():
-                self._template_curr_index = user_set_templates.first().id
-            else:
-                set_template = SetTemplate.objects.create(
-                    name=self._generate_default_set_name(),
-                    created_by_id=self.user.id)
-                set_template.save()
-                self._template_curr_index = set_template.id
+            set_template = SetTemplate.objects.create(
+                name=self._generate_default_set_name(),
+                created_by_id=self.user.id)
+            set_template.save()
+            self._template_curr_index = set_template.id
         return self._template_curr_index
 
     def set_template_curr_index(self, value):
